@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import uuid4
 from typing import List
-# from quizApi.question import Question
+# from quiz_api.question import Question
 
 
 @dataclass
