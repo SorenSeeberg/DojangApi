@@ -10,9 +10,9 @@ class Category:
 @dataclass
 class KnowledgePair:
     id: int
-    langOne: str
-    langTwo: str
-    categoryId: int
+    lang_one: str
+    lang_two: str
+    category_id: int
 
 
 @dataclass
@@ -28,16 +28,18 @@ class Question:
     quiz_id: str
     option_count: int
     knowledge_pair_id: int
+    text: str
+    answer_id: str
 
 
 @dataclass
 class Quiz:
     id: str
-    total_question_count: int
-    current_question_index: int
+    question_count: int
+    current_question: int
     title: str
     created: int
-    userId: str
+    user_id: int
 
 
 @dataclass
