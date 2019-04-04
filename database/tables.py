@@ -3,16 +3,16 @@ from dataclasses import dataclass
 
 @dataclass
 class Category:
-    id: str
+    id: int
     name: str
 
 
 @dataclass
-class KnowledgePairs:
-    id: str
+class KnowledgePair:
+    id: int
     langOne: str
     langTwo: str
-    categoryId: str
+    categoryId: int
 
 
 @dataclass
@@ -25,13 +25,13 @@ class Option:
 @dataclass
 class Question:
     id: str
-    active_quiz_id: str
-    question_number: int
-    knowledge_pair_id: str
+    quiz_id: str
+    option_count: int
+    knowledge_pair_id: int
 
 
 @dataclass
-class ActiveQuiz:
+class Quiz:
     id: str
     total_question_count: int
     current_question_index: int
