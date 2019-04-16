@@ -106,4 +106,7 @@ RESULT_CATEGORY = Table(
     Column('categoryId', INT, ForeignKey('Category.id', ondelete="CASCADE"))
 )
 
-meta.create_all(engine)
+# Database Init
+
+if __name__ == '__main__':
+    meta.create_all(engine)
