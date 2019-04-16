@@ -14,6 +14,10 @@ options: List[Option] = list()
 quizzes: List[Quiz] = list()
 
 
+def print_table(table: List) -> None:
+    [print(row) for row in table]
+
+
 def setup_categories():
     categories.extend([
         Category(id=1, name='farver'),
@@ -106,6 +110,6 @@ if __name__ == '__main__':
 
     # new_question(quiz_id=quiz_id, included_category_ids=[1], option_count=5)
     new_quiz(question_count=20, option_count=4, included_category_ids=[1])
-    [print(quiz) for quiz in quizzes]
-    [print(question) for question in questions]
-    [print(option) for option in options]
+    print_table(quizzes)
+    print_table(questions)
+    print_table(options)
