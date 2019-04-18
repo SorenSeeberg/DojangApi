@@ -1,23 +1,24 @@
-from sqlalchemy import create_engine, MetaData, Table, Column
-from sqlalchemy import INT, SMALLINT, BOOLEAN, VARCHAR, CHAR, NVARCHAR, Integer
+from sqlalchemy import create_engine, MetaData, Column
+from sqlalchemy import INT, SMALLINT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from config import *
+from database.db import EngineSingleton
 
 Base = declarative_base()
 meta = MetaData()
 
+
 # Static Data Tables
 
-# INFO = Table(
-#     'Info', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('key', NVARCHAR(TEXT_LENGTH)),
-#     Column('value', NVARCHAR(TEXT_LENGTH)),
-#     Column('categoryId', INT, ForeignKey('Category.id')),
-#     Column('beltId', SMALLINT, ForeignKey('Belt.id'))
-# )
+class Info(Base):
+    __tablename__ = "Info"
+
+    id = Column(INT, primary_key=True)
+    key = Column(NVARCHAR(TEXT_LENGTH))
+    value = Column(NVARCHAR(TEXT_LENGTH))
+    categoryId = Column(INT, ForeignKey('Category.id'))
+    beltId = Column(SMALLINT, ForeignKey('Belt.id'))
 
 
 class Category(Base):
@@ -36,7 +37,6 @@ class Belt(Base):
 
 # User Tables
 
-
 class User(Base):
     __tablename__ = "User"
 
@@ -51,77 +51,77 @@ class User(Base):
 class Quiz(Base):
     __tablename__ = "Quiz"
 
-    id = Column(CHAR(UUID_LENGTH), primary_key=True),
-    questionCount = Column(SMALLINT),
-    currentQuestion = Column(SMALLINT),
-    title = Column(NVARCHAR(TITLE_LENGTH)),
-    timeStart = Column(INT),
-    userId = Column(INT, ForeignKey('User.id')),
-    beltMin = Column(SMALLINT, ForeignKey('Belt.id'), default=1),
+    id = Column(CHAR(UUID_LENGTH), primary_key=True)
+    questionCount = Column(SMALLINT)
+    currentQuestion = Column(SMALLINT)
+    title = Column(NVARCHAR(TITLE_LENGTH))
+    timeStart = Column(INT)
+    userId = Column(INT, ForeignKey('User.id'))
+    beltMin = Column(SMALLINT, ForeignKey('Belt.id'), default=1)
     beltMax = Column(SMALLINT, ForeignKey('Belt.id'), default=5)
 
 
 class Question(Base):
     __tablename__ = "Question"
 
-    id = Column(INT, primary_key=True),
-    text = Column(NVARCHAR(TEXT_LENGTH)),
-    optionCount = Column(SMALLINT),
-    quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id')),
-    infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE")),
+    id = Column(INT, primary_key=True)
+    text = Column(NVARCHAR(TEXT_LENGTH))
+    optionCount = Column(SMALLINT)
+    quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id'))
+    infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
     answerId = Column(INT, ForeignKey('Answer.id', ondelete="CASCADE"))
 
 
-# OPTION = Table(
-#     'Option', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('text', NVARCHAR(TEXT_LENGTH)),
-#     Column('questionId', INT, ForeignKey('Question.id', ondelete="CASCADE"))
-# )
-#
-# ANSWER = Table(
-#     'Answer', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('quizId', INT, ForeignKey('Quiz.id', ondelete="CASCADE")),
-#     Column('infoId', INT, ForeignKey('Info.id')),
-#     Column('correct', BOOLEAN)
-# )
-#
-# RESULT = Table(
-#     'Result', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('userId', INT, ForeignKey('User.id')),
-#     Column('correctCount', SMALLINT),
-#     Column('incorrectCount', SMALLINT),
-#     Column('timeSpent', INT),
-#     Column('beltMin', SMALLINT, ForeignKey('Belt.id'), default=1),
-#     Column('beltMax', SMALLINT, ForeignKey('Belt.id'), default=5)
-# )
+class Option(Base):
+    __tablename__ = "Option"
+
+    id = Column(INT, primary_key=True)
+    text = Column(NVARCHAR(TEXT_LENGTH))
+    questionId = Column(INT, ForeignKey('Question.id', ondelete="CASCADE"))
+
+
+class Answer(Base):
+    __tablename__ = "Answer"
+
+    id = Column(INT, primary_key=True)
+    quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
+    infoId = Column(INT, ForeignKey('Info.id'))
+    correct = Column(BOOLEAN)
+
+
+class Result(Base):
+    __tablename__ = "Result"
+
+    id = Column(INT, primary_key=True)
+    userId = Column(INT, ForeignKey('User.id'))
+    correctCount = Column(SMALLINT)
+    incorrectCount = Column(SMALLINT)
+    timeSpent = Column(INT)
+    beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
+    beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
+
 
 # Junction Tables
 
-# QUIZ_CATEGORY = Table(
-#     'QuizCategory', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('quizId', CHAR(UUID_LENGTH), ForeignKey('Quiz.id', ondelete="CASCADE")),
-#     Column('categoryId', INT, ForeignKey('Category.id', ondelete="CASCADE"))
-# )
-#
-# RESULT_CATEGORY = Table(
-#     'ResultCategory', meta,
-#     Column('id', INT, primary_key=True),
-#     Column('resultId', INT, ForeignKey('Result.id', ondelete="CASCADE")),
-#     Column('categoryId', INT, ForeignKey('Category.id', ondelete="CASCADE"))
-# )
+class QuizCategory(Base):
+    __tablename__ = "QuizCategory"
 
-# Database Init
+    id = Column(INT, primary_key=True)
+    quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id', ondelete="CASCADE"))
+    categoryId = Column(INT, ForeignKey('Category.id', ondelete="CASCADE"))
+
+
+class ResultCategory(Base):
+    __tablename__ = "ResultCategory"
+
+    id = Column(INT, primary_key=True)
+    resultId = Column(INT, ForeignKey('Result.id', ondelete="CASCADE"))
+    categoryId = Column(INT, ForeignKey('Category.id', ondelete="CASCADE"))
+
+
+# Database Tables Init
 
 if __name__ == '__main__':
-    engine = create_engine(DB_CONNECTION_STRING, echo=True)
+    engine = EngineSingleton().get_engine()
     Base.metadata.create_all(engine)
 
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    # insert_user = USER.insert()
-    # insert_user.execute(email="soren.seeberg@gmail.com", pwdHash="abcd"*16)
