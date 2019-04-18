@@ -45,6 +45,8 @@ class User(Base):
     pwdHash = Column(CHAR(PWD_HASH_LENGTH))
     confirmed = Column(BOOLEAN, default=False)
 
+# todo : class AccessToken
+
 
 # Quiz Tables
 

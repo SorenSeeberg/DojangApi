@@ -52,6 +52,10 @@ def delete_user(session: 'Session') -> bool:
     raise NotImplementedError
 
 
+def validate_user(session: 'Session', session_token: str) -> bool:
+    raise NotImplementedError
+
+
 def email_exists(session: 'Session', email: str) -> bool:
     result = session.query(User).filter(User.email == email).count()
 
