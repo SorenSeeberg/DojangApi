@@ -1,5 +1,7 @@
-from sqlalchemy import create_engine, MetaData, Column
-from sqlalchemy import INT, SMALLINT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
+import time
+from uuid import uuid4
+from sqlalchemy import MetaData, Column
+from sqlalchemy import INT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from config import *
@@ -18,7 +20,7 @@ class Info(Base):
     key = Column(NVARCHAR(TEXT_LENGTH))
     value = Column(NVARCHAR(TEXT_LENGTH))
     categoryId = Column(INT, ForeignKey('Category.id'))
-    beltId = Column(SMALLINT, ForeignKey('Belt.id'))
+    beltId = Column(INT, ForeignKey('Belt.id'))
 
 
 class Category(Base):
@@ -44,8 +46,19 @@ class User(Base):
     email = Column(VARCHAR(EMAIL_LENGTH), unique=True)
     pwdHash = Column(CHAR(PWD_HASH_LENGTH))
     confirmed = Column(BOOLEAN, default=False)
+    enabled = Column(BOOLEAN, default=False)
+    administrator = Column(BOOLEAN, default=False)
 
-# todo : class AccessToken
+
+class AccessToken(Base):
+    __tablename__ = "AccessToken"
+
+    id = Column(INT, primary_key=True)
+    userId = Column(INT, ForeignKey('User.id'))
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
+    createdAt = Column(INT, default=int(time.time()))
+
+    # Column('created_at', DateTime, server_default=func.sysdate()),
 
 
 # Quiz Tables
@@ -54,13 +67,13 @@ class Quiz(Base):
     __tablename__ = "Quiz"
 
     id = Column(CHAR(UUID_LENGTH), primary_key=True)
-    questionCount = Column(SMALLINT)
-    currentQuestion = Column(SMALLINT)
+    questionCount = Column(INT)
+    currentQuestion = Column(INT)
     title = Column(NVARCHAR(TITLE_LENGTH))
     timeStart = Column(INT)
     userId = Column(INT, ForeignKey('User.id'))
-    beltMin = Column(SMALLINT, ForeignKey('Belt.id'), default=1)
-    beltMax = Column(SMALLINT, ForeignKey('Belt.id'), default=5)
+    beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
+    beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
 
 
 class Question(Base):
@@ -68,7 +81,7 @@ class Question(Base):
 
     id = Column(INT, primary_key=True)
     text = Column(NVARCHAR(TEXT_LENGTH))
-    optionCount = Column(SMALLINT)
+    optionCount = Column(INT)
     quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id'))
     infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
     answerId = Column(INT, ForeignKey('Answer.id', ondelete="CASCADE"))
@@ -96,8 +109,8 @@ class Result(Base):
 
     id = Column(INT, primary_key=True)
     userId = Column(INT, ForeignKey('User.id'))
-    correctCount = Column(SMALLINT)
-    incorrectCount = Column(SMALLINT)
+    correctCount = Column(INT)
+    incorrectCount = Column(INT)
     timeSpent = Column(INT)
     beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
     beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
@@ -123,7 +136,7 @@ class ResultCategory(Base):
 
 # Database Tables Init
 
-if __name__ == '__main__':
+def create_tables() -> None:
     engine = EngineSingleton().get_engine()
     Base.metadata.create_all(engine)
 

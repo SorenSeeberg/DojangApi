@@ -1,5 +1,5 @@
-from typing import Dict, List
-from database._tables import *
+from typing import List
+from _archive._tables import *
 from uuid import uuid4
 from hashlib import sha3_256
 import random
