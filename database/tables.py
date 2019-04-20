@@ -58,8 +58,6 @@ class AccessToken(Base):
     token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
     createdAt = Column(INT, default=int(time.time()))
 
-    # Column('created_at', DateTime, server_default=func.sysdate()),
-
 
 # Quiz Tables
 

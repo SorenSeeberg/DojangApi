@@ -13,3 +13,7 @@ class Exceptions:
     class EmailNotFoundError(_Exception):
         def __init__(self):
             _Exception.__init__(self, f'{self.__class__.__name__}: Email doesn''t exist in database')
+
+    class Unauthorized(_Exception):
+        def __init__(self):
+            _Exception.__init__(self, f'{self.__class__.__name__}: 401')

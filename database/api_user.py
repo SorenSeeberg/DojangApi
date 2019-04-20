@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import MultipleResultsFound
 from sqlalchemy.exc import IntegrityError
 
 
-def _hash_password(password) -> str:
+def hash_password(password) -> str:
     return str(sha3_256(password.encode()).hexdigest())
 
 
@@ -16,7 +16,7 @@ def create(session: 'Session', email: str, password: str, commit=True) -> bool:
         if email_exists(session, email):
             raise Exceptions.DuplicateEmailError
 
-        session.add(User(email=email, pwdHash=_hash_password(password)))
+        session.add(User(email=email, pwdHash=hash_password(password)))
 
         if commit:
             session.commit()
@@ -37,7 +37,7 @@ def create_admin(session: 'Session', email: str = 'soren.seeberg@gmail.com', pas
             raise Exceptions.DuplicateEmailError
 
         session.add(
-            User(email=email, pwdHash=_hash_password(password), confirmed=True, enabled=True, administrator=True))
+            User(email=email, pwdHash=hash_password(password), confirmed=True, enabled=True, administrator=True))
 
         if commit:
             session.commit()
@@ -73,7 +73,7 @@ def update_password(session: 'Session', email: str, new_password_value: str, com
     user = get_by_email(session, email)
 
     if user:
-        user.pwdHash = _hash_password(new_password_value)
+        user.pwdHash = hash_password(new_password_value)
 
         if commit:
             session.commit()
@@ -109,18 +109,6 @@ def delete(session: 'Session', email: str, commit=True) -> bool:
         return True
 
     return False
-
-
-def sign_in(session: 'Session', email: str, password: str) -> str:
-    raise NotImplementedError
-
-
-def sign_out(session: 'Session', email: str, password: str) -> str:
-    raise NotImplementedError
-
-
-def validation(session: 'Session', access_token: str) -> bool:
-    raise NotImplementedError
 
 
 def email_exists(session: 'Session', email: str) -> bool:
