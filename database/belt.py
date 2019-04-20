@@ -33,13 +33,16 @@ def get_by_id(session: 'Session', id: int) -> Belt:
         print(e)
 
 
+belt_names = ["10. kup", "9. kup", "8. kup", "7. kup", "6. kup", "5. kup", "4. kup", "3. kup", "2. kup", "1. kup",
+              "1. dan", "2. dan", "3. dan", "4. dan", "5. dan", "6. dan", "Teori"]
+
+
 def create_belt_rows() -> None:
-    _belt_names = ["10. kup", "9. kup", "8. kup", "7. kup", "6. kup", "5. kup", "4. kup", "3. kup",
-                   "2. kup", "1. kup", "1. dan", "2. dan", "3. dan", "4. dan", "5. dan", "6. dan", "Teori"]
+    """Populate the Belt table"""
 
     _session: 'Session' = SessionSingleton().get_session()
 
-    create_many(_session, _belt_names)
+    create_many(_session, belt_names)
 
 
 if __name__ == '__main__':

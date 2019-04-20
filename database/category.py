@@ -33,12 +33,14 @@ def get_by_id(session: 'Session', id: int) -> Category:
         print(e)
 
 
+category_names = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal', 'Teori']
+
+
 def create_category_rows() -> None:
-    _category_names = ['Anatomi', 'Bentiknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal']
 
     _session: 'Session' = SessionSingleton().get_session()
 
-    create_many(_session, _category_names)
+    create_many(_session, category_names)
 
 
 if __name__ == '__main__':

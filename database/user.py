@@ -30,7 +30,9 @@ def create(session: 'Session', email: str, password: str, commit=True) -> bool:
     return False
 
 
-def create_admin(session: 'Session', email: str = 'soren.seeberg@gmail.com', password: str = 'hanadulsetmulighet',
+def create_admin(session: 'Session',
+                 email: str = 'soren.seeberg@gmail.com',
+                 password: str = 'hanadulsetmulighet',
                  commit=True) -> bool:
     try:
         if email_exists(session, email):
@@ -70,10 +72,10 @@ def get_by_id(session: 'Session', id: int) -> 'User':
 
 
 def update_password(session: 'Session', email: str, new_password_value: str, commit=True) -> bool:
-    user = get_by_email(session, email)
+    user_row = get_by_email(session, email)
 
-    if user:
-        user.pwdHash = hash_password(new_password_value)
+    if user_row:
+        user_row.pwdHash = hash_password(new_password_value)
 
         if commit:
             session.commit()
@@ -84,10 +86,10 @@ def update_password(session: 'Session', email: str, new_password_value: str, com
 
 
 def update_confirmed(session: 'Session', email: str, confirmed_value: bool, commit=True) -> bool:
-    user = get_by_email(session, email)
+    user_row = get_by_email(session, email)
 
-    if user:
-        user.confirmed = confirmed_value
+    if user_row:
+        user_row.confirmed = confirmed_value
 
         if commit:
             session.commit()
@@ -98,10 +100,10 @@ def update_confirmed(session: 'Session', email: str, confirmed_value: bool, comm
 
 
 def delete(session: 'Session', email: str, commit=True) -> bool:
-    user = get_by_email(session, email)
+    user_row = get_by_email(session, email)
 
-    if user:
-        session.delete(user)
+    if user_row:
+        session.delete(user_row)
 
         if commit:
             session.commit()
@@ -119,8 +121,9 @@ def email_exists(session: 'Session', email: str) -> bool:
 
 def create_user_rows() -> None:
     _session: 'Session' = SessionSingleton().get_session()
-    create_admin(_session)
-
+    create_admin(_session, commit=False)
+    create(_session, 'sorense@configit.com', '1234', commit=False)
+    _session.commit()
 
 if __name__ == '__main__':
     _session: 'Session' = SessionSingleton().get_session()

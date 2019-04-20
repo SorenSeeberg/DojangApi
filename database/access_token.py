@@ -1,7 +1,7 @@
 from uuid import uuid4
 from database.tables import AccessToken
 from database.tables import User
-from database.user import get_by_email
+from database import user
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -23,12 +23,6 @@ def create(session: 'Session', user_id: int, commit=True) -> str:
     return token
 
 
-def create_access_token(user_id: int) -> None:
-    _session: 'Session' = SessionSingleton().get_session()
-
-    create(_session, user_id=user_id)
-
-
 def validate_by_id(session: 'Session', user_id: int, access_token: str) -> bool:
     try:
         session.query(AccessToken).filter(AccessToken.userId == user_id, AccessToken.token == access_token).one()
@@ -40,24 +34,41 @@ def validate_by_id(session: 'Session', user_id: int, access_token: str) -> bool:
 
 
 def validate_by_email(session: 'Session', email: str, access_token: str) -> bool:
-    user: User = get_by_email(session, email)
+    user_row: User = user.get_by_email(session, email)
 
-    if not user:
+    if not user_row:
         return False
 
-    return validate_by_id(session, user.id, access_token)
+    return validate_by_id(session, user_row.id, access_token)
 
 
-def delete(session: 'Session', user_id: int, access_token: str, commit=True) -> bool:
-    access_token: AccessToken = get_by_user_id_and_token(session, user_id, access_token)
+def delete(session: 'Session', user_id: int, token: str, commit=True) -> bool:
+    access_token_row: AccessToken = get_by_user_id_and_token(session, user_id, token)
 
-    if access_token:
-        session.delete(access_token)
+    if access_token_row:
+        session.delete(access_token_row)
 
         if commit:
             session.commit()
 
         return True
+
+    return False
+
+
+def delete_all_by_user_id(session: 'Session', user_id: int, commit=True) -> bool:
+
+    try:
+        statement = AccessToken.__table__.delete().where(AccessToken.userId == user_id)
+        session.execute(statement)
+
+        if commit:
+            session.commit()
+
+        return True
+
+    except NoResultFound as e:
+        print(e)
 
     return False
 

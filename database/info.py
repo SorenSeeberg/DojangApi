@@ -2,6 +2,7 @@ from typing import List
 from database.tables import Info
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
+from data.import_data import extract_info
 
 
 def create_many(session: 'Session', infos: List[List], commit=True) -> bool:
@@ -23,12 +24,8 @@ def get_by_id(session: 'Session', id: int) -> Info:
 
 
 def create_info_rows() -> None:
-    _infos = [
-        ['Agwison', 'Runding mellem tommel- og pegefinger', 5, 1],
-        ['Anpalmok hechyomakki', 'Adskille blokering m. indersiden af underarm', 5, 1],
-        ['Gyottari-seogi', 'Hjælpestand', 7, 1]
-    ]
-
+    """Populate Info table"""
+    _infos = extract_info()
     _session: 'Session' = SessionSingleton().get_session()
 
     create_many(_session, _infos)

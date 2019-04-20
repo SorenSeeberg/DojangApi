@@ -78,18 +78,18 @@ class Question(Base):
     __tablename__ = "Question"
 
     id = Column(INT, primary_key=True)
-    text = Column(NVARCHAR(TEXT_LENGTH))
     optionCount = Column(INT)
     quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id'))
     infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
-    answerId = Column(INT, ForeignKey('Answer.id', ondelete="CASCADE"))
+    # text = Column(NVARCHAR(TEXT_LENGTH))
+    # answerId = Column(INT, ForeignKey('Answer.id', ondelete="CASCADE"))
 
 
 class Option(Base):
     __tablename__ = "Option"
 
     id = Column(INT, primary_key=True)
-    text = Column(NVARCHAR(TEXT_LENGTH))
+    infoId = Column(INT, ForeignKey('Info.id'))
     questionId = Column(INT, ForeignKey('Question.id', ondelete="CASCADE"))
 
 
