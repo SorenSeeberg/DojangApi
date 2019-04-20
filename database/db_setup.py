@@ -1,9 +1,9 @@
 from database.tables import create_tables
-from database.api_belt import create_belt_rows
-from database.api_category import create_category_rows
-from database.api_info import create_info_rows
-from database.api_user import create_user_rows
-from database.api_access_token import create_access_token
+from database.belt import create_belt_rows
+from database.category import create_category_rows
+from database.info import create_info_rows
+from database.user import create_user_rows
+from database.access_token import create_access_token
 
 if __name__ == '__main__':
     create_tables()

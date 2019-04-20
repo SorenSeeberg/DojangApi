@@ -125,20 +125,20 @@ def create_user_rows() -> None:
 if __name__ == '__main__':
     _session: 'Session' = SessionSingleton().get_session()
 
-    create(_session, "sorense@configit.com", "hallohallo234", commit=False)
-    create(_session, "soren.seeberg@gmail.com", "hallohallo234", commit=False)
+    # create(_session, "sorense@configit.com", "hallohallo234", commit=False)
+    # create(_session, "soren.seeberg@gmail.com", "hallohallo234", commit=False)
 
-    user_by_email = get_by_email(_session, "sorense@configit.com")
+    user_by_email: User = get_by_email(_session, "soren.seeberg@gmail.com")
     if user_by_email:
         print('\nUser by email')
         print(user_by_email.id, user_by_email.email)
 
-    user_by_id = get_by_id(_session, 1)
+    user_by_id: User = get_by_id(_session, 1)
     if user_by_id:
         print('\nUser by id')
         print(user_by_id.id, user_by_id.email)
 
-    print(update_confirmed(_session, 'soren.seeberg@gmail.com', confirmed_value=True, commit=False))
-    print(update_password(_session, 'soren.seeberg@gmail.com', 'fest2', commit=False))
-    _session.commit()
+    # print(update_confirmed(_session, 'soren.seeberg@gmail.com', confirmed_value=True, commit=False))
+    # print(update_password(_session, 'soren.seeberg@gmail.com', 'fest2', commit=False))
+    # _session.commit()
     # print(delete(_session, "soren.seeberg@gmail.com"))

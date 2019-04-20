@@ -1,7 +1,7 @@
 from uuid import uuid4
 from database.tables import AccessToken
 from database.tables import User
-from database.api_user import get_by_email
+from database.user import get_by_email
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -49,13 +49,7 @@ def validate_by_email(session: 'Session', email: str, access_token: str) -> bool
 
 
 def delete(session: 'Session', user_id: int, access_token: str, commit=True) -> bool:
-    # access_token: AccessToken = session.query(AccessToken).filter(AccessToken.userId == user_id,
-    #                                                               AccessToken.token == access_token)
-
     access_token: AccessToken = get_by_user_id_and_token(session, user_id, access_token)
-    print('Trying to delete access token')
-    print(access_token.userId)
-    print(access_token.token)
 
     if access_token:
         session.delete(access_token)
