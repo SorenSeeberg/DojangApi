@@ -7,6 +7,9 @@ from sqlalchemy.exc import IntegrityError
 def create(session: 'Session', quiz_id: int, info_id: int, commit=True) -> bool:
     try:
         session.add(Question(quizId=quiz_id, infoId=info_id))
+
+        if commit:
+            session.commit()
         return True
     except IntegrityError as e:
         print(e)

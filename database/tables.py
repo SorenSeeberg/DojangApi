@@ -65,7 +65,7 @@ class Quiz(Base):
     __tablename__ = "Quiz"
 
     id = Column(INT, primary_key=True)
-    publicId = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
     questionCount = Column(INT)
     optionCount = Column(INT)
     currentQuestion = Column(INT)
