@@ -11,46 +11,44 @@ def hash_password(password) -> str:
     return str(sha3_256(password.encode()).hexdigest())
 
 
-def create(session: 'Session', email: str, password: str, commit=True) -> bool:
+def create(session: 'Session', email: str, password: str, commit=True) -> User:
     try:
         if email_exists(session, email):
             raise Exceptions.DuplicateEmailError
 
-        session.add(User(email=email, pwdHash=hash_password(password)))
+        user_row = User(email=email, pwdHash=hash_password(password))
+        session.add(user_row)
 
         if commit:
             session.commit()
 
-        return True
+        return user_row
     except Exceptions.DuplicateEmailError as e:
         print(e)
     except IntegrityError as e:
         print(e)
-
-    return False
 
 
 def create_admin(session: 'Session',
                  email: str = 'soren.seeberg@gmail.com',
                  password: str = 'hanadulsetmulighet',
-                 commit=True) -> bool:
+                 commit=True) -> User:
+
     try:
         if email_exists(session, email):
             raise Exceptions.DuplicateEmailError
 
-        session.add(
-            User(email=email, pwdHash=hash_password(password), confirmed=True, enabled=True, administrator=True))
+        user_row = User(email=email, pwdHash=hash_password(password), confirmed=True, enabled=True, administrator=True)
+        session.add(user_row)
 
         if commit:
             session.commit()
 
-        return True
+        return user_row
     except Exceptions.DuplicateEmailError as e:
         print(e)
     except IntegrityError as e:
         print(e)
-
-    return False
 
 
 def get_by_email(session: 'Session', email: str) -> 'User':
@@ -124,6 +122,7 @@ def create_user_rows() -> None:
     create_admin(_session, commit=False)
     create(_session, 'sorense@configit.com', '1234', commit=False)
     _session.commit()
+
 
 if __name__ == '__main__':
     _session: 'Session' = SessionSingleton().get_session()
