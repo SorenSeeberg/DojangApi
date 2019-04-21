@@ -43,8 +43,8 @@ class User(Base):
     __tablename__ = "User"
 
     id = Column(INT, primary_key=True)
-    email = Column(VARCHAR(EMAIL_LENGTH), unique=True)
-    pwdHash = Column(CHAR(PWD_HASH_LENGTH))
+    email = Column(VARCHAR(EMAIL_LENGTH), unique=True, nullable=False)
+    pwdHash = Column(CHAR(PWD_HASH_LENGTH), nullable=False)
     confirmed = Column(BOOLEAN, default=False)
     enabled = Column(BOOLEAN, default=False)
     administrator = Column(BOOLEAN, default=False)
@@ -54,11 +54,9 @@ class AccessToken(Base):
     __tablename__ = "AccessToken"
 
     id = Column(INT, primary_key=True)
-    userId = Column(INT, ForeignKey('User.id'))
-    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
+    userId = Column(INT, ForeignKey('User.id'), nullable=False)
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), nullable=False)
     createdAt = Column(INT, default=int(time.time()))
-
-    # Column('created_at', DateTime, server_default=func.sysdate()),
 
 
 # Quiz Tables
@@ -66,11 +64,14 @@ class AccessToken(Base):
 class Quiz(Base):
     __tablename__ = "Quiz"
 
-    id = Column(CHAR(UUID_LENGTH), primary_key=True)
+    id = Column(INT, primary_key=True)
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
     questionCount = Column(INT)
+    optionCount = Column(INT)
     currentQuestion = Column(INT)
+    reverseQuestions = Column(BOOLEAN, default=False)
     title = Column(NVARCHAR(TITLE_LENGTH))
-    timeStart = Column(INT)
+    timeStart = Column(INT, default=int(time.time()))
     userId = Column(INT, ForeignKey('User.id'))
     beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
     beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
@@ -80,18 +81,15 @@ class Question(Base):
     __tablename__ = "Question"
 
     id = Column(INT, primary_key=True)
-    text = Column(NVARCHAR(TEXT_LENGTH))
-    optionCount = Column(INT)
-    quizId = Column(CHAR(UUID_LENGTH), ForeignKey('Quiz.id'))
+    quizId = Column(INT, ForeignKey('Quiz.id'))
     infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
-    answerId = Column(INT, ForeignKey('Answer.id', ondelete="CASCADE"))
 
 
 class Option(Base):
     __tablename__ = "Option"
 
     id = Column(INT, primary_key=True)
-    text = Column(NVARCHAR(TEXT_LENGTH))
+    infoId = Column(INT, ForeignKey('Info.id'))
     questionId = Column(INT, ForeignKey('Question.id', ondelete="CASCADE"))
 
 
