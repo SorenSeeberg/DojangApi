@@ -1,11 +1,12 @@
 import os
 
 
-def db_connection_string():
-    return f'sqlite:///{os.path.realpath(os.path.dirname(__file__))}\quiz.db'
+def db_connection_string(db_name:str):
+    return f'sqlite:///{os.path.realpath(os.path.dirname(__file__))}\\{db_name}'
 
 
-DB_CONNECTION_STRING = db_connection_string()
+DB_CONNECTION_STRING = db_connection_string('quiz.db')
+TEST_DB_CONNECTION_STRING = db_connection_string('test.db')
 UUID_LENGTH = 36
 PWD_HASH_LENGTH = 64
 TEXT_LENGTH = 256
