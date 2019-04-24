@@ -1,7 +1,7 @@
 import time
 from uuid import uuid4
 from sqlalchemy import MetaData, Column
-from sqlalchemy import INT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
+from sqlalchemy import SMALLINT, INT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from config import *
@@ -55,7 +55,7 @@ class AccessToken(Base):
 
     id = Column(INT, primary_key=True)
     userId = Column(INT, ForeignKey('User.id'), nullable=False)
-    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), nullable=False)
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), unique=True, nullable=False)
     createdAt = Column(INT, default=int(time.time()))
 
 
@@ -65,16 +65,16 @@ class Quiz(Base):
     __tablename__ = "Quiz"
 
     id = Column(INT, primary_key=True)
-    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()))
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), unique=True)
     questionCount = Column(INT)
     optionCount = Column(INT)
     currentQuestion = Column(INT)
     reverseQuestions = Column(BOOLEAN, default=False)
-    title = Column(NVARCHAR(TITLE_LENGTH))
+    categoryId = Column(INT)
     timeStart = Column(INT, default=int(time.time()))
     userId = Column(INT, ForeignKey('User.id'))
-    beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
-    beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
+    beltMin = Column(INT, ForeignKey('Belt.id'))
+    beltMax = Column(INT, ForeignKey('Belt.id'))
 
 
 class Question(Base):
@@ -83,6 +83,7 @@ class Question(Base):
     id = Column(INT, primary_key=True)
     quizId = Column(INT, ForeignKey('Quiz.id'))
     infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
+    questionNumber = Column(SMALLINT)
 
 
 class Option(Base):

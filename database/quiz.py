@@ -1,3 +1,4 @@
+from uuid import uuid4
 from database.tables import Quiz
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
@@ -6,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 def create(session: 'Session',
            question_count: int,
            option_count: int,
-           title: str,
+           category_id: int,
            user_id: int,
            belt_min: int,
            belt_max: int,
@@ -14,11 +15,12 @@ def create(session: 'Session',
            commit=True) -> Quiz:
 
     quiz_row: Quiz = Quiz(
+        token=str(uuid4()),
         questionCount=question_count,
         optionCount=option_count,
         currentQuestion=1,
         reverseQuestions=reverse_questions,
-        title=title,
+        categoryId=category_id,
         userId=user_id,
         beltMin=belt_min,
         beltMax=belt_max

@@ -16,9 +16,17 @@ def create_many(session: 'Session', infos: List[List], commit=True) -> bool:
         return False
 
 
-def get_by_id(session: 'Session', id: int) -> Info:
+def get_by_id(session: 'Session', info_id: int) -> Info:
     try:
-        return session.query(Info).get(id)
+        return session.query(Info).get(info_id)
+    except NoResultFound as e:
+        print(e)
+
+
+def get_by_level_and_category(session: 'Session', category_id: int, level_min: int, level_max: int) -> List[Info]:
+    try:
+        return session.query(Info).filter(Info.categoryId == category_id, Info.beltId >= level_min,
+                                          Info.beltId <= level_max)
     except NoResultFound as e:
         print(e)
 
@@ -34,4 +42,6 @@ def create_info_rows() -> None:
 if __name__ == '__main__':
     _session: 'Session' = SessionSingleton().get_session()
 
-    print(get_by_id(_session, id=3).key)
+    # print(get_by_id(_session, info_id=3).key)
+
+    [print(row.key, row.value) for row in get_by_level_and_category(_session, 1, 5, 7)]
