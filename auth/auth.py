@@ -1,6 +1,5 @@
 from database.tables import User
-from database import user
-from database import access_token
+from query import access_token, user
 from sqlalchemy.orm.exc import NoResultFound
 from exceptions import Exceptions
 from database.db import SessionSingleton

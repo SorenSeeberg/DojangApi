@@ -1,7 +1,7 @@
 import csv
 import os
-from database.category import category_names
-from database.belt import belt_names
+from query.category import category_names
+from query.belt import belt_names
 from typing import List, Dict
 
 # Headers

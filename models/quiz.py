@@ -3,13 +3,7 @@ from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
 from database import db
-from database import quiz
-from database import question
-from database import info
-from database import option
-from database import access_token
-from database import user
-from database import category
+from query import access_token, category, option, info, question, quiz, user
 
 
 def _new_question(
@@ -127,17 +121,17 @@ def answer_question():
 if __name__ == '__main__':
     _session = db.SessionSingleton().get_session()
 
-    print(db.to_json(
-        new_quiz(
-            session=_session,
-            access_token_string="99956412-a52d-4e8a-bb49-9c0405aebf2c",
-            question_count=30,
-            option_count=3,
-            category_id=2,
-            email="soren.seeberg@gmail.com",
-            level_min=3,
-            level_max=8)
-    ))
+    # print(db.to_json(
+    #     new_quiz(
+    #         session=_session,
+    #         access_token_string="99956412-a52d-4e8a-bb49-9c0405aebf2c",
+    #         question_count=30,
+    #         option_count=3,
+    #         category_id=2,
+    #         email="soren.seeberg@gmail.com",
+    #         level_min=3,
+    #         level_max=8)
+    # ))
 
     print(db.to_json(next_question(
         session=_session,

@@ -1,10 +1,10 @@
 from database.db import SessionSingleton
-from database.access_token import create as create_access_token
+from query.access_token import create as create_access_token
 from database.tables import create_tables
-from database.belt import create_belt_rows
-from database.category import create_category_rows
-from database.info import create_info_rows
-from database.user import create_user_rows
+from query.belt import create_belt_rows
+from query.category import create_category_rows
+from query.info import create_info_rows
+from query.user import create_user_rows
 
 if __name__ == '__main__':
     create_tables()

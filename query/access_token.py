@@ -1,7 +1,7 @@
 from uuid import uuid4
 from database.tables import AccessToken
 from database.tables import User
-from database import user
+from query import user
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
