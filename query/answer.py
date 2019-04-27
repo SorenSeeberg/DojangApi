@@ -3,7 +3,7 @@
 
 from typing import List
 from database.tables import Answer
-from database.db import SessionSingleton
+from database import db
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -43,8 +43,13 @@ def delete_by_quiz_id(session: 'Session', quiz_id: int, commit=True) -> bool:
 
 
 def get_answer_count(session: 'Session', quiz_id: int):
-    correct_count: int = session.query(Answer).filter(Answer.correct is True, Answer.quizId == quiz_id).count()
-    incorrect_count: int = session.query(Answer).filter(Answer.correct is False, Answer.quizId == quiz_id).count()
+    correct_count: int = session.query(Answer).filter(Answer.correct == True, Answer.quizId == quiz_id).count()
+    incorrect_count: int = session.query(Answer).filter(Answer.correct == False, Answer.quizId == quiz_id).count()
 
     return {"correct_count": correct_count, "incorrect_count": incorrect_count}
 
+
+if __name__ == '__main__':
+    _session = db.SessionSingleton().get_session()
+
+    print(get_answer_count(_session, 1))
