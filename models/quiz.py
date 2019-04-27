@@ -19,6 +19,7 @@ def _new_question(
         option_count: int,
         level_min: int,
         level_max: int):
+
     """ Creates a question with answer options. Not committed to db """
 
     info_rows = info.get_by_level_and_category(session, category_id, level_min, level_max)
@@ -40,8 +41,10 @@ def new_quiz(
         email: str,
         level_min: int,
         level_max: int) -> Dict:
+
+    """ Creates new quiz with associated questions and options """
+
     user_id: int = user.get_by_email(session, email).id
-    print(user_id)
 
     try:
         if not access_token.validate_by_id(session, user_id, access_token_string):
@@ -66,7 +69,7 @@ def new_quiz(
         session.flush()
 
         [_new_question(session, quiz_row.id, category_id, i, option_count, level_min, level_max) for i in
-         range(1, question_count + 1)]
+         range(question_count)]
 
         session.commit()
 
@@ -88,9 +91,8 @@ def new_quiz(
 
 
 def delete_quiz(session: 'Session', quiz_token: str) -> Dict:
-    """
-    Deleting a quiz, including associated questions, options and answers
-    """
+
+    """ Deleting a quiz, including associated questions, options and answers """
 
     quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
@@ -103,11 +105,14 @@ def delete_quiz(session: 'Session', quiz_token: str) -> Dict:
     return dict()
 
 
-def current_question(
+def get_current_question(
         session: 'Session',
         email: str,
         access_token_string: str,
         quiz_token: str) -> Dict:
+
+    """ Returns the current question with associated options and quiz info """
+
     if not access_token.validate_by_email(session, email, access_token_string):
         return {"responseCode": db.ResponseCodes.unauthorized_401}
 
@@ -120,7 +125,9 @@ def current_question(
         next_question_info_row = info.get_by_id(session, next_question_row.infoId)
         option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
 
-        options = [{"index": row.optionIndex, "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
+        options = [{
+            "index": row.optionIndex,
+            "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
 
         return {
             "responseCode": db.ResponseCodes.ok_200,
@@ -143,6 +150,9 @@ def answer_question(session: 'Session',
                     access_token_string: str,
                     quiz_token: str,
                     option_index: int) -> Dict:
+
+    """ Accepts an answer and advances the quiz. The correctness of the question is returned """
+
     if not access_token.validate_by_email(session, email, access_token_string):
         return {"responseCode": db.ResponseCodes.unauthorized_401}
 
@@ -150,8 +160,7 @@ def answer_question(session: 'Session',
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
     option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
 
-    # TODO : fix if currentQuestion becomes zero indexed
-    if quiz_row.currentQuestion < quiz_row.questionCount - 1:
+    if quiz_row.currentQuestion < quiz_row.questionCount:
         answer.create(session=session,
                       quiz_id=quiz_row.id,
                       info_id=option_row.infoId,
@@ -194,32 +203,41 @@ def answer_question(session: 'Session',
                 }
 
 
-if __name__ == '__main__':
-    _session = db.SessionSingleton().get_session()
+def _new_quiz(session):
+    print(db.to_json(
+        new_quiz(
+            session=session,
+            access_token_string=config.DEBUG_ACCESS_TOKEN,
+            question_count=10,
+            option_count=3,
+            category_id=2,
+            email=config.DEBUG_EMAIL,
+            level_min=3,
+            level_max=8)
+    ))
 
-    # print(db.to_json(
-    #     new_quiz(
-    #         session=_session,
-    #         access_token_string=config.DEBUG_ACCESS_TOKEN,
-    #         question_count=10,
-    #         option_count=3,
-    #         category_id=2,
-    #         email=config.DEBUG_EMAIL,
-    #         level_min=3,
-    #         level_max=8)
-    # ))
 
-    print(db.to_json(current_question(
-        session=_session,
+def _current_question(session):
+    print(db.to_json(get_current_question(
+        session=session,
         email=config.DEBUG_EMAIL,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
         quiz_token=config.DEBUG_QUIZ_TOKEN))
     )
 
+
+def _answer_question(session):
     print(db.to_json(answer_question(
-        session=_session,
+        session=session,
         email=config.DEBUG_EMAIL,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
         quiz_token=config.DEBUG_QUIZ_TOKEN,
         option_index=random.randrange(3)))
     )
+
+
+if __name__ == '__main__':
+    _session = db.SessionSingleton().get_session()
+    _new_quiz(_session)
+    _current_question(_session)
+    _answer_question(_session)
