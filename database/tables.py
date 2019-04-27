@@ -79,7 +79,6 @@ class Quiz(Base):
     userId = Column(INT, ForeignKey('User.id'))
     beltMin = Column(INT, ForeignKey('Belt.id'))
     beltMax = Column(INT, ForeignKey('Belt.id'))
-    questions = relationship('Question', backref=backref('Quiz', single_parent=True, cascade='delete, delete-orphan'))
 
 
 class Question(Base):
@@ -88,7 +87,7 @@ class Question(Base):
     id = Column(INT, primary_key=True)
     quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
     infoId = Column(INT, ForeignKey('Info.id'))
-    questionNumber = Column(SMALLINT)
+    questionIndex = Column(SMALLINT)
 
 
 class Option(Base):
@@ -96,7 +95,9 @@ class Option(Base):
 
     id = Column(INT, primary_key=True)
     infoId = Column(INT, ForeignKey('Info.id'))
+    quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
     questionId = Column(INT, ForeignKey('Question.id', ondelete="CASCADE"))
+    optionIndex = Column(INT)
 
 
 class Answer(Base):
@@ -105,6 +106,7 @@ class Answer(Base):
     id = Column(INT, primary_key=True)
     quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
     infoId = Column(INT, ForeignKey('Info.id'))
+    questionIndex = Column(INT)
     correct = Column(BOOLEAN)
 
 

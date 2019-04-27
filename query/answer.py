@@ -7,9 +7,9 @@ from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def create(session: 'Session', quiz_id: int, info_id: int, correct: bool, commit=True) -> bool:
+def create(session: 'Session', quiz_id: int, info_id: int, question_index, correct: bool, commit=True) -> bool:
     try:
-        session.add(Answer(quizId=quiz_id, infoId=info_id, correct=correct))
+        session.add(Answer(quizId=quiz_id, infoId=info_id, questionIndex=question_index, correct=correct))
 
         if commit:
             session.commit()
@@ -42,16 +42,9 @@ def delete_by_quiz_id(session: 'Session', quiz_id: int, commit=True) -> bool:
     return False
 
 
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
+def get_answer_count(session: 'Session', quiz_id: int):
+    correct_count: int = session.query(Answer).filter(Answer.correct is True, Answer.quizId == quiz_id).count()
+    incorrect_count: int = session.query(Answer).filter(Answer.correct is False, Answer.quizId == quiz_id).count()
 
-    create(_session, 2, 1, False)
-    create(_session, 2, 2, True)
-    create(_session, 2, 3, True)
-    create(_session, 2, 4, False)
-    create(_session, 2, 5, False)
+    return {"correct_count": correct_count, "incorrect_count": incorrect_count}
 
-    # delete_by_quiz_id(_session, 2)
-
-    result = get_by_quiz_id(_session, 2)
-    [print(r.infoId) for r in result]

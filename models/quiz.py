@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import random
+import time
 from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
 from database import db
-from query import access_token, category, option, info, question, quiz, user
+from query import access_token, category, option, info, question, quiz, user, answer, result
+import config
 
 
 def _new_question(
@@ -17,6 +19,7 @@ def _new_question(
         option_count: int,
         level_min: int,
         level_max: int):
+    """ Creates a question with answer options. Not committed to db """
 
     info_rows = info.get_by_level_and_category(session, category_id, level_min, level_max)
     options_info: List['Info'] = random.sample(population=set(info_rows), k=option_count)
@@ -24,7 +27,8 @@ def _new_question(
 
     question_row: 'Question' = question.create(session, quiz_id, answer_id, question_number, commit=False)
     session.flush()
-    [option.create(session, o.id, question_row.id, commit=False) for o in options_info]
+    [option.create(session, o.id, question_row.quizId, question_row.id, i, commit=False) for i, o in
+     enumerate(options_info)]
 
 
 def new_quiz(
@@ -83,7 +87,23 @@ def new_quiz(
         return {"responseCode": db.ResponseCodes.internal_server_error_500}
 
 
-def next_question(
+def delete_quiz(session: 'Session', quiz_token: str) -> Dict:
+    """
+    Deleting a quiz, including associated questions, options and answers
+    """
+
+    quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+
+    quiz.delete_by_token(session, quiz_token, commit=False)
+    question.delete_by_quiz_id(session, quiz_row.id, commit=False)
+    option.delete_by_quiz_id(session, quiz_row.id, commit=False)
+
+    session.commit()
+
+    return dict()
+
+
+def current_question(
         session: 'Session',
         email: str,
         access_token_string: str,
@@ -93,20 +113,21 @@ def next_question(
 
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
-        next_question_row: 'Question' = question.get_by_quiz_id_and_number(session, quiz_row.id,
-                                                                           quiz_row.currentQuestion)
+        next_question_row: 'Question' = question.get_by_quiz_id_and_index(session,
+                                                                          quiz_row.id,
+                                                                          quiz_row.currentQuestion)
 
         next_question_info_row = info.get_by_id(session, next_question_row.infoId)
         option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
-        option_dicts: List = [info.get_by_id(session, option_row.infoId).key for i, option_row in
-                              enumerate(option_rows)]
+
+        options = [{"index": row.optionIndex, "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
 
         return {
             "responseCode": db.ResponseCodes.ok_200,
             "body": {
-                "questionNumber": quiz_row.currentQuestion,
+                "questionIndex": quiz_row.currentQuestion,
                 "question": next_question_info_row.value,
-                "options": option_dicts
+                "options": options
             }
         }
     except AttributeError as e:
@@ -117,28 +138,88 @@ def next_question(
         return {"responseCode": db.ResponseCodes.not_found_404}
 
 
-def answer_question():
-    raise NotImplementedError
+def answer_question(session: 'Session',
+                    email: str,
+                    access_token_string: str,
+                    quiz_token: str,
+                    option_index: int) -> Dict:
+    if not access_token.validate_by_email(session, email, access_token_string):
+        return {"responseCode": db.ResponseCodes.unauthorized_401}
+
+    quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+    question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
+    option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
+
+    # TODO : fix if currentQuestion becomes zero indexed
+    if quiz_row.currentQuestion < quiz_row.questionCount - 1:
+        answer.create(session=session,
+                      quiz_id=quiz_row.id,
+                      info_id=option_row.infoId,
+                      question_index=quiz_row.currentQuestion,
+                      correct=question_row.infoId == option_row.infoId,
+                      commit=False
+                      )
+        quiz_row.currentQuestion += 1
+        session.commit()
+    else:
+        answer_count: Dict = answer.get_answer_count(session, quiz_row.id)
+        result.create(session,
+                      user_id=quiz_row.userId,
+                      correct_count=answer_count.get('correct_count', -1),
+                      incorrect_count=answer_count.get('incorrect_count', -1),
+                      time_spent=int(time.time()) - quiz_row.timeStart,
+                      belt_min=quiz_row.beltMin,
+                      belt_max=quiz_row.beltMax,
+                      )
+        delete_quiz(session, quiz_row.token)
+
+    if question_row.infoId == option_row.infoId:
+
+        return {'responseCode': db.ResponseCodes.ok_200,
+                'body':
+                    {
+                        'answer': True,
+                        'text': 'Svaret er korrekt'
+                    }
+                }
+    else:
+        return {'responseCode': db.ResponseCodes.ok_200,
+                'body':
+                    {
+                        'answer': False,
+                        'text': f'Svaret er forkert\n'
+                        f'Du har svaret: {info.get_by_id(session, option_row.infoId).key}\n'
+                        f'Det rigtige svar er: {info.get_by_id(session, question_row.infoId).key}'
+                    }
+                }
 
 
 if __name__ == '__main__':
     _session = db.SessionSingleton().get_session()
 
-    print(db.to_json(
-        new_quiz(
-            session=_session,
-            access_token_string="ac33450d-8444-4b3e-ad8b-0e19101811b6",
-            question_count=15,
-            option_count=2,
-            category_id=2,
-            email="soren.seeberg@gmail.com",
-            level_min=3,
-            level_max=8)
-    ))
+    # print(db.to_json(
+    #     new_quiz(
+    #         session=_session,
+    #         access_token_string=config.DEBUG_ACCESS_TOKEN,
+    #         question_count=10,
+    #         option_count=3,
+    #         category_id=2,
+    #         email=config.DEBUG_EMAIL,
+    #         level_min=3,
+    #         level_max=8)
+    # ))
 
-    # print(db.to_json(next_question(
-    #     session=_session,
-    #     email="soren.seeberg@gmail.com",
-    #     access_token_string='99956412-a52d-4e8a-bb49-9c0405aebf2c',
-    #     quiz_token='fc65ca62-f893-4e5d-9a9c-4edd1dba1cce'))
-    # )
+    print(db.to_json(current_question(
+        session=_session,
+        email=config.DEBUG_EMAIL,
+        access_token_string=config.DEBUG_ACCESS_TOKEN,
+        quiz_token=config.DEBUG_QUIZ_TOKEN))
+    )
+
+    print(db.to_json(answer_question(
+        session=_session,
+        email=config.DEBUG_EMAIL,
+        access_token_string=config.DEBUG_ACCESS_TOKEN,
+        quiz_token=config.DEBUG_QUIZ_TOKEN,
+        option_index=random.randrange(3)))
+    )

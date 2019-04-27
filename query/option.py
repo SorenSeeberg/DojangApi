@@ -3,13 +3,12 @@
 
 from typing import List
 from database.tables import Option
-from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def create(session: 'Session', info_id: int, question_id: int, commit=True) -> bool:
+def create(session: 'Session', info_id: int, quiz_id: int, question_id: int, option_index: int, commit=True) -> bool:
     try:
-        session.add(Option(infoId=info_id, questionId=question_id))
+        session.add(Option(infoId=info_id, quizId=quiz_id, questionId=question_id, optionIndex=option_index))
 
         if commit:
             session.commit()
@@ -25,8 +24,30 @@ def get_by_question_id(session: 'Session', question_id: int) -> List[Option]:
         print(e)
 
 
-def delete_by_quiz_id(session: 'Session', question_id: int, commit=True) -> bool:
+def get_by_question_id_and_index(session: 'Session', question_id: int, option_index: int) -> Option:
+    try:
+        return session.query(Option).filter(Option.questionId == question_id, Option.optionIndex == option_index).one()
+    except NoResultFound as e:
+        print(e)
 
+
+def delete_by_quiz_id(session: 'Session', quest_id: int, commit=True) -> bool:
+    try:
+        statement = Option.__table__.delete().where(Option.quizId == quest_id)
+        session.execute(statement)
+
+        if commit:
+            session.commit()
+
+        return True
+
+    except NoResultFound as e:
+        print(e)
+
+    return False
+
+
+def delete_by_question_id(session: 'Session', question_id: int, commit=True) -> bool:
     try:
         statement = Option.__table__.delete().where(Option.questionId == question_id)
         session.execute(statement)
@@ -43,12 +64,7 @@ def delete_by_quiz_id(session: 'Session', question_id: int, commit=True) -> bool
 
 
 if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
+    from database import db
 
-    create(_session, 1, 2)
-    create(_session, 2, 2)
-    create(_session, 3, 2)
-    create(_session, 4, 2)
-
-    result = get_by_question_id(_session, 2)
-    [print(r.infoId) for r in result]
+    _session = db.SessionSingleton().get_session()
+    create(_session, 3, 1, 1, 1)
