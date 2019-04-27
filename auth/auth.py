@@ -11,40 +11,46 @@ from database.db import SessionSingleton
 def sign_in(session: 'Session', email: str, password: str) -> str:
     print(f'Signing in: {email} {password}')
 
-    if not user.email_exists(session, email):
-        raise NoResultFound
+    try:
+        if not user.email_exists(session, email):
+            raise NoResultFound
 
-    user_row: User = user.get_by_email(session, email)
+        user_row: User = user.get_by_email(session, email)
 
-    if user_row.pwdHash == user.hash_password(password):
-        return access_token.create(session, user_row.id)
+        if user_row.pwdHash == user.hash_password(password):
+            return access_token.create(session, user_row.id)
 
-    raise Exceptions.Unauthorized
-
-
-def sign_out(session: 'Session', email: str, token: str) -> bool:
-    print(f'Signing out {email} {token}')
-    if not user.email_exists(session, email):
-        raise NoResultFound
-
-    user_row: User = user.get_by_email(session, email)
-
-    if access_token.validate_by_id(session, user_row.id, token):
-        if access_token.delete(session, user_id=user_row.id, token=token):
-            return True
-
-    raise Exceptions.Unauthorized
+        raise Exceptions.Unauthorized
+    except NoResultFound as e:
+        print(e)
+    except Exceptions.Unauthorized as e:
+        print(e)
 
 
-def sign_out_all(session: 'Session', email: str, token: str) -> bool:
-    print(f'Signing out all {email}')
-    if not user.email_exists(session, email):
-        raise NoResultFound
+def sign_out(session: 'Session', token: str) -> bool:
+    print(f'Signing out {token}')
 
-    user_row: User = user.get_by_email(session, email)
+    try:
+        if access_token.validate(session, token):
+            if access_token.delete(session, token=token):
+                return True
+            else:
+                raise NoResultFound
+        else:
+            raise Exceptions.Unauthorized
+    except Exceptions.Unauthorized as e:
+        print(e)
+    except NoResultFound as e:
+        print(e)
 
-    if access_token.validate_by_id(session, user_row.id, token):
-        if access_token.delete_all_by_user_id(session, user_id=user_row.id):
+    return False
+
+
+def sign_out_all(session: 'Session', token: str) -> bool:
+    user_id: int = access_token.get_user_id_by_token(session, token)
+
+    if access_token.validate(session, token):
+        if access_token.delete_all_by_user_id(session, user_id=user_id):
             return True
 
     raise Exceptions.Unauthorized
@@ -58,6 +64,6 @@ if __name__ == '__main__':
     sign_in(_session, 'soren.seeberg@gmail.com', 'hanadulsetmulighet')
     sign_in(_session, 'sorense@configit.com', '1234')
 
-    # sign_out(_session, 'soren.seeberg@gmail.com', _token)
-    # sign_out(_session, 'soren.seeberg@gmail.com', _token)
-    sign_out_all(_session, 'soren.seeberg@gmail.com', _token)
+    sign_out(_session, _token)
+    sign_out(_session, _token)
+    sign_out_all(_session, _token)

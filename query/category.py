@@ -40,13 +40,9 @@ category_names = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndtekn
 
 
 def create_category_rows() -> None:
+    """ Populate the category names """
 
     _session: 'Session' = SessionSingleton().get_session()
 
     create_many(_session, category_names)
 
-
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
-
-    print(get_by_id(_session, id=3).name)

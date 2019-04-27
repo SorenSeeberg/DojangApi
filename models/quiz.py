@@ -6,9 +6,12 @@ import time
 from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
+
+import response_codes
 from database import db
-from query import access_token, category, option, info, question, quiz, user, answer, result
+from query import access_token, category, option, info, question, quiz, answer, result
 import config
+from response_codes import ResponseKeys
 
 
 def _new_question(
@@ -38,31 +41,30 @@ def new_quiz(
         question_count: int,
         option_count: int,
         category_id: int,
-        email: str,
         level_min: int,
         level_max: int) -> Dict:
 
     """ Creates new quiz with associated questions and options """
 
-    user_id: int = user.get_by_email(session, email).id
+    user_id: int = access_token.get_user_id_by_token(session=session, access_token=access_token_string)
 
     try:
-        if not access_token.validate_by_id(session, user_id, access_token_string):
-            return {"responseCode": db.ResponseCodes.unauthorized_401}
+        if not access_token.validate(session, access_token_string):
+            return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
 
     except ArgumentError as e:
         print(e)
-        return {"responseCode": db.ResponseCodes.bad_request_400}
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.bad_request_400}
 
     try:
         quiz_row: 'Quiz' = quiz.create(
-            session,
-            question_count,
-            option_count,
-            category_id,
-            user_id,
-            level_min,
-            level_max,
+            session=session,
+            question_count=question_count,
+            option_count=option_count,
+            category_id=category_id,
+            user_id=user_id,
+            belt_min=level_min,
+            belt_max=level_max,
             commit=False
         )
 
@@ -74,11 +76,12 @@ def new_quiz(
         session.commit()
 
         return {
-            "responseCode": db.ResponseCodes.created_201,
-            "body": {
+            ResponseKeys.response_code: response_codes.ResponseCodes.created_201,
+            ResponseKeys.body: {
                 "title": category.get_by_id(session, quiz_row.categoryId).name,
                 "quizToken": quiz_row.token,
                 "totalQuestions": quiz_row.questionCount,
+                "currentQuestion": quiz_row.currentQuestion,
                 "optionCount": quiz_row.optionCount,
                 "levelMin": quiz_row.beltMin,
                 "levelMax": quiz_row.beltMax,
@@ -87,12 +90,43 @@ def new_quiz(
 
     except ArgumentError as e:
         print(e)
-        return {"responseCode": db.ResponseCodes.internal_server_error_500}
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.internal_server_error_500}
 
 
-def delete_quiz(session: 'Session', quiz_token: str) -> Dict:
+def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> Dict:
+
+    """ Get a quiz by access token """
+
+    if not access_token.validate(session, access_token_string):
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+
+    try:
+        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+
+        return {
+            ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body: {
+                "title": category.get_by_id(session, quiz_row.categoryId).name,
+                "quizToken": quiz_row.token,
+                "totalQuestions": quiz_row.questionCount,
+                "currentQuestion": quiz_row.currentQuestion,
+                "optionCount": quiz_row.optionCount,
+                "levelMin": quiz_row.beltMin,
+                "levelMax": quiz_row.beltMax,
+            }
+        }
+
+    except ArgumentError as e:
+        print(e)
+        return {"responseCode": response_codes.ResponseCodes.not_found_404}
+
+
+def delete_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> Dict:
 
     """ Deleting a quiz, including associated questions, options and answers """
+
+    if not access_token.validate(session, access_token_string):
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
 
     quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
@@ -107,14 +141,13 @@ def delete_quiz(session: 'Session', quiz_token: str) -> Dict:
 
 def get_current_question(
         session: 'Session',
-        email: str,
         access_token_string: str,
         quiz_token: str) -> Dict:
 
     """ Returns the current question with associated options and quiz info """
 
-    if not access_token.validate_by_email(session, email, access_token_string):
-        return {"responseCode": db.ResponseCodes.unauthorized_401}
+    if not access_token.validate(session, access_token_string):
+        return {"responseCode": response_codes.ResponseCodes.unauthorized_401}
 
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
@@ -130,8 +163,8 @@ def get_current_question(
             "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
 
         return {
-            "responseCode": db.ResponseCodes.ok_200,
-            "body": {
+            ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body: {
                 "questionIndex": quiz_row.currentQuestion,
                 "question": next_question_info_row.value,
                 "options": options
@@ -139,22 +172,21 @@ def get_current_question(
         }
     except AttributeError as e:
         print(e)
-        return {"responseCode": db.ResponseCodes.not_found_404}
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404}
     except NoResultFound as e:
         print(e)
-        return {"responseCode": db.ResponseCodes.not_found_404}
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404}
 
 
 def answer_question(session: 'Session',
-                    email: str,
                     access_token_string: str,
                     quiz_token: str,
                     option_index: int) -> Dict:
 
     """ Accepts an answer and advances the quiz. The correctness of the question is returned """
 
-    if not access_token.validate_by_email(session, email, access_token_string):
-        return {"responseCode": db.ResponseCodes.unauthorized_401}
+    if not access_token.validate(session, access_token_string):
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
 
     quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
@@ -180,20 +212,23 @@ def answer_question(session: 'Session',
                       belt_min=quiz_row.beltMin,
                       belt_max=quiz_row.beltMax,
                       )
-        delete_quiz(session, quiz_row.token)
+        delete_quiz(session=session,
+                    quiz_token=quiz_row.token,
+                    access_token_string=access_token_string
+                    )
 
     if question_row.infoId == option_row.infoId:
 
-        return {'responseCode': db.ResponseCodes.ok_200,
-                'body':
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+                ResponseKeys.body:
                     {
                         'answer': True,
                         'text': 'Svaret er korrekt'
                     }
                 }
     else:
-        return {'responseCode': db.ResponseCodes.ok_200,
-                'body':
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+                ResponseKeys.body:
                     {
                         'answer': False,
                         'text': f'Svaret er forkert\n'
@@ -211,7 +246,6 @@ def _new_quiz(session):
             question_count=10,
             option_count=3,
             category_id=2,
-            email=config.DEBUG_EMAIL,
             level_min=3,
             level_max=8)
     ))
@@ -220,7 +254,6 @@ def _new_quiz(session):
 def _current_question(session):
     print(db.to_json(get_current_question(
         session=session,
-        email=config.DEBUG_EMAIL,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
         quiz_token=config.DEBUG_QUIZ_TOKEN))
     )
@@ -229,15 +262,23 @@ def _current_question(session):
 def _answer_question(session):
     print(db.to_json(answer_question(
         session=session,
-        email=config.DEBUG_EMAIL,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
         quiz_token=config.DEBUG_QUIZ_TOKEN,
         option_index=random.randrange(3)))
     )
 
 
+def _get_quiz(session):
+    print(db.to_json(get_quiz(
+        session=session,
+        quiz_token=config.DEBUG_QUIZ_TOKEN,
+        access_token_string=config.DEBUG_ACCESS_TOKEN))
+    )
+
+
 if __name__ == '__main__':
     _session = db.SessionSingleton().get_session()
-    _new_quiz(_session)
+    # _new_quiz(_session)
+    # _get_quiz(_session)
     _current_question(_session)
-    _answer_question(_session)
+    # _answer_question(_session)

@@ -46,8 +46,3 @@ def create_belt_rows() -> None:
     _session: 'Session' = SessionSingleton().get_session()
 
     create_many(_session, belt_names)
-
-
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
-    print(get_by_id(_session, id=3).name)

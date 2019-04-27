@@ -36,15 +36,8 @@ def get_by_level_and_category(session: 'Session', category_id: int, level_min: i
 
 def create_info_rows() -> None:
     """Populate Info table"""
+
     _infos = extract_info()
     _session: 'Session' = SessionSingleton().get_session()
 
     create_many(_session, _infos)
-
-
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
-
-    # print(get_by_id(_session, info_id=3).key)
-
-    [print(row.key, row.value) for row in get_by_level_and_category(_session, 1, 5, 7)]

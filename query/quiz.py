@@ -3,7 +3,6 @@
 
 from uuid import uuid4
 from database.tables import Quiz
-from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -81,7 +80,3 @@ def delete_by_token(session: 'Session', quiz_token: str, commit=True) -> bool:
         print(e)
 
     return False
-
-
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()

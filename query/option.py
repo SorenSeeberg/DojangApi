@@ -61,10 +61,3 @@ def delete_by_question_id(session: 'Session', question_id: int, commit=True) -> 
         print(e)
 
     return False
-
-
-if __name__ == '__main__':
-    from database import db
-
-    _session = db.SessionSingleton().get_session()
-    create(_session, 3, 1, 1, 1)

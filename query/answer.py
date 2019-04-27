@@ -3,7 +3,6 @@
 
 from typing import List
 from database.tables import Answer
-from database import db
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -47,9 +46,3 @@ def get_answer_count(session: 'Session', quiz_id: int):
     incorrect_count: int = session.query(Answer).filter(Answer.correct == False, Answer.quizId == quiz_id).count()
 
     return {"correct_count": correct_count, "incorrect_count": incorrect_count}
-
-
-if __name__ == '__main__':
-    _session = db.SessionSingleton().get_session()
-
-    print(get_answer_count(_session, 1))
