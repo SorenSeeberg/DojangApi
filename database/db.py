@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import create_engine
 from config import DB_CONNECTION_STRING, TEST_DB_CONNECTION_STRING
 from sqlalchemy.orm import sessionmaker

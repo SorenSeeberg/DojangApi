@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import random
 from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
@@ -121,21 +124,21 @@ def answer_question():
 if __name__ == '__main__':
     _session = db.SessionSingleton().get_session()
 
-    # print(db.to_json(
-    #     new_quiz(
-    #         session=_session,
-    #         access_token_string="99956412-a52d-4e8a-bb49-9c0405aebf2c",
-    #         question_count=30,
-    #         option_count=3,
-    #         category_id=2,
-    #         email="soren.seeberg@gmail.com",
-    #         level_min=3,
-    #         level_max=8)
-    # ))
+    print(db.to_json(
+        new_quiz(
+            session=_session,
+            access_token_string="ac33450d-8444-4b3e-ad8b-0e19101811b6",
+            question_count=15,
+            option_count=2,
+            category_id=2,
+            email="soren.seeberg@gmail.com",
+            level_min=3,
+            level_max=8)
+    ))
 
-    print(db.to_json(next_question(
-        session=_session,
-        email="soren.seeberg@gmail.com",
-        access_token_string='99956412-a52d-4e8a-bb49-9c0405aebf2c',
-        quiz_token='fc65ca62-f893-4e5d-9a9c-4edd1dba1cce'))
-    )
+    # print(db.to_json(next_question(
+    #     session=_session,
+    #     email="soren.seeberg@gmail.com",
+    #     access_token_string='99956412-a52d-4e8a-bb49-9c0405aebf2c',
+    #     quiz_token='fc65ca62-f893-4e5d-9a9c-4edd1dba1cce'))
+    # )

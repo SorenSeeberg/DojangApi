@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from database.db import SessionSingleton
 from query.access_token import create as create_access_token
 from database.tables import create_tables

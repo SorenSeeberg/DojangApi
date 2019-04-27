@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+
 class _Exception(Exception):
 
     def __init__(self, msg: str):

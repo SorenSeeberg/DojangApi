@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from typing import List
 from database.tables import Option
 from database.db import SessionSingleton

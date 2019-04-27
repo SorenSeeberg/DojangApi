@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from database.tables import User
 from database.db import SessionSingleton
 from hashlib import sha3_256

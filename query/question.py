@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from database.tables import Question
 from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound

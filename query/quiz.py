@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from uuid import uuid4
 from database.tables import Quiz
 from database.db import SessionSingleton
@@ -48,10 +51,12 @@ def get_by_token(session: 'Session', token: str) -> Quiz:
         print(e)
 
 
-def delete_by_id(session: 'Session', quiz_id: int, commit=False) -> bool:
+def delete_by_id(session: 'Session', quiz_id: int, commit=True) -> bool:
     try:
-        statement = Quiz.__table__.delete().where(Quiz.id == quiz_id)
-        session.execute(statement)
+        # statement = Quiz.__table__.delete().where(Quiz.id == quiz_id)
+        # session.execute(statement)
+
+        session.delete(session.query(Quiz).get(quiz_id))
 
         if commit:
             session.commit()
@@ -66,7 +71,7 @@ def delete_by_id(session: 'Session', quiz_id: int, commit=False) -> bool:
 
 if __name__ == '__main__':
     _session: 'Session' = SessionSingleton().get_session()
-    quiz = create(session=_session, question_count=20, option_count=5, title='hello', user_id=1, belt_min=1, belt_max=5)
+    # quiz = create(session=_session, question_count=20, option_count=5, title='hello', user_id=1, belt_min=1, belt_max=5)
 
-    print(quiz.id, quiz.token)
-    # print(delete_by_id(_session, quiz.id))
+    # print(quiz.id, quiz.token)
+    print(delete_by_id(_session, 1))

@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from database.tables import User
 from query import access_token, user
 from sqlalchemy.orm.exc import NoResultFound

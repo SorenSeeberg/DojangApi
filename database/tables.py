@@ -1,8 +1,12 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 import time
 from uuid import uuid4
 from sqlalchemy import MetaData, Column
 from sqlalchemy import SMALLINT, INT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from config import *
 from database.db import EngineSingleton
@@ -75,14 +79,15 @@ class Quiz(Base):
     userId = Column(INT, ForeignKey('User.id'))
     beltMin = Column(INT, ForeignKey('Belt.id'))
     beltMax = Column(INT, ForeignKey('Belt.id'))
+    questions = relationship('Question', backref=backref('Quiz', single_parent=True, cascade='delete, delete-orphan'))
 
 
 class Question(Base):
     __tablename__ = "Question"
 
     id = Column(INT, primary_key=True)
-    quizId = Column(INT, ForeignKey('Quiz.id'))
-    infoId = Column(INT, ForeignKey('Info.id', ondelete="CASCADE"))
+    quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
+    infoId = Column(INT, ForeignKey('Info.id'))
     questionNumber = Column(SMALLINT)
 
 
