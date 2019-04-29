@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+from sqlalchemy.exc import IntegrityError
 from database.tables import Option
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -13,15 +14,19 @@ def create(session: 'Session', info_id: int, quiz_id: int, question_id: int, opt
         if commit:
             session.commit()
         return True
-    except:
-        return False
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def get_by_question_id(session: 'Session', question_id: int) -> List[Option]:
     try:
         return session.query(Option).filter(Option.questionId == question_id)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def get_by_question_id_and_index(session: 'Session', question_id: int, option_index: int) -> Option:
@@ -41,10 +46,10 @@ def delete_by_quiz_id(session: 'Session', quest_id: int, commit=True) -> bool:
 
         return True
 
-    except NoResultFound as e:
-        print(e)
-
-    return False
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def delete_by_question_id(session: 'Session', question_id: int, commit=True) -> bool:
@@ -57,7 +62,7 @@ def delete_by_question_id(session: 'Session', question_id: int, commit=True) -> 
 
         return True
 
-    except NoResultFound as e:
-        print(e)
-
-    return False
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception

@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from sqlalchemy.exc import IntegrityError
 from database.tables import Result
 from sqlalchemy.orm.exc import NoResultFound
 
 
 def create(session: 'Session',
            user_id: int,
+           quiz_token: str,
            correct_count: int,
            incorrect_count: int,
            time_spent: int,
@@ -15,6 +17,7 @@ def create(session: 'Session',
            commit=True) -> bool:
     try:
         session.add(Result(userId=user_id,
+                           quizToken=quiz_token,
                            correctCount=correct_count,
                            incorrectCount=incorrect_count,
                            timeSpent=time_spent,
@@ -25,12 +28,26 @@ def create(session: 'Session',
         if commit:
             session.commit()
         return True
-    except:
-        return False
+
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def get_by_id(session: 'Session', result_id: int) -> Result:
     try:
         return session.query(Result).get(result_id)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
+
+
+def get_by_quiz_token(session: 'Session', token: str) -> Result:
+    try:
+        return session.query(Result).filter(Result.quizToken == token).one()
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception

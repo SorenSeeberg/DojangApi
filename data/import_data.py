@@ -3,8 +3,8 @@
 
 import csv
 import os
-from query.category import category_names
-from query.belt import belt_names
+from query.category import CATEGORY_NAMES
+from query.belt import BELT_NAMES
 from typing import List, Dict
 
 # Headers
@@ -15,8 +15,8 @@ def list_to_dict(labels: List[str]) -> Dict:
     return {key.lower(): value + 1 for (value, key) in enumerate(labels)}
 
 
-category_names_dict = list_to_dict(category_names)
-belt_names_dict = list_to_dict(belt_names)
+category_names_dict = list_to_dict(CATEGORY_NAMES)
+belt_names_dict = list_to_dict(BELT_NAMES)
 
 
 def extract_row(row) -> List:

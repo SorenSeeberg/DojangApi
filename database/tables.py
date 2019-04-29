@@ -6,10 +6,8 @@ from uuid import uuid4
 from sqlalchemy import MetaData, Column
 from sqlalchemy import SMALLINT, INT, BOOLEAN, VARCHAR, CHAR, NVARCHAR
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from config import *
-from database.db import EngineSingleton
 
 Base = declarative_base()
 meta = MetaData()
@@ -70,6 +68,7 @@ class Quiz(Base):
 
     id = Column(INT, primary_key=True)
     token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), unique=True)
+    complete = Column(BOOLEAN, default=False)
     questionCount = Column(INT)
     optionCount = Column(INT)
     currentQuestion = Column(INT)
@@ -114,6 +113,7 @@ class Result(Base):
     __tablename__ = "Result"
 
     id = Column(INT, primary_key=True)
+    quizToken = Column(CHAR(UUID_LENGTH), unique=True)
     userId = Column(INT, ForeignKey('User.id'))
     correctCount = Column(INT)
     incorrectCount = Column(INT)
@@ -142,7 +142,6 @@ class ResultCategory(Base):
 
 # Database Tables Init
 
-def create_tables() -> None:
-    engine = EngineSingleton().get_engine()
+def setup(engine) -> None:
     Base.metadata.create_all(engine)
 

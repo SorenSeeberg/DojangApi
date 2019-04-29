@@ -3,7 +3,7 @@
 
 from typing import List
 from database.tables import Category
-from database.db import SessionSingleton
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -14,8 +14,10 @@ def create(session: 'Session', category_name: str, commit=True) -> bool:
         if commit:
             session.commit()
         return True
-    except:
-        return False
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def create_many(session: 'Session', category_names: List[str], commit=True) -> bool:
@@ -25,24 +27,26 @@ def create_many(session: 'Session', category_names: List[str], commit=True) -> b
         if commit:
             session.commit()
         return True
-    except:
-        return False
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def get_by_id(session: 'Session', id: int) -> Category:
     try:
         return session.query(Category).get(id)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
-category_names = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal', 'Teori']
+CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal', 'Teori']
 
 
-def create_category_rows() -> None:
+def setup(session: 'Session') -> None:
     """ Populate the category names """
 
-    _session: 'Session' = SessionSingleton().get_session()
-
-    create_many(_session, category_names)
+    create_many(session, CATEGORY_NAMES, commit=False)
 

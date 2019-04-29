@@ -14,22 +14,28 @@ def create(session: 'Session', quiz_id: int, info_id: int, question_index: int, 
         if commit:
             session.commit()
         return question_row
-    except IntegrityError as e:
-        print(e)
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def get_by_id(session: 'Session', question_id: int) -> Question:
     try:
         return session.query(Question).get(question_id)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def get_by_quiz_id_and_index(session: 'Session', quiz_id: int, question_index: int) -> Question:
     try:
         return session.query(Question).filter(Question.quizId == quiz_id, Question.questionIndex == question_index).one()
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def delete_by_quiz_id(session: 'Session', quiz_id: int, commit=True) -> bool:
@@ -42,10 +48,10 @@ def delete_by_quiz_id(session: 'Session', quiz_id: int, commit=True) -> bool:
 
         return True
 
-    except NoResultFound as e:
-        print(e)
-
-    return False
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def delete_by_id(session: 'Session', question_id: int, commit=True) -> bool:
@@ -58,7 +64,7 @@ def delete_by_id(session: 'Session', question_id: int, commit=True) -> bool:
 
         return True
 
-    except NoResultFound as e:
-        print(e)
-
-    return False
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception

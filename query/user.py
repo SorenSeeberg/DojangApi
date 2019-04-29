@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from database.tables import User
-from database.db import SessionSingleton
 from hashlib import sha3_256
 from exceptions import Exceptions
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm.exc import MultipleResultsFound
 from sqlalchemy.exc import IntegrityError
 
 
@@ -48,31 +46,31 @@ def create_admin(session: 'Session',
             session.commit()
 
         return user_row
-    except Exceptions.DuplicateEmailError as e:
-        print(e)
-    except IntegrityError as e:
-        print(e)
+    except Exceptions.DuplicateEmailError:
+        raise Exceptions.DuplicateEmailError
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def get_by_email(session: 'Session', email: str) -> 'User':
     try:
         return session.query(User).filter(User.email == email).one()
-    except MultipleResultsFound as e:
-        print(e)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
 
 
 def get_by_id(session: 'Session', id: int) -> 'User':
     try:
         return session.query(User).get(id)
-    except MultipleResultsFound as e:
-        print(e)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
 
 
 def update_password(session: 'Session', email: str, new_password_value: str, commit=True) -> bool:
+    # TODO: setup try-except
+
     user_row = get_by_email(session, email)
 
     if user_row:
@@ -87,6 +85,8 @@ def update_password(session: 'Session', email: str, new_password_value: str, com
 
 
 def update_confirmed(session: 'Session', email: str, confirmed_value: bool, commit=True) -> bool:
+    # TODO: setup try-except
+
     user_row = get_by_email(session, email)
 
     if user_row:
@@ -101,6 +101,8 @@ def update_confirmed(session: 'Session', email: str, confirmed_value: bool, comm
 
 
 def delete(session: 'Session', email: str, commit=True) -> bool:
+    # TODO: setup try-except
+
     user_row = get_by_email(session, email)
 
     if user_row:
@@ -115,13 +117,13 @@ def delete(session: 'Session', email: str, commit=True) -> bool:
 
 
 def email_exists(session: 'Session', email: str) -> bool:
+    # TODO: setup try-except
+
     result = session.query(User).filter(User.email == email).count()
 
     return False if result == 0 else True
 
 
-def create_user_rows() -> None:
-    _session: 'Session' = SessionSingleton().get_session()
-    create_admin(_session, commit=False)
-    create(_session, 'sorense@configit.com', '1234', commit=False)
-    _session.commit()
+def setup(session: 'Session') -> None:
+    create_admin(session, commit=False)
+    create(session, 'sorense@configit.com', '1234', commit=False)

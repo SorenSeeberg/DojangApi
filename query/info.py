@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
+from sqlalchemy.exc import IntegrityError
 from database.tables import Info
-from database.db import SessionSingleton
 from sqlalchemy.orm.exc import NoResultFound
 from data.import_data import extract_info
 
@@ -15,29 +15,35 @@ def create_many(session: 'Session', infos: List[List], commit=True) -> bool:
         if commit:
             session.commit()
         return True
-    except:
-        return False
+
+    except IntegrityError:
+        raise IntegrityError
+    except Exception:
+        raise Exception
 
 
 def get_by_id(session: 'Session', info_id: int) -> Info:
     try:
         return session.query(Info).get(info_id)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
 def get_by_level_and_category(session: 'Session', category_id: int, level_min: int, level_max: int) -> List[Info]:
     try:
         return session.query(Info).filter(Info.categoryId == category_id, Info.beltId >= level_min,
                                           Info.beltId <= level_max)
-    except NoResultFound as e:
-        print(e)
+    except NoResultFound:
+        raise NoResultFound
+    except Exception:
+        raise Exception
 
 
-def create_info_rows() -> None:
+def setup(session: 'Session') -> None:
     """Populate Info table"""
 
     _infos = extract_info()
-    _session: 'Session' = SessionSingleton().get_session()
 
-    create_many(_session, _infos)
+    create_many(session, _infos, commit=False)

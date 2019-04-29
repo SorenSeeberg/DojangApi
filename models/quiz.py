@@ -6,7 +6,7 @@ import time
 from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
-
+from exceptions import Exceptions
 import response_codes
 from database import db
 from query import access_token, category, option, info, question, quiz, answer, result
@@ -33,6 +33,37 @@ def _new_question(
     session.flush()
     [option.create(session, o.id, question_row.quizId, question_row.id, i, commit=False) for i, o in
      enumerate(options_info)]
+
+
+def _clean_up_quiz(session: 'Session', quiz_token: str, access_token_string: str, commit=True) -> bool:
+
+    """ Deleting a quiz, including associated questions, options and answers """
+
+    if not access_token.validate(session, access_token_string):
+        raise Exceptions.Unauthorized
+
+    try:
+        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+
+        quiz.delete_by_token(session, quiz_token, commit=False)
+        question.delete_by_quiz_id(session, quiz_row.id, commit=False)
+        option.delete_by_quiz_id(session, quiz_row.id, commit=False)
+
+        if commit:
+            session.commit()
+
+        return True
+
+    except Exceptions.Unauthorized as e:
+        print(e)
+
+    except NoResultFound:
+        print('NoResultFound: Quiz not found')
+
+    except Exception as e:
+        print(e)
+
+    return False
 
 
 def new_quiz(
@@ -108,6 +139,7 @@ def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> D
             ResponseKeys.body: {
                 "title": category.get_by_id(session, quiz_row.categoryId).name,
                 "quizToken": quiz_row.token,
+                "complete": quiz_row.complete,
                 "totalQuestions": quiz_row.questionCount,
                 "currentQuestion": quiz_row.currentQuestion,
                 "optionCount": quiz_row.optionCount,
@@ -121,24 +153,6 @@ def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> D
         return {"responseCode": response_codes.ResponseCodes.not_found_404}
 
 
-def delete_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> Dict:
-
-    """ Deleting a quiz, including associated questions, options and answers """
-
-    if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
-
-    quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
-
-    quiz.delete_by_token(session, quiz_token, commit=False)
-    question.delete_by_quiz_id(session, quiz_row.id, commit=False)
-    option.delete_by_quiz_id(session, quiz_row.id, commit=False)
-
-    session.commit()
-
-    return dict()
-
-
 def get_current_question(
         session: 'Session',
         access_token_string: str,
@@ -147,10 +161,18 @@ def get_current_question(
     """ Returns the current question with associated options and quiz info """
 
     if not access_token.validate(session, access_token_string):
-        return {"responseCode": response_codes.ResponseCodes.unauthorized_401}
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
 
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+
+        if not quiz_row:
+            raise NoResultFound
+
+        """ Checking if the quiz has been completed """
+        if quiz_row.complete:
+            raise Exceptions.QuizCompleteError
+
         next_question_row: 'Question' = question.get_by_quiz_id_and_index(session,
                                                                           quiz_row.id,
                                                                           quiz_row.currentQuestion)
@@ -170,12 +192,18 @@ def get_current_question(
                 "options": options
             }
         }
-    except AttributeError as e:
-        print(e)
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404}
-    except NoResultFound as e:
-        print(e)
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404}
+
+    except Exceptions.QuizCompleteError:
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+                'message': 'No more questions. Quiz has been completed.'}
+
+    except AttributeError:
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+                'message': 'Quiz not found'}
+
+    except NoResultFound:
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+                'message': 'Quiz not found'}
 
 
 def answer_question(session: 'Session',
@@ -184,41 +212,57 @@ def answer_question(session: 'Session',
                     option_index: int) -> Dict:
 
     """ Accepts an answer and advances the quiz. The correctness of the question is returned """
-
     if not access_token.validate(session, access_token_string):
         return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+    try:
+        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
-    quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+        if not quiz_row:
+            raise NoResultFound
+
+    except NoResultFound:
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+                'message': 'Quiz not found'}
+
+    """ Checking if the quiz has been completed """
+    if quiz_row.complete:
+        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+                'message': 'No more questions. Quiz has been completed.'}
+
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
     option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
 
-    if quiz_row.currentQuestion < quiz_row.questionCount:
-        answer.create(session=session,
-                      quiz_id=quiz_row.id,
-                      info_id=option_row.infoId,
-                      question_index=quiz_row.currentQuestion,
-                      correct=question_row.infoId == option_row.infoId,
-                      commit=False
-                      )
+    """ Creating answer row  """
+    answer.create(session=session,
+                  quiz_id=quiz_row.id,
+                  info_id=option_row.infoId,
+                  question_index=quiz_row.currentQuestion,
+                  correct=question_row.infoId == option_row.infoId,
+                  commit=False
+                  )
+
+    """ Advancing or concluding quiz """
+    if quiz_row.currentQuestion + 1 < quiz_row.questionCount:
         quiz_row.currentQuestion += 1
-        session.commit()
+
     else:
         answer_count: Dict = answer.get_answer_count(session, quiz_row.id)
         result.create(session,
                       user_id=quiz_row.userId,
+                      quiz_token=quiz_row.token,
                       correct_count=answer_count.get('correct_count', -1),
                       incorrect_count=answer_count.get('incorrect_count', -1),
                       time_spent=int(time.time()) - quiz_row.timeStart,
                       belt_min=quiz_row.beltMin,
                       belt_max=quiz_row.beltMax,
+                      commit=False
                       )
-        delete_quiz(session=session,
-                    quiz_token=quiz_row.token,
-                    access_token_string=access_token_string
-                    )
+        quiz_row.complete = True
 
+    session.commit()
+
+    """ returns the answer result. Was it right or wrong? """
     if question_row.infoId == option_row.infoId:
-
         return {ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
                 ResponseKeys.body:
                     {
@@ -252,6 +296,7 @@ def _new_quiz(session):
 
 
 def _current_question(session):
+    print('CURRENT QUESTION')
     print(db.to_json(get_current_question(
         session=session,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
@@ -260,6 +305,7 @@ def _current_question(session):
 
 
 def _answer_question(session):
+    print('ANSWER QUESTION')
     print(db.to_json(answer_question(
         session=session,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
@@ -269,7 +315,17 @@ def _answer_question(session):
 
 
 def _get_quiz(session):
+    print('GET QUIZ')
     print(db.to_json(get_quiz(
+        session=session,
+        quiz_token=config.DEBUG_QUIZ_TOKEN,
+        access_token_string=config.DEBUG_ACCESS_TOKEN))
+    )
+
+
+def _delete_quiz(session):
+    print('DELETE QUIZ')
+    print(db.to_json(_clean_up_quiz(
         session=session,
         quiz_token=config.DEBUG_QUIZ_TOKEN,
         access_token_string=config.DEBUG_ACCESS_TOKEN))
@@ -278,7 +334,12 @@ def _get_quiz(session):
 
 if __name__ == '__main__':
     _session = db.SessionSingleton().get_session()
+
+    # for x in range(100):
+    #     _new_quiz(_session)
+
     # _new_quiz(_session)
     # _get_quiz(_session)
     _current_question(_session)
-    # _answer_question(_session)
+    _answer_question(_session)
+    # _delete_quiz(_session)
