@@ -1,13 +1,15 @@
 class ResponseKeys:
-    response_code = 'responseCode'
+    status = 'status'
     body = 'body'
 
+
+# https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
 class ResponseCodes:
     ok_200 = 200
     created_201 = 201
     accepted_202 = 202
-    no_content_204 = 204
+    ok_no_content_204 = 204
     bad_request_400 = 400
     unauthorized_401 = 401
     forbidden_403 = 403

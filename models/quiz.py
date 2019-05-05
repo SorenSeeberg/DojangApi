@@ -81,11 +81,11 @@ def new_quiz(
 
     try:
         if not access_token.validate(session, access_token_string):
-            return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+            return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
 
     except ArgumentError as e:
         print(e)
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.bad_request_400}
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
     try:
         quiz_row: 'Quiz' = quiz.create(
@@ -107,7 +107,7 @@ def new_quiz(
         session.commit()
 
         return {
-            ResponseKeys.response_code: response_codes.ResponseCodes.created_201,
+            ResponseKeys.status: response_codes.ResponseCodes.created_201,
             ResponseKeys.body: {
                 "title": category.get_by_id(session, quiz_row.categoryId).name,
                 "quizToken": quiz_row.token,
@@ -121,7 +121,7 @@ def new_quiz(
 
     except ArgumentError as e:
         print(e)
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.internal_server_error_500}
+        return {ResponseKeys.status: response_codes.ResponseCodes.internal_server_error_500}
 
 
 def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> Dict:
@@ -129,13 +129,13 @@ def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> D
     """ Get a quiz by access token """
 
     if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
 
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
         return {
-            ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
             ResponseKeys.body: {
                 "title": category.get_by_id(session, quiz_row.categoryId).name,
                 "quizToken": quiz_row.token,
@@ -161,7 +161,7 @@ def get_current_question(
     """ Returns the current question with associated options and quiz info """
 
     if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
 
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
@@ -185,7 +185,7 @@ def get_current_question(
             "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
 
         return {
-            ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
             ResponseKeys.body: {
                 "questionIndex": quiz_row.currentQuestion,
                 "question": next_question_info_row.value,
@@ -194,15 +194,15 @@ def get_current_question(
         }
 
     except Exceptions.QuizCompleteError:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
                 'message': 'No more questions. Quiz has been completed.'}
 
     except AttributeError:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
                 'message': 'Quiz not found'}
 
     except NoResultFound:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
                 'message': 'Quiz not found'}
 
 
@@ -213,7 +213,7 @@ def answer_question(session: 'Session',
 
     """ Accepts an answer and advances the quiz. The correctness of the question is returned """
     if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.unauthorized_401}
+        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
@@ -221,12 +221,12 @@ def answer_question(session: 'Session',
             raise NoResultFound
 
     except NoResultFound:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
                 'message': 'Quiz not found'}
 
     """ Checking if the quiz has been completed """
     if quiz_row.complete:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.not_found_404,
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
                 'message': 'No more questions. Quiz has been completed.'}
 
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
@@ -263,7 +263,7 @@ def answer_question(session: 'Session',
 
     """ returns the answer result. Was it right or wrong? """
     if question_row.infoId == option_row.infoId:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+        return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
                 ResponseKeys.body:
                     {
                         'answer': True,
@@ -271,7 +271,7 @@ def answer_question(session: 'Session',
                     }
                 }
     else:
-        return {ResponseKeys.response_code: response_codes.ResponseCodes.ok_200,
+        return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
                 ResponseKeys.body:
                     {
                         'answer': False,
