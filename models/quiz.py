@@ -124,7 +124,7 @@ def new_quiz(
         return {ResponseKeys.status: response_codes.ResponseCodes.internal_server_error_500}
 
 
-def get_quiz(session: 'Session', quiz_token: str, access_token_string: str) -> Dict:
+def get_quiz(session: 'Session', access_token_string: str, quiz_token: str) -> Dict:
 
     """ Get a quiz by access token """
 
@@ -318,8 +318,8 @@ def _get_quiz(session):
     print('GET QUIZ')
     print(db.to_json(get_quiz(
         session=session,
-        quiz_token=config.DEBUG_QUIZ_TOKEN,
-        access_token_string=config.DEBUG_ACCESS_TOKEN))
+        access_token_string=config.DEBUG_ACCESS_TOKEN,
+        quiz_token=config.DEBUG_QUIZ_TOKEN))
     )
 
 
