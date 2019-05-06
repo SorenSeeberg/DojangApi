@@ -24,10 +24,10 @@ def create(session: 'Session', email: str, password: str, commit=True) -> User:
             session.commit()
 
         return user_row
-    except Exceptions.DuplicateEmailError as e:
-        print(e)
-    except IntegrityError as e:
-        print(e)
+    except Exceptions.DuplicateEmailError:
+        raise Exceptions.DuplicateEmailError
+    except IntegrityError:
+        raise IntegrityError
 
 
 def create_admin(session: 'Session',
@@ -127,3 +127,11 @@ def email_exists(session: 'Session', email: str) -> bool:
 def setup(session: 'Session') -> None:
     create_admin(session, commit=False)
     create(session, 'sorense@configit.com', '1234', commit=False)
+
+
+if __name__ == '__main__':
+    from database import db
+
+    _session = db.SessionSingleton().get_session()
+    user = get_by_id(_session, 1)
+    print(user.email)

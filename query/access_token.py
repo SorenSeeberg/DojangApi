@@ -15,6 +15,13 @@ def get_by_token(session, access_token: str) -> AccessToken:
         print(e)
 
 
+def get_by_user_id(session, user_id: int) -> AccessToken:
+    try:
+        return session.query(AccessToken).filter(AccessToken.userId == user_id).one()
+    except NoResultFound as e:
+        print(e)
+
+
 def get_user_id_by_token(session, access_token: str) -> int:
     try:
         return get_by_token(session, access_token).userId
@@ -44,9 +51,11 @@ def validate(session: 'Session', access_token: str) -> bool:
         session.query(AccessToken).filter(AccessToken.token == access_token).one()
         return True
     except NoResultFound:
-        raise NoResultFound
+        # raise NoResultFound
+        return False
     except Exception:
-        raise Exception
+        # raise Exception
+        return False
 
 
 def delete(session: 'Session', token: str, commit=True) -> bool:
@@ -82,3 +91,9 @@ def delete_all_by_user_id(session: 'Session', user_id: int, commit=True) -> bool
     except Exception:
         raise Exception
 
+
+if __name__ == '__main__':
+    from database import db
+
+    _session = db.SessionSingleton().get_session()
+    print(get_by_user_id(_session, 1).token)

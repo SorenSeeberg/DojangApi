@@ -10,6 +10,7 @@ from exceptions import Exceptions
 import response_codes
 from database import db
 from query import access_token, category, option, info, question, quiz, answer, result
+from query import validate_input_data
 import config
 from response_codes import ResponseKeys
 
@@ -22,7 +23,6 @@ def _new_question(
         option_count: int,
         level_min: int,
         level_max: int):
-
     """ Creates a question with answer options. Not committed to db """
 
     info_rows = info.get_by_level_and_category(session, category_id, level_min, level_max)
@@ -36,7 +36,6 @@ def _new_question(
 
 
 def _clean_up_quiz(session: 'Session', quiz_token: str, access_token_string: str, commit=True) -> bool:
-
     """ Deleting a quiz, including associated questions, options and answers """
 
     if not access_token.validate(session, access_token_string):
@@ -69,14 +68,25 @@ def _clean_up_quiz(session: 'Session', quiz_token: str, access_token_string: str
 def new_quiz(
         session: 'Session',
         access_token_string: str,
-        question_count: int,
-        option_count: int,
-        category_id: int,
-        level_min: int,
-        level_max: int) -> Dict:
+        data: Dict) -> Dict:
+    input_schema = {
+        "questionCount": [int, True],
+        "optionCount": [int, True],
+        "categoryId": [int, True],
+        "levelMin": [int, True],
+        "levelMax": [int, True]
+    }
+
+    if validate_input_data(data, input_schema):
+        question_count: int = data.get('questionCount')
+        option_count: int = data.get('optionCount')
+        category_id: int = data.get('categoryId')
+        level_min: int = data.get('levelMin')
+        level_max: int = data.get('levelMax')
+    else:
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
     """ Creates new quiz with associated questions and options """
-
     user_id: int = access_token.get_user_id_by_token(session=session, access_token=access_token_string)
 
     try:
@@ -125,7 +135,6 @@ def new_quiz(
 
 
 def get_quiz(session: 'Session', access_token_string: str, quiz_token: str) -> Dict:
-
     """ Get a quiz by access token """
 
     if not access_token.validate(session, access_token_string):
@@ -157,7 +166,6 @@ def get_current_question(
         session: 'Session',
         access_token_string: str,
         quiz_token: str) -> Dict:
-
     """ Returns the current question with associated options and quiz info """
 
     if not access_token.validate(session, access_token_string):
@@ -209,9 +217,19 @@ def get_current_question(
 def answer_question(session: 'Session',
                     access_token_string: str,
                     quiz_token: str,
-                    option_index: int) -> Dict:
-
+                    data: Dict) -> Dict:
     """ Accepts an answer and advances the quiz. The correctness of the question is returned """
+
+    """ Validating input data """
+    input_schema = {
+        "optionIndex": [int, True],
+    }
+
+    if validate_input_data(data, input_schema):
+        option_index: int = data.get('optionIndex')
+    else:
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
+
     if not access_token.validate(session, access_token_string):
         return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
     try:
@@ -287,16 +305,18 @@ def _new_quiz(session):
         new_quiz(
             session=session,
             access_token_string=config.DEBUG_ACCESS_TOKEN,
-            question_count=10,
-            option_count=3,
-            category_id=2,
-            level_min=3,
-            level_max=8)
+            data={
+                'questionCount': 10,
+                'optionCount': 3,
+                'categoryId': 2,
+                'levelMin': 3,
+                'levelMax': 8
+            }
+        )
     ))
 
 
 def _current_question(session):
-    print('CURRENT QUESTION')
     print(db.to_json(get_current_question(
         session=session,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
@@ -305,17 +325,18 @@ def _current_question(session):
 
 
 def _answer_question(session):
-    print('ANSWER QUESTION')
     print(db.to_json(answer_question(
         session=session,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
         quiz_token=config.DEBUG_QUIZ_TOKEN,
-        option_index=random.randrange(3)))
+        data={
+            'optionIndex': random.randrange(3)
+        }
     )
+    ))
 
 
 def _get_quiz(session):
-    print('GET QUIZ')
     print(db.to_json(get_quiz(
         session=session,
         access_token_string=config.DEBUG_ACCESS_TOKEN,
@@ -324,7 +345,6 @@ def _get_quiz(session):
 
 
 def _delete_quiz(session):
-    print('DELETE QUIZ')
     print(db.to_json(_clean_up_quiz(
         session=session,
         quiz_token=config.DEBUG_QUIZ_TOKEN,
@@ -338,8 +358,8 @@ if __name__ == '__main__':
     # for x in range(100):
     #     _new_quiz(_session)
 
-    # _new_quiz(_session)
+    _new_quiz(_session)
     # _get_quiz(_session)
-    _current_question(_session)
-    _answer_question(_session)
+    # _current_question(_session)
+    # _answer_question(_session)
     # _delete_quiz(_session)
