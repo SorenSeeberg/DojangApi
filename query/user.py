@@ -12,7 +12,7 @@ def hash_password(password) -> str:
     return str(sha3_256(password.encode()).hexdigest())
 
 
-def create(session: 'Session', email: str, password: str, commit=True) -> User:
+def create(session: 'Session', email: str, password: str, commit=True) -> bool:
     try:
         if email_exists(session, email):
             raise Exceptions.DuplicateEmailError
@@ -23,18 +23,14 @@ def create(session: 'Session', email: str, password: str, commit=True) -> User:
         if commit:
             session.commit()
 
-        return user_row
+        return True
     except Exceptions.DuplicateEmailError:
-        raise Exceptions.DuplicateEmailError
+        return False
     except IntegrityError:
-        raise IntegrityError
+        return False
 
 
-def create_admin(session: 'Session',
-                 email: str = 'soren.seeberg@gmail.com',
-                 password: str = 'hanadulsetmulighet',
-                 commit=True) -> User:
-
+def create_admin(session: 'Session', email: str, password: str, commit=True) -> bool:
     try:
         if email_exists(session, email):
             raise Exceptions.DuplicateEmailError
@@ -45,13 +41,13 @@ def create_admin(session: 'Session',
         if commit:
             session.commit()
 
-        return user_row
+        return True
     except Exceptions.DuplicateEmailError:
-        raise Exceptions.DuplicateEmailError
+        return False
     except IntegrityError:
-        raise IntegrityError
+        return False
     except Exception:
-        raise Exception
+        return False
 
 
 def get_by_email(session: 'Session', email: str) -> 'User':
@@ -119,19 +115,9 @@ def delete(session: 'Session', email: str, commit=True) -> bool:
 def email_exists(session: 'Session', email: str) -> bool:
     # TODO: setup try-except
 
-    result = session.query(User).filter(User.email == email).count()
-
-    return False if result == 0 else True
+    return False if session.query(User).filter(User.email == email).count() == 0 else True
 
 
 def setup(session: 'Session') -> None:
-    create_admin(session, commit=False)
+    create_admin(session, email='soren.seeberg@gmail.com', password='hanadulsetmulighet', commit=False)
     create(session, 'sorense@configit.com', '1234', commit=False)
-
-
-if __name__ == '__main__':
-    from database import db
-
-    _session = db.SessionSingleton().get_session()
-    user = get_by_id(_session, 1)
-    print(user.email)

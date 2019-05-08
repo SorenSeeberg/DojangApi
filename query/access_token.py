@@ -51,10 +51,8 @@ def validate(session: 'Session', access_token: str) -> bool:
         session.query(AccessToken).filter(AccessToken.token == access_token).one()
         return True
     except NoResultFound:
-        # raise NoResultFound
         return False
     except Exception:
-        # raise Exception
         return False
 
 

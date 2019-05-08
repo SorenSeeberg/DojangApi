@@ -69,6 +69,10 @@ def new_quiz(
         session: 'Session',
         access_token_string: str,
         data: Dict) -> Dict:
+
+    if not access_token.validate(session, access_token_string):
+        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
+
     input_schema = {
         "questionCount": [int, True],
         "optionCount": [int, True],
@@ -77,25 +81,17 @@ def new_quiz(
         "levelMax": [int, True]
     }
 
-    if validate_input_data(data, input_schema):
-        question_count: int = data.get('questionCount')
-        option_count: int = data.get('optionCount')
-        category_id: int = data.get('categoryId')
-        level_min: int = data.get('levelMin')
-        level_max: int = data.get('levelMax')
-    else:
+    if not validate_input_data(data, input_schema):
         return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
+
+    question_count: int = data.get('questionCount')
+    option_count: int = data.get('optionCount')
+    category_id: int = data.get('categoryId')
+    level_min: int = data.get('levelMin')
+    level_max: int = data.get('levelMax')
 
     """ Creates new quiz with associated questions and options """
     user_id: int = access_token.get_user_id_by_token(session=session, access_token=access_token_string)
-
-    try:
-        if not access_token.validate(session, access_token_string):
-            return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
-
-    except ArgumentError as e:
-        print(e)
-        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
     try:
         quiz_row: 'Quiz' = quiz.create(
@@ -220,18 +216,18 @@ def answer_question(session: 'Session',
                     data: Dict) -> Dict:
     """ Accepts an answer and advances the quiz. The correctness of the question is returned """
 
-    """ Validating input data """
+    if not access_token.validate(session, access_token_string):
+        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
+
     input_schema = {
         "optionIndex": [int, True],
     }
 
-    if validate_input_data(data, input_schema):
-        option_index: int = data.get('optionIndex')
-    else:
+    if not validate_input_data(data, input_schema):
         return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
-    if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
+    option_index: int = data.get('optionIndex')
+
     try:
         quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
 
@@ -240,12 +236,12 @@ def answer_question(session: 'Session',
 
     except NoResultFound:
         return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
-                'message': 'Quiz not found'}
+                'message': 'Quizzen kunne ikke findes'}
 
     """ Checking if the quiz has been completed """
     if quiz_row.complete:
         return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
-                'message': 'No more questions. Quiz has been completed.'}
+                'message': 'Quizzen er afsluttet.'}
 
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
     option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
@@ -280,15 +276,7 @@ def answer_question(session: 'Session',
     session.commit()
 
     """ returns the answer result. Was it right or wrong? """
-    if question_row.infoId == option_row.infoId:
-        return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
-                ResponseKeys.body:
-                    {
-                        'answer': True,
-                        'text': 'Svaret er korrekt'
-                    }
-                }
-    else:
+    if not question_row.infoId == option_row.infoId:
         return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
                 ResponseKeys.body:
                     {
@@ -298,6 +286,14 @@ def answer_question(session: 'Session',
                         f'Det rigtige svar er: {info.get_by_id(session, question_row.infoId).key}'
                     }
                 }
+
+    return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body:
+                {
+                    'answer': True,
+                    'text': 'Svaret er korrekt'
+                }
+            }
 
 
 def _new_quiz(session):
