@@ -3,7 +3,7 @@
 
 from database.db import EngineSingleton
 from database.db import SessionSingleton
-from database import tables
+from database import schemas
 from query import access_token
 from query import belt
 from query import category
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     session: 'Session' = SessionSingleton().get_session()
 
     """ Creating tables """
-    tables.setup(engine)
+    schemas.setup(engine)
 
     """ Populating tables """
     [s.setup(session) for s in [user, belt, category, info]]

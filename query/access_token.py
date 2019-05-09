@@ -4,7 +4,7 @@
 from uuid import uuid4
 
 from sqlalchemy.exc import IntegrityError
-from database.tables import AccessToken
+from database.schemas import AccessToken
 from sqlalchemy.orm.exc import NoResultFound
 
 

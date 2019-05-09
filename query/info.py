@@ -3,7 +3,7 @@
 
 from typing import List
 from sqlalchemy.exc import IntegrityError
-from database.tables import Info
+from database.schemas import Info
 from sqlalchemy.orm.exc import NoResultFound
 from data.import_data import extract_info
 

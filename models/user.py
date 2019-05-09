@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from database.tables import User
+from database.schemas import User
 from query import access_token, user
 from query import validate_input_data
 from database.db import SessionSingleton

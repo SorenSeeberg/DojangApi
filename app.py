@@ -3,7 +3,7 @@
 
 import json
 from typing import Dict
-from flask import Flask, redirect, url_for, request, make_response
+from flask import Flask, redirect, url_for, request, make_response, render_template
 from response_codes import ResponseKeys
 from models import quiz, user
 from database import db
@@ -21,7 +21,7 @@ def to_json(data) -> str:
 
 @app.route('/')
 def index():
-    return 'Dojang API'
+    return render_template("index.html")
 
 
 # USER

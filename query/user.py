@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from database.tables import User
+from database.schemas import User
 from hashlib import sha3_256
 from exceptions import Exceptions
 from sqlalchemy.orm.exc import NoResultFound

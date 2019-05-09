@@ -3,7 +3,7 @@
 
 from typing import List
 from sqlalchemy.exc import IntegrityError
-from database.tables import Belt
+from database.schemas import Belt
 from sqlalchemy.orm.exc import NoResultFound
 
 

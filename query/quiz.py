@@ -4,7 +4,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from uuid import uuid4
-from database.tables import Quiz
+from database.schemas import Quiz
 
 
 def create(session: 'Session',

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
-from database.tables import Category
+from database.schemas import Category
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 

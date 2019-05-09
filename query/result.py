@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.exc import IntegrityError
-from database.tables import Result
+from database.schemas import Result
 from sqlalchemy.orm.exc import NoResultFound
 
 
