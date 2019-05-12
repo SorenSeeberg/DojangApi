@@ -34,7 +34,7 @@ def create_user():
     return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/user/current-user', methods=['GET'])
 def get_user():
     session = db.SessionSingleton().get_session()
     access_token: str = get_access_token()
@@ -50,9 +50,9 @@ def email_exists():
     return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
 
 
-# @app.route('/user', methods=['GET'])
-# def get_paginated_users():
-#     return "Get Paginated Users"
+@app.route('/user/paginated-users', methods=['GET'])
+def get_paginated_users():
+    return "Get Paginated Users"
 
 
 @app.route('/user', methods=['PUT'])
