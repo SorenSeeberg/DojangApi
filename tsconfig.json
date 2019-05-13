@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module":"amd",
+    "target": "ES5",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "static/js",
+    "outFile":"static/js/build.js",
+    "sourceRoot": "static/ts",
+    "rootDir": "static/ts",
+    "sourceMap": true
+  }
+}
