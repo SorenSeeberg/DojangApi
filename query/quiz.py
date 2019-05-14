@@ -12,8 +12,8 @@ def create(session: 'Session',
            option_count: int,
            category_id: int,
            user_id: int,
-           belt_min: int,
-           belt_max: int,
+           level_min: int,
+           level_max: int,
            reverse_questions=False,
            commit=True) -> Quiz:
 
@@ -26,8 +26,8 @@ def create(session: 'Session',
             reverseQuestions=reverse_questions,
             categoryId=category_id,
             userId=user_id,
-            beltMin=belt_min,
-            beltMax=belt_max
+            levelMin=level_min,
+            levelMax=level_max
         )
 
         session.add(quiz_row)

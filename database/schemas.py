@@ -15,14 +15,14 @@ meta = MetaData()
 
 # Static Data Tables
 
-class Info(Base):
-    __tablename__ = "Info"
+class Curriculum(Base):
+    __tablename__ = "Curriculum"
 
     id = Column(INT, primary_key=True)
     key = Column(NVARCHAR(TEXT_LENGTH))
     value = Column(NVARCHAR(TEXT_LENGTH))
     categoryId = Column(INT, ForeignKey('Category.id'))
-    beltId = Column(INT, ForeignKey('Belt.id'))
+    levelId = Column(INT, ForeignKey('Level.id'))
 
 
 class Category(Base):
@@ -32,8 +32,8 @@ class Category(Base):
     name = Column(VARCHAR(LABEL_LENGTH))
 
 
-class Belt(Base):
-    __tablename__ = "Belt"
+class Level(Base):
+    __tablename__ = "Level"
 
     id = Column(INT, primary_key=True)
     name = Column(VARCHAR(LABEL_LENGTH))
@@ -61,6 +61,15 @@ class AccessToken(Base):
     createdAt = Column(INT, default=int(time.time()))
 
 
+class VerificationToken(Base):
+    __tablename__ = "VerificationToken"
+
+    id = Column(INT, primary_key=True)
+    userId = Column(INT, ForeignKey('User.id'), nullable=False)
+    token = Column(CHAR(UUID_LENGTH), default=str(uuid4()), unique=True, nullable=False)
+    createdAt = Column(INT, default=int(time.time()))
+
+
 # Quiz Tables
 
 class Quiz(Base):
@@ -76,8 +85,8 @@ class Quiz(Base):
     categoryId = Column(INT)
     timeStart = Column(INT, default=int(time.time()))
     userId = Column(INT, ForeignKey('User.id'))
-    beltMin = Column(INT, ForeignKey('Belt.id'))
-    beltMax = Column(INT, ForeignKey('Belt.id'))
+    levelMin = Column(INT, ForeignKey('Level.id'))
+    levelMax = Column(INT, ForeignKey('Level.id'))
 
 
 class Question(Base):
@@ -85,7 +94,7 @@ class Question(Base):
 
     id = Column(INT, primary_key=True)
     quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
-    infoId = Column(INT, ForeignKey('Info.id'))
+    curriculumId = Column(INT, ForeignKey('Curriculum.id'))
     questionIndex = Column(SMALLINT)
 
 
@@ -93,7 +102,7 @@ class Option(Base):
     __tablename__ = "Option"
 
     id = Column(INT, primary_key=True)
-    infoId = Column(INT, ForeignKey('Info.id'))
+    curriculumId = Column(INT, ForeignKey('Curriculum.id'))
     quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
     questionId = Column(INT, ForeignKey('Question.id', ondelete="CASCADE"))
     optionIndex = Column(INT)
@@ -104,7 +113,7 @@ class Answer(Base):
 
     id = Column(INT, primary_key=True)
     quizId = Column(INT, ForeignKey('Quiz.id', ondelete="CASCADE"))
-    infoId = Column(INT, ForeignKey('Info.id'))
+    curriculumId = Column(INT, ForeignKey('Curriculum.id'))
     questionIndex = Column(INT)
     correct = Column(BOOLEAN)
 
@@ -118,8 +127,8 @@ class Result(Base):
     correctCount = Column(INT)
     incorrectCount = Column(INT)
     timeSpent = Column(INT)
-    beltMin = Column(INT, ForeignKey('Belt.id'), default=1)
-    beltMax = Column(INT, ForeignKey('Belt.id'), default=5)
+    levelMin = Column(INT, ForeignKey('Level.id'), default=1)
+    levelMax = Column(INT, ForeignKey('Level.id'), default=5)
 
 
 # Junction Tables

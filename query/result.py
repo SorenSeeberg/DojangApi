@@ -12,8 +12,8 @@ def create(session: 'Session',
            correct_count: int,
            incorrect_count: int,
            time_spent: int,
-           belt_min: int,
-           belt_max: int,
+           level_min: int,
+           level_max: int,
            commit=True) -> bool:
     try:
         session.add(Result(userId=user_id,
@@ -21,8 +21,8 @@ def create(session: 'Session',
                            correctCount=correct_count,
                            incorrectCount=incorrect_count,
                            timeSpent=time_spent,
-                           beltMin=belt_min,
-                           beltMax=belt_max)
+                           levelMin=level_min,
+                           levelMax=level_max)
                     )
 
         if commit:

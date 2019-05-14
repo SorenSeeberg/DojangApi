@@ -1,6 +1,11 @@
 :root {
-    --header-color: rgb(28, 69, 135);
+    --header-font-color: rgb(28, 69, 135);
+    --bright-font-color: white;
     --main-background: rgb(207, 226, 243);
+    --primary: #649253;
+    --primary-hover: #96c97d;
+    --secondary: #4975b0;
+    --secondary-hover: #6eb0d8;
 }
 
 * {
@@ -12,10 +17,13 @@ html {
     background: white;
 }
 
-body {
+.content {
+    max-width: 400px;
+    margin: auto;
     background: var(--main-background);
     font-family: 'Roboto', sans-serif;
-    max-width: 400px;
+    height: calc(100vh - 10px);
+    padding: 5px;
 }
 
 #header {
@@ -23,9 +31,14 @@ body {
     flex-direction: row;
     justify-content: space-between;
     background: transparent;
-    color: var(--header-color);
+    color: var(--header-font-color);
     font-size: 40px;
     height: 50px;
+}
+
+h1, h2, h3 {
+    color: var(--header-font-color);
+    padding: 0 0 10px 0;
 }
 
 .header-profile {
@@ -33,5 +46,55 @@ body {
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    margin: 5px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text-form-field {
+    width: calc(100% - 12px);
+    height: 30px;
+    font-size: 20px;
+    color: var(--header-font-color);
+    margin: 3px 0;
+    padding: 3px;
+}
+
+.btn {
+    cursor: pointer;
+    color: var(--bright-font-color);
+    border: none;
+    font-size: 18px;
+}
+
+.btn-large {
+    width: 200px;
+    height: 60px;
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--secondary);
+}
+
+.vertical-filler-s {
+    height: 30px;
+}
+
+.vertical-filler-m {
+    height: 60px;
+}
+
+.vertical-filler-l {
+    height: 90px;
 }

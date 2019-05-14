@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from typing import List
+from typing import List, Dict
 from sqlalchemy.exc import IntegrityError
 from database.schemas import Answer
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def create(session: 'Session', quiz_id: int, info_id: int, question_index, correct: bool, commit=True) -> bool:
+def create(session: 'Session', quiz_id: int, curriculum_id: int, question_index: int, correct: bool, commit=True) -> bool:
     try:
-        session.add(Answer(quizId=quiz_id, infoId=info_id, questionIndex=question_index, correct=correct))
+        session.add(Answer(quizId=quiz_id, curriculumId=curriculum_id, questionIndex=question_index, correct=correct))
 
         if commit:
             session.commit()
@@ -44,7 +44,7 @@ def delete_by_quiz_id(session: 'Session', quiz_id: int, commit=True) -> bool:
         raise Exception
 
 
-def get_answer_count(session: 'Session', quiz_id: int):
+def get_answer_count(session: 'Session', quiz_id: int) -> Dict:
     try:
         correct_count: int = session.query(Answer).filter(Answer.correct == True, Answer.quizId == quiz_id).count()
         incorrect_count: int = session.query(Answer).filter(Answer.correct == False, Answer.quizId == quiz_id).count()

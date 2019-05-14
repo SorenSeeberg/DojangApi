@@ -26,36 +26,36 @@ def index():
 
 # USER
 
-@app.route('/user', methods=['POST'])
+@app.route('/users', methods=['POST'])
 def create_user():
     session = db.SessionSingleton().get_session()
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = user.create_user(session, data)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/user/current-user', methods=['GET'])
+@app.route('/users/current-user', methods=['GET'])
 def get_user():
     session = db.SessionSingleton().get_session()
     access_token: str = get_access_token()
     return_data: Dict = user.get_user(session, access_token)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/user/email-exist', methods=['POST'])
+@app.route('/users/email-exist', methods=['POST'])
 def email_exists():
     session = db.SessionSingleton().get_session()
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = user.email_exists(session, data)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/user/paginated-users', methods=['GET'])
+@app.route('/users/paginated-users', methods=['GET'])
 def get_paginated_users():
     return "Get Paginated Users"
 
 
-@app.route('/user', methods=['PUT'])
+@app.route('/users', methods=['PUT'])
 def update_user():
     return "Update User"
 
@@ -65,23 +65,24 @@ def get_results(user_id):
     return "Get Results " + user_id
 
 
-@app.route('/user/sign-in', methods=['POST'])
+@app.route('/users/sign-in', methods=['POST'])
 def sign_in():
     session = db.SessionSingleton().get_session()
-    data = json.loads(request.data, encoding='utf-8')
+    form = dict(request.form)
+    data = {"email": form.get("email")[0], "password": form.get("password")[0]}
     return_data: Dict = user.sign_in(session, data)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/user/sign-out', methods=['GET'])
+@app.route('/users/sign-out', methods=['GET'])
 def sign_out():
     session = db.SessionSingleton().get_session()
     access_token: str = get_access_token()
     return_data: Dict = user.sign_out(session, access_token)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/user/change-password')
+@app.route('/users/change-password')
 def change_password():
     return "Change password"
 
@@ -94,7 +95,7 @@ def create_quiz():
     access_token: str = get_access_token()
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = quiz.new_quiz(session, access_token, data)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
 @app.route('/quiz/<path:quiz_token>', methods=['GET'])
@@ -102,7 +103,7 @@ def get_quiz(quiz_token: str):
     session = db.SessionSingleton().get_session()
     access_token: str = get_access_token()
     return_data: Dict = quiz.get_quiz(session, access_token, quiz_token)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
 @app.route('/quiz/question/<path:quiz_token>', methods=['GET'])
@@ -110,7 +111,7 @@ def get_question(quiz_token: str):
     session = db.SessionSingleton().get_session()
     access_token: str = get_access_token()
     return_data: Dict = quiz.get_current_question(session, access_token, quiz_token)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
 @app.route('/quiz/question/<path:quiz_token>', methods=['PUT'])
@@ -119,7 +120,7 @@ def answer_question(quiz_token: str):
     access_token: str = get_access_token()
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = quiz.answer_question(session, access_token, quiz_token, data)
-    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 400))
+    return make_response(to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
 if __name__ == '__main__':

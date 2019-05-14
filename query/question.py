@@ -6,9 +6,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 
 
-def create(session: 'Session', quiz_id: int, info_id: int, question_index: int, commit=True) -> Question:
+def create(session: 'Session', quiz_id: int, curriculum_id: int, question_index: int, commit=True) -> Question:
     try:
-        question_row: Question = Question(quizId=quiz_id, infoId=info_id, questionIndex=question_index)
+        question_row: Question = Question(quizId=quiz_id, curriculumId=curriculum_id, questionIndex=question_index)
         session.add(question_row)
 
         if commit:

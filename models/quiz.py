@@ -9,7 +9,7 @@ from sqlalchemy.exc import ArgumentError
 from exceptions import Exceptions
 import response_codes
 from database import db
-from query import access_token, category, option, info, question, quiz, answer, result
+from query import access_token, category, option, curriculum, question, quiz, answer, result
 from query import validate_input_data
 import config
 from response_codes import ResponseKeys
@@ -25,14 +25,14 @@ def _new_question(
         level_max: int):
     """ Creates a question with answer options. Not committed to db """
 
-    info_rows = info.get_by_level_and_category(session, category_id, level_min, level_max)
-    options_info: List['Info'] = random.sample(population=set(info_rows), k=option_count)
-    answer_id: int = random.choice(options_info).id
+    curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
+    options_curriculum: List['Curriculum'] = random.sample(population=set(curriculum_rows), k=option_count)
+    answer_id: int = random.choice(options_curriculum).id
 
     question_row: 'Question' = question.create(session, quiz_id, answer_id, question_number, commit=False)
     session.flush()
     [option.create(session, o.id, question_row.quizId, question_row.id, i, commit=False) for i, o in
-     enumerate(options_info)]
+     enumerate(options_curriculum)]
 
 
 def _clean_up_quiz(session: 'Session', quiz_token: str, access_token_string: str, commit=True) -> bool:
@@ -100,8 +100,8 @@ def new_quiz(
             option_count=option_count,
             category_id=category_id,
             user_id=user_id,
-            belt_min=level_min,
-            belt_max=level_max,
+            level_min=level_min,
+            level_max=level_max,
             commit=False
         )
 
@@ -120,8 +120,8 @@ def new_quiz(
                 "totalQuestions": quiz_row.questionCount,
                 "currentQuestion": quiz_row.currentQuestion,
                 "optionCount": quiz_row.optionCount,
-                "levelMin": quiz_row.beltMin,
-                "levelMax": quiz_row.beltMax,
+                "levelMin": quiz_row.levelMin,
+                "levelMax": quiz_row.levelMax,
             }
         }
 
@@ -148,8 +148,8 @@ def get_quiz(session: 'Session', access_token_string: str, quiz_token: str) -> D
                 "totalQuestions": quiz_row.questionCount,
                 "currentQuestion": quiz_row.currentQuestion,
                 "optionCount": quiz_row.optionCount,
-                "levelMin": quiz_row.beltMin,
-                "levelMax": quiz_row.beltMax,
+                "levelMin": quiz_row.levelMin,
+                "levelMax": quiz_row.levelMax,
             }
         }
 
@@ -181,18 +181,18 @@ def get_current_question(
                                                                           quiz_row.id,
                                                                           quiz_row.currentQuestion)
 
-        next_question_info_row = info.get_by_id(session, next_question_row.infoId)
+        next_question_cur_row = curriculum.get_by_id(session, next_question_row.curriculumId)
         option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
 
         options = [{
             "index": row.optionIndex,
-            "text": info.get_by_id(session, row.infoId).key} for row in option_rows]
+            "text": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
 
         return {
             ResponseKeys.status: response_codes.ResponseCodes.ok_200,
             ResponseKeys.body: {
                 "questionIndex": quiz_row.currentQuestion,
-                "question": next_question_info_row.value,
+                "question": next_question_cur_row.value,
                 "options": options
             }
         }
@@ -249,9 +249,9 @@ def answer_question(session: 'Session',
     """ Creating answer row  """
     answer.create(session=session,
                   quiz_id=quiz_row.id,
-                  info_id=option_row.infoId,
+                  curriculum_id=option_row.curriculumId,
                   question_index=quiz_row.currentQuestion,
-                  correct=question_row.infoId == option_row.infoId,
+                  correct=question_row.curriculumId == option_row.curriculumId,
                   commit=False
                   )
 
@@ -267,8 +267,8 @@ def answer_question(session: 'Session',
                       correct_count=answer_count.get('correct_count', -1),
                       incorrect_count=answer_count.get('incorrect_count', -1),
                       time_spent=int(time.time()) - quiz_row.timeStart,
-                      belt_min=quiz_row.beltMin,
-                      belt_max=quiz_row.beltMax,
+                      level_min=quiz_row.levelMin,
+                      level_max=quiz_row.levelMax,
                       commit=False
                       )
         quiz_row.complete = True
@@ -276,14 +276,14 @@ def answer_question(session: 'Session',
     session.commit()
 
     """ returns the answer result. Was it right or wrong? """
-    if not question_row.infoId == option_row.infoId:
+    if not question_row.curriculumId == option_row.curriculumId:
         return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
                 ResponseKeys.body:
                     {
                         'answer': False,
                         'text': f'Svaret er forkert\n'
-                        f'Du har svaret: {info.get_by_id(session, option_row.infoId).key}\n'
-                        f'Det rigtige svar er: {info.get_by_id(session, question_row.infoId).key}'
+                        f'Du har svaret: {curriculum.get_by_id(session, option_row.curriculumId).key}\n'
+                        f'Det rigtige svar er: {curriculum.get_by_id(session, question_row.curriculumId).key}'
                     }
                 }
 

@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Dojang</title>
-        <link rel="stylesheet" href="/static/css/style.css">
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        <script type="text/javascript" src="/static/js/build.js"></script>
-    </head>
-    <body onload="componentHeader()">
-        <header id='header'>Header</header>
-        <article id='article'>Article</article>
-        <footer id='footer'>Footer</footer>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Dojang</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.js"
+            integrity="sha256-/wU5o1HRMBu91AoM5TxLLP4aspWB+FH8dtrkJZGCPFg=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/static/js/build.js"></script>
+    <script id="handlebars-demo" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            My name is {{name}}. I am a {{occupation}}.
+        </div>
+        {% endraw %}
+    </script>
+
+    <script id="handlebars-sign-in-form" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <form>
+                <div class="form">
+                    <div class="vertical-filler-l"></div>
+                    <input id="input-field-email" type="email" name="email" placeholder="email" class="text-form-field" required/>
+                    <input id="input-field-password" type="password" name="password" placeholder="password" class="text-form-field" required/>
+                    <div class="vertical-filler-m"></div>
+                    <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind</button>
+<!--                    <button class="btn btn-large btn-primary" type="submit" >Log Ind</button>-->
+                    <div class="vertical-filler-l"></div>
+                    <a href="index.html">Ny Bruger?</a>
+                </div>
+            </form>
+        </div>
+        {% endraw %}
+    </script>
+</head>
+<body onload="componentHeader()">
+<div class="content">
+    <header id='header'></header>
+    <article id='article'></article>
+    <footer id='footer'></footer>
+</div>
+</body>
 </html>
