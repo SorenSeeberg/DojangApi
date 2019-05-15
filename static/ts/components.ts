@@ -14,36 +14,27 @@ function setTemplate(templateId: Template, contentTarget: ContentTarget, context
     contentContainer.innerHTML = html;
 }
 
-function handleSignIn(): void {
-    console.log("Sign in !");
-
-    // @ts-ignore
-    const email: string = document.getElementById('input-field-email').value;
-    // @ts-ignore
-    const password: string = document.getElementById('input-field-password').value;
+async function handleSignIn() {
+    const email = <HTMLInputElement>document.getElementById('input-field-email');
+    const password = <HTMLInputElement>document.getElementById('input-field-password');
 
     let formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
+    formData.append('email', email.value);
+    formData.append('password', password.value);
 
-    fetch("/users/sign-in",
-        {
-            body: formData,
-            method: "post"
-        }).then((response) => {
-        if (response.status === 200) {
-            console.log('Du er nu logget ind');
-        } else if (response.status === 401) {
-            console.log('Email og/eller password er forkert!');
-        }
-        return response.json()
-    }).then((responseObject) => {
-        if (responseObject.status === 200) {
-            setAccessToken(responseObject.body.accessToken);
-            pageIndex();
-        }
-        console.log(responseObject);
+    let response = await fetch('/users/sign-in', {
+        body: formData,
+        method: "post"
     });
+
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        setAccessToken(responseObject.body.accessToken);
+        pageIndex();
+        return true;
+    }
+    return false;
 }
 
 function componentMainMenu(): void {
