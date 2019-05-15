@@ -70,6 +70,11 @@ h1, h2, h3 {
     font-size: 18px;
 }
 
+.btn:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 .btn-large {
     width: 200px;
     height: 60px;
@@ -85,6 +90,10 @@ h1, h2, h3 {
 
 .btn-secondary {
     background: var(--secondary);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover);
 }
 
 .vertical-filler-s {
