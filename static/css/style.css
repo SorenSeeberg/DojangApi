@@ -80,6 +80,12 @@ h1, h2, h3 {
     height: 60px;
 }
 
+.btn-large-wide {
+    width: 100%;
+    height: 60px;
+    margin: 3px 0;
+}
+
 .btn-primary {
     background: var(--primary);
 }

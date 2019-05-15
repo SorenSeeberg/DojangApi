@@ -1,3 +1,19 @@
+type Template =
+    'handlebars-sign-in-form'
+    | 'handlebars-main-menu'
+    | 'handlebars-top-bar-signed-in'
+    | 'handlebars-top-bar-signed-out';
+type ContentTarget = 'header' | 'article' | 'footer';
+
+function setTemplate(templateId: Template, contentTarget: ContentTarget, context: Object = {}) {
+    let template = document.getElementById(templateId).innerHTML;
+    // @ts-ignore
+    let templateScript = Handlebars.compile(template);
+    let html = templateScript(context);
+    let contentContainer: HTMLElement = document.getElementById(contentTarget);
+    contentContainer.innerHTML = html;
+}
+
 function handleSignIn(): void {
     console.log("Sign in !");
 
@@ -15,44 +31,36 @@ function handleSignIn(): void {
             body: formData,
             method: "post"
         }).then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
             console.log('Du er nu logget ind');
-        } else if (response.status == 401) {
+        } else if (response.status === 401) {
             console.log('Email og/eller password er forkert!');
         }
         return response.json()
-    }).then((myJson) => {
-        console.log(myJson);
+    }).then((responseObject) => {
+        if (responseObject.status === 200) {
+            setAccessToken(responseObject.body.accessToken);
+            pageIndex();
+        }
+        console.log(responseObject);
     });
 }
 
-function signIn(): void {
-
-    let template = document.getElementById('handlebars-sign-in-form').innerHTML;
-    // Compile the template data into a function
-    // @ts-ignore
-    let templateScript = Handlebars.compile(template);
-    let context = {"name": "Ritesh Kumar", "occupation": "developer"};
-    let html = templateScript(context);
-    let articleElement: HTMLElement = document.getElementById('article');
-    articleElement.innerHTML = html;
+function componentMainMenu(): void {
+    setTemplate("handlebars-main-menu", "article")
 }
 
-function componentHeader(loggedIn: boolean = true): void {
-    let title = "Dojang";
-    let headerElement: HTMLElement = document.getElementById('header');
-
-    if (loggedIn) {
-        headerElement.innerHTML = `<div>${title}</div><div class='header-profile'/>`;
-    } else {
-        headerElement.innerHTML = `<div>${title}</div>`;
-    }
-
-    signIn();
+function componentSignIn(): void {
+    setTemplate('handlebars-sign-in-form', "article");
 }
 
-function componentSignIn() {
-
-    let articleElement: HTMLElement = document.getElementById('article');
-
+function componentTopBarSignedIn(context: { title: string }): void {
+    setTemplate("handlebars-top-bar-signed-in", "header", context)
 }
+
+function componentTopBarSignedOut(context: { title: string }): void {
+    setTemplate("handlebars-top-bar-signed-out", "header", context)
+}
+
+
+

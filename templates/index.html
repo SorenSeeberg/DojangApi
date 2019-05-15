@@ -22,10 +22,12 @@
             <form>
                 <div class="form">
                     <div class="vertical-filler-l"></div>
-                    <input id="input-field-email" type="email" name="email" placeholder="email" class="text-form-field" required/>
-                    <input id="input-field-password" type="password" name="password" placeholder="password" class="text-form-field" required/>
+                    <input id="input-field-email" type="email" name="email" placeholder="email" class="text-form-field"
+                           required/>
+                    <input id="input-field-password" type="password" name="password" placeholder="password"
+                           class="text-form-field" required/>
                     <div class="vertical-filler-m"></div>
-                    <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()" disabled>Log Ind</button>
+                    <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind</button>
                     <div class="vertical-filler-l"></div>
                     <a href="index.html">Ny Bruger?</a>
                 </div>
@@ -33,8 +35,45 @@
         </div>
         {% endraw %}
     </script>
+
+    <script id="handlebars-main-menu" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <div class="vertical-filler-l"></div>
+            <button class="btn btn-large-wide btn-primary" type="button" onclick="handleSignIn()">Ny Quiz</button>
+            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Pensum</button>
+            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Admin</button>
+        </div>
+        {% endraw %}
+    </script>
+
+    <script id="handlebars-top-bar-signed-in" type="text/x-handlebars-template">
+        {% raw %}
+        <div>{{title}}</div>
+        <div class='header-profile'></div>
+        {% endraw %}
+    </script>
+
+    <script id="handlebars-top-bar-signed-out" type="text/x-handlebars-template">
+        {% raw %}
+        <div>{{title}}</div>
+        {% endraw %}
+    </script>
+
+    <script id="handlebars-quiz" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <div>{{category}}</div>
+            <div class="progress-bar-background">
+                <div class="progress-bar-indicator"></div>
+            </div>
+            <div>{{question}}</div>
+            {{options}}
+        </div>
+        {% endraw %}
+    </script>
 </head>
-<body onload="componentHeader()">
+<body onload="handleRoute()">
 <div class="content">
     <header id='header'></header>
     <article id='article'></article>

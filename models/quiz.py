@@ -185,7 +185,7 @@ def get_current_question(
         option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
 
         options = [{
-            "index": row.optionIndex,
+            "pageIndex": row.optionIndex,
             "text": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
 
         return {
