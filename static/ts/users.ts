@@ -5,7 +5,9 @@ async function handleSignIn() {
 
     templateLoading();
 
-
+    let formData = new FormData();
+    formData.append('email', email.value);
+    formData.append('password', password.value);
 
     let response = await fetch('/users/sign-in', {
         body: formData,

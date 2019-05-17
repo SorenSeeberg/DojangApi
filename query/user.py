@@ -120,5 +120,5 @@ def email_exists(session: 'Session', email: str) -> bool:
 
 def setup(session: 'Session') -> None:
     create_admin(session, email='admin@masterkwon.com', password='hanadul', commit=False)
-    create_admin(session, email='soren.seeberg@gmail.com', password='123', commit=False)
+    # create_admin(session, email='soren.seeberg@gmail.com', password='123', commit=False)
     create(session, 'sorense@configit.com', '1234', commit=False)
