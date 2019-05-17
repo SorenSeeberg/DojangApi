@@ -80,13 +80,13 @@ def update_password(session: 'Session', email: str, new_password_value: str, com
     return False
 
 
-def update_confirmed(session: 'Session', email: str, confirmed_value: bool, commit=True) -> bool:
-    # TODO: setup try-except
+def update_confirmed(session: 'Session', user_id: int, confirmed_value: bool, enabled_value: bool, commit=True) -> bool:
 
-    user_row = get_by_email(session, email)
+    user_row = get_by_id(session, user_id)
 
     if user_row:
         user_row.confirmed = confirmed_value
+        user_row.enabled = enabled_value
 
         if commit:
             session.commit()
@@ -119,5 +119,5 @@ def email_exists(session: 'Session', email: str) -> bool:
 
 
 def setup(session: 'Session') -> None:
-    create_admin(session, email='soren.seeberg@gmail.com', password='hanadulsetmulighet', commit=False)
+    create_admin(session, email='soren.seeberg@gmail.com', password='123', commit=False)
     create(session, 'sorense@configit.com', '1234', commit=False)

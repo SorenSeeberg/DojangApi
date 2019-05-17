@@ -28,7 +28,9 @@ class SessionSingleton:
             SessionSingleton.session = sessionmaker(bind=EngineSingleton().get_engine())
 
     def get_session(self) -> 'Session':
-        return SessionSingleton.session()
+        # return SessionSingleton.session()
+        engine_class = sessionmaker(bind=EngineSingleton().get_engine())
+        return engine_class()
 
 
 class TestEngineSingleton:

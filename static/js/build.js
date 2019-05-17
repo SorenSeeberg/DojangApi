@@ -33,6 +33,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var TITLE_CONTEXT = { title: 'Dojang' };
+function pageIndex() {
+    if (!getAccessToken()) {
+        scilentRoute({ data: null, title: '', url: 'sign-in' });
+        componentTopBarSignedOut(TITLE_CONTEXT);
+        componentSignIn();
+    }
+    else {
+        scilentRoute({ data: null, title: '', url: 'welcome' });
+        componentTopBarSignedIn(TITLE_CONTEXT);
+        componentMainMenu();
+    }
+}
+function pageCreateUser() {
+    if (!getAccessToken()) {
+        scilentRoute({ data: null, title: 'Hello', url: 'create-user' });
+        componentTopBarSignedOut(TITLE_CONTEXT);
+        componentCreateUser();
+    }
+    else {
+        pageIndex();
+    }
+}
+function pageCreatedUserSuccess() {
+    scilentRoute({ data: null, title: '', url: '' });
+    componentTopBarSignedOut(TITLE_CONTEXT);
+    componentCreatedUser();
+}
+function pageLoading(loggedIn) {
+    if (loggedIn === void 0) { loggedIn = true; }
+    loggedIn
+        ? componentTopBarSignedIn(TITLE_CONTEXT)
+        : componentTopBarSignedOut(TITLE_CONTEXT);
+    templateLoading();
+}
+var routes = {
+    '/': pageIndex,
+    '/sign-in': pageIndex,
+    '/welcome': pageIndex,
+    '/create-user': pageCreateUser,
+    '/curriculum': ''
+};
+function handleRoute() {
+    console.log('pathname');
+    console.log(window.location.pathname);
+    routes[window.location.pathname]();
+}
+function scilentRoute(url) {
+    var values = Object.keys(url).map(function (k) { return url[k]; }).slice();
+    console.log(values);
+    history.replaceState(url.data, url.title, url.url);
+}
 function setTemplate(templateId, contentTarget, context) {
     if (context === void 0) { context = {}; }
     var template = document.getElementById(templateId).innerHTML;
@@ -41,41 +93,20 @@ function setTemplate(templateId, contentTarget, context) {
     var contentContainer = document.getElementById(contentTarget);
     contentContainer.innerHTML = html;
 }
-function handleSignIn() {
-    return __awaiter(this, void 0, void 0, function () {
-        var email, password, formData, response, responseObject;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    email = document.getElementById('input-field-email');
-                    password = document.getElementById('input-field-password');
-                    formData = new FormData();
-                    formData.append('email', email.value);
-                    formData.append('password', password.value);
-                    return [4, fetch('/users/sign-in', {
-                            body: formData,
-                            method: "post"
-                        })];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.json()];
-                case 2:
-                    responseObject = _a.sent();
-                    if (responseObject.status === 200) {
-                        setAccessToken(responseObject.body.accessToken);
-                        pageIndex();
-                        return [2, true];
-                    }
-                    return [2, false];
-            }
-        });
-    });
-}
 function componentMainMenu() {
     setTemplate("handlebars-main-menu", "article");
 }
 function componentSignIn() {
     setTemplate('handlebars-sign-in-form', "article");
+}
+function templateSignInError() {
+    setTemplate('handlebars-sign-in-form-error', "article");
+}
+function componentCreateUser() {
+    setTemplate('handlebars-create-user', "article");
+}
+function componentCreatedUser() {
+    setTemplate('handlebars-created-user', "article");
 }
 function componentTopBarSignedIn(context) {
     setTemplate("handlebars-top-bar-signed-in", "header", context);
@@ -83,28 +114,8 @@ function componentTopBarSignedIn(context) {
 function componentTopBarSignedOut(context) {
     setTemplate("handlebars-top-bar-signed-out", "header", context);
 }
-var routes = {
-    '': pageIndex,
-    '/': pageIndex,
-    '/sign-in': pageIndex,
-    '/menu': pageIndex,
-    '/curriculum': ''
-};
-function handleRoute() {
-    console.log('pathname');
-    console.log(window.location.pathname);
-    routes[window.location.pathname]();
-}
-function pageIndex() {
-    var context = { title: "Dojang" };
-    if (!getAccessToken()) {
-        componentSignIn();
-        componentTopBarSignedOut(context);
-    }
-    else {
-        componentMainMenu();
-        componentTopBarSignedIn(context);
-    }
+function templateLoading() {
+    setTemplate('handlebars-loading', 'article');
 }
 var ACCESS_TOKEN_KEY = 'accessToken';
 var QUIZ_TOKEN_KEY = 'quizToken';
@@ -125,5 +136,71 @@ function setQuizToken(token) {
 }
 function clearQuizToken() {
     localStorage.removeItem(QUIZ_TOKEN_KEY);
+}
+function handleSignIn() {
+    return __awaiter(this, void 0, void 0, function () {
+        var email, password, formData, response, responseObject;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    email = document.getElementById('input-field-email');
+                    password = document.getElementById('input-field-password');
+                    templateLoading();
+                    formData = new FormData();
+                    formData.append('email', email.value);
+                    formData.append('password', password.value);
+                    return [4, fetch('/users/sign-in', {
+                            body: formData,
+                            method: "post"
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        setAccessToken(responseObject.body.accessToken);
+                        pageIndex();
+                        return [2, true];
+                    }
+                    templateSignInError();
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleCreateUser() {
+    return __awaiter(this, void 0, void 0, function () {
+        var email, password, passwordRepeat, formData, response, responseObject;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    email = document.getElementById('input-field-email');
+                    password = document.getElementById('input-field-password');
+                    passwordRepeat = document.getElementById('input-field-password-repeat');
+                    if (password.value !== passwordRepeat.value) {
+                        return [2];
+                    }
+                    pageLoading(false);
+                    formData = new FormData();
+                    formData.append('email', email.value);
+                    formData.append('password', password.value);
+                    return [4, fetch('/users', {
+                            body: formData,
+                            method: "post"
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 201) {
+                        pageCreatedUserSuccess();
+                        return [2, true];
+                    }
+                    return [2, false];
+            }
+        });
+    });
 }
 //# sourceMappingURL=build.js.map

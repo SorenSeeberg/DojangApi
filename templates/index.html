@@ -8,34 +8,109 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.js"
             integrity="sha256-/wU5o1HRMBu91AoM5TxLLP4aspWB+FH8dtrkJZGCPFg=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/static/js/build.js"></script>
-    <script id="handlebars-demo" type="text/x-handlebars-template">
-        {% raw %}
-        <div>
-            My name is {{name}}. I am a {{occupation}}.
-        </div>
-        {% endraw %}
-    </script>
 
-    <script id="handlebars-sign-in-form" type="text/x-handlebars-template">
+    <!-- CREATE USER -->
+    <script id="handlebars-create-user" type="text/x-handlebars-template">
         {% raw %}
         <div>
             <form>
-                <div class="form">
-                    <div class="vertical-filler-l"></div>
-                    <input id="input-field-email" type="email" name="email" placeholder="email" class="text-form-field"
-                           required/>
-                    <input id="input-field-password" type="password" name="password" placeholder="password"
-                           class="text-form-field" required/>
-                    <div class="vertical-filler-m"></div>
-                    <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind</button>
-                    <div class="vertical-filler-l"></div>
-                    <a href="index.html">Ny Bruger?</a>
+                <div class="widget-holder">
+                    <div class="widget">
+                        <div class="vertical-filler-l"></div>
+                        <input id="input-field-email" type="email" name="email" placeholder="email"
+                               class="text-form-field"
+                               required/>
+                        <input id="input-field-password" type="password" name="password" placeholder="password"
+                               class="text-form-field" required/>
+                        <input id="input-field-password-repeat" type="password" name="repeatPassword"
+                               placeholder="gentag password"
+                               class="text-form-field" required/>
+                    </div>
+                    <div class="widget">
+                        <button class="btn btn-large btn-primary" type="button" onclick="handleCreateUser()">Opret
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
         {% endraw %}
     </script>
 
+    <!-- CREATED USER SUCCESS -->
+    <script id="handlebars-created-user" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <h3>Opret Bruger</h3>
+            <div class="vertical-filler-l"></div>
+            <div class="info-box">
+                <p>Tillykke!</p>
+                <p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den via det link jeg netop har send
+                    til dig :)</p>
+                <br>
+                <p>Med venlig hilsen,</p>
+                <p>Grand Master Kwon!</p>
+            </div>
+            <div class="vertical-filler-m"></div>
+            <button class="btn btn-link" type="button" onclick="pageIndex()">Til log ind siden.</button>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- SIGN IN -->
+    <script id="handlebars-sign-in-form" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <form>
+                <div class="widget-holder">
+                    <div class="widget">
+                        <div class="vertical-filler-l"></div>
+                        <input id="input-field-email" type="email" name="email" placeholder="email"
+                               autocomplete="current-email" class="text-form-field"
+                               required autofocus/>
+                        <input id="input-field-password" type="password" name="password" placeholder="password"
+                               autocomplete="current-password" class="text-form-field" required/>
+                    </div>
+                    <div class="widget">
+                        <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
+                        </button>
+                        <div class="vertical-filler-m"></div>
+                        <button class="btn btn-link" type="button" onclick="pageCreateUser()">Ny Bruger?</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- SIGN IN ERROR -->
+    <script id="handlebars-sign-in-form-error" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <form>
+                <div class="widget-holder">
+                    <div class="widget">
+                        <div class="vertical-filler-l"></div>
+                        <input id="input-field-email" type="email" name="email" placeholder="email"
+                               class="text-form-field"
+                               required/>
+                        <input id="input-field-password" type="password" name="password" placeholder="password"
+                               class="text-form-field" required/>
+                        <p class="clr-error">Email og/eller password er ikke korrekt</p>
+                    </div>
+                    <div class="widget">
+                        <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
+                        </button>
+                        <div class="vertical-filler-m"></div>
+                        <button class="btn btn-link" type="button" onclick="pageCreateUser()">Ny Bruger?</button>
+                        <button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- MAIN MENU -->
     <script id="handlebars-main-menu" type="text/x-handlebars-template">
         {% raw %}
         <div>
@@ -47,6 +122,21 @@
         {% endraw %}
     </script>
 
+    <!-- LOADING -->
+    <script id="handlebars-loading" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget"></div>
+            <div class="widget">
+                <img src="/static/svg/loading.svg"/>
+                <h3>Øjeblik...</h3>
+            </div>
+            <div class="widget"></div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- TOP BAR SIGNED IN -->
     <script id="handlebars-top-bar-signed-in" type="text/x-handlebars-template">
         {% raw %}
         <div>{{title}}</div>
@@ -54,12 +144,14 @@
         {% endraw %}
     </script>
 
+    <!-- TOP BAR SIGNED OUT -->
     <script id="handlebars-top-bar-signed-out" type="text/x-handlebars-template">
         {% raw %}
         <div>{{title}}</div>
         {% endraw %}
     </script>
 
+    <!-- QUIZ -->
     <script id="handlebars-quiz" type="text/x-handlebars-template">
         {% raw %}
         <div>

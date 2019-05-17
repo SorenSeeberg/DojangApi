@@ -2,15 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from database.schemas import User
+from mailer.mailer import send_activation_mail
 from query import access_token, user
 from query import validate_input_data
+from query import verification_token
 from database.db import SessionSingleton
 from typing import Dict
 import response_codes
 from response_codes import ResponseKeys
 
 
-def create_user(session: 'Session', data: Dict) -> Dict:
+def create(session: 'Session', data: Dict) -> Dict:
     input_schema = {
         "email": [str, True],
         "password": [str, True]
@@ -28,6 +30,9 @@ def create_user(session: 'Session', data: Dict) -> Dict:
                     ResponseKeys.message: 'Denne email er taget. Har du glemt dit password?'}
                 }
 
+    new_user: User = user.get_by_email(session, email)
+    send_activation_mail(email, verification_token.create(session, new_user.id))
+
     return {
         ResponseKeys.status: response_codes.ResponseCodes.created_201,
         ResponseKeys.body: {
@@ -38,12 +43,7 @@ def create_user(session: 'Session', data: Dict) -> Dict:
     }
 
 
-def get_user(session: 'Session', access_token_string: str) -> Dict:
-
-    if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
-
-    user_id: int = access_token.get_user_id_by_token(session, access_token_string)
+def get(session: 'Session', user_id: int) -> Dict:
     user_row: 'User' = user.get_by_id(session, user_id)
 
     return {
@@ -57,8 +57,11 @@ def get_user(session: 'Session', access_token_string: str) -> Dict:
     }
 
 
-def email_exists(session: 'Session', data: Dict) -> Dict:
+def get_paginated(session: 'Session', access_token_string: str) -> Dict:
+    raise NotImplementedError
 
+
+def email_exists(session: 'Session', data: Dict) -> Dict:
     input_schema = {
         "email": [str, True]
     }
@@ -74,6 +77,25 @@ def email_exists(session: 'Session', data: Dict) -> Dict:
             "email": email,
             "taken": user.email_exists(session, email)
         }
+    }
+
+
+def delete(session: 'Session', access_token_string: str) -> Dict:
+    raise NotImplementedError
+
+
+def activate(session: 'Session', verification_token_string: str) -> Dict:
+    verification_token_row = verification_token.get_by_token(session, verification_token_string)
+
+    if not verification_token_row:
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
+
+    user.update_confirmed(session, verification_token_row.userId, True, True, False)
+    verification_token.delete(session, verification_token_row.token, False)
+    session.commit()
+
+    return {
+        ResponseKeys.status: response_codes.ResponseCodes.ok_no_content_204,
     }
 
 
@@ -93,6 +115,10 @@ def sign_in(session: 'Session', data: Dict) -> Dict:
         return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404}
 
     user_row: User = user.get_by_email(session, email)
+
+    if not user_row.enabled or not user_row.confirmed:
+        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404}
+
     new_access_token: str = access_token.create(session, user_row.id)
 
     if not user_row.pwdHash == user.hash_password(password):
@@ -107,22 +133,13 @@ def sign_in(session: 'Session', data: Dict) -> Dict:
 
 
 def sign_out(session: 'Session', access_token_string: str) -> Dict:
-
-    if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
-
     if access_token.delete(session, token=access_token_string):
         return {ResponseKeys.status: response_codes.ResponseCodes.ok_200}
 
     return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
 
-def sign_out_all(session: 'Session', access_token_string: str) -> Dict:
-    user_id: int = access_token.get_user_id_by_token(session, access_token_string)
-
-    if not access_token.validate(session, access_token_string):
-        return {ResponseKeys.status: response_codes.ResponseCodes.unauthorized_401}
-
+def sign_out_all(session: 'Session', user_id: int) -> Dict:
     if access_token.delete_all_by_user_id(session, user_id=user_id):
         return {ResponseKeys.status: response_codes.ResponseCodes.ok_200}
 

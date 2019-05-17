@@ -1,11 +1,13 @@
 const routes = {
-    '': pageIndex,
     '/': pageIndex,
     '/sign-in': pageIndex,
-    '/menu': pageIndex,
+    '/welcome': pageIndex,
+    '/create-user': pageCreateUser,
     '/curriculum': ''
 
 };
+
+// pageLoading
 
 function handleRoute(): void {
     console.log('pathname');
@@ -13,14 +15,16 @@ function handleRoute(): void {
     routes[window.location.pathname]();
 }
 
-function pageIndex(): void {
-    const context = {title: "Dojang"};
+type Url = {
+    data: any;
+    title: string;
+    url: string;
+}
 
-    if (!getAccessToken()) {
-        componentSignIn();
-        componentTopBarSignedOut(context)
-    } else {
-        componentMainMenu();
-        componentTopBarSignedIn(context)
-    }
+function scilentRoute(url: Url): void {
+    const values = [...Object.keys(url).map(k => url[k])];
+    console.log(values);
+
+    history.replaceState(url.data, url.title, url.url);
+    // history.pushState(url.data, url.title, url.url);
 }

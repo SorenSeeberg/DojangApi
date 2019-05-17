@@ -2,10 +2,18 @@
     --header-font-color: rgb(28, 69, 135);
     --bright-font-color: white;
     --main-background: rgb(207, 226, 243);
+    --info-box-background: rgb(119, 168, 201);
     --primary: #649253;
     --primary-hover: #96c97d;
     --secondary: #4975b0;
     --secondary-hover: #6eb0d8;
+    --color-error: red;
+    --color-link: blue;
+    --color-link-hover: purple;
+
+    --color-primary: #ff7c81;
+    --color-secondary: #7cd7ff;
+    --color-tertiary: #ffec58;
 }
 
 * {
@@ -17,23 +25,40 @@ html {
     background: white;
 }
 
+
 .content {
-    max-width: 400px;
-    margin: auto;
+    display: flex;
+    flex-flow: column;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
     background: var(--main-background);
     font-family: 'Roboto', sans-serif;
     height: calc(100vh - 10px);
-    padding: 5px;
+
 }
 
-#header {
+header {
     display: flex;
-    flex-direction: row;
+    flex-flow: row;
     justify-content: space-between;
-    background: transparent;
-    color: var(--header-font-color);
+    align-items: center;
+    background: var(--color-secondary);
+    color: white;
     font-size: 40px;
-    height: 50px;
+    min-height: 50px;
+}
+
+article {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    align-content: stretch;
+}
+
+footer {
+    min-height: 50px;
+    background: var(--color-secondary);
 }
 
 h1, h2, h3 {
@@ -44,14 +69,26 @@ h1, h2, h3 {
 .header-profile {
     background: white;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
+    margin-right: 4px;
 }
 
-.form {
+.widget-holder {
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
+    flex: 1;
+    height: calc(100vh - 100px);
+    padding: 0 10px;
+}
+
+.widget {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
     align-items: center;
+    justify-content: flex-start;
+    /*border: 1px solid red;*/
 }
 
 .text-form-field {
@@ -63,11 +100,38 @@ h1, h2, h3 {
     padding: 3px;
 }
 
+.clr-error {
+    color: var(--color-error);
+}
+
+.info-box {
+    background: transparent;
+    border: 2px dashed var(--header-font-color);
+    border-radius: 4px;
+    color: var(--header-font-color);
+    padding: 10px;
+    margin: 3px;
+}
+
 .btn {
     cursor: pointer;
     color: var(--bright-font-color);
     border: none;
     font-size: 18px;
+    border-radius: 4px;
+}
+
+.btn-link {
+    font-size: 16px;
+    text-decoration: underline;
+    color: var(--color-link);
+    background: transparent;
+    border: none;
+}
+
+.btn-link:hover {
+    color: var(--color-link-hover);
+    cursor: pointer;
 }
 
 .btn:disabled {
