@@ -1,6 +1,12 @@
 const ACCESS_TOKEN_KEY: string = 'accessToken';
 const QUIZ_TOKEN_KEY: string = 'quizToken';
 
+function getAuthorizationHeader(): Headers {
+    let headers = new Headers();
+    headers.append('Authorization', getAccessToken());
+    return headers
+}
+
 function getAccessToken(): string {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
 }

@@ -17,14 +17,14 @@
                 <div class="widget-holder">
                     <div class="widget">
                         <div class="vertical-filler-l"></div>
-                        <input id="input-field-email" type="email" name="email" placeholder="email"
-                               class="text-form-field"
+                        <label>Email</label>
+                        <input id="input-field-email" class="text-form-field" type="email" name="email" required/>
+                        <label>Password</label>
+                        <input id="input-field-password" class="text-form-field" type="password" name="password"
                                required/>
-                        <input id="input-field-password" type="password" name="password" placeholder="password"
-                               class="text-form-field" required/>
-                        <input id="input-field-password-repeat" type="password" name="repeatPassword"
-                               placeholder="gentag password"
-                               class="text-form-field" required/>
+                        <label>Password gentaget</label>
+                        <input id="input-field-password-repeat" class="text-form-field" type="password"
+                               name="repeatPassword" required/>
                     </div>
                     <div class="widget">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleCreateUser()">Opret
@@ -32,26 +32,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-        {% endraw %}
-    </script>
-
-    <!-- CREATED USER SUCCESS -->
-    <script id="handlebars-created-user" type="text/x-handlebars-template">
-        {% raw %}
-        <div>
-            <h3>Opret Bruger</h3>
-            <div class="vertical-filler-l"></div>
-            <div class="info-box">
-                <p>Tillykke!</p>
-                <p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den via det link jeg netop har send
-                    til dig :)</p>
-                <br>
-                <p>Med venlig hilsen,</p>
-                <p>Grand Master Kwon!</p>
-            </div>
-            <div class="vertical-filler-m"></div>
-            <button class="btn btn-link" type="button" onclick="pageIndex()">Til log ind siden.</button>
         </div>
         {% endraw %}
     </script>
@@ -64,45 +44,19 @@
                 <div class="widget-holder">
                     <div class="widget">
                         <div class="vertical-filler-l"></div>
-                        <input id="input-field-email" type="email" name="email" placeholder="email"
-                               autocomplete="current-email" class="text-form-field"
-                               required autofocus/>
-                        <input id="input-field-password" type="password" name="password" placeholder="password"
-                               autocomplete="current-password" class="text-form-field" required/>
-                    </div>
-                    <div class="widget">
-                        <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
-                        </button>
-                        <div class="vertical-filler-m"></div>
-                        <button class="btn btn-link" type="button" onclick="pageCreateUser()">Ny Bruger?</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        {% endraw %}
-    </script>
-
-    <!-- SIGN IN ERROR -->
-    <script id="handlebars-sign-in-form-error" type="text/x-handlebars-template">
-        {% raw %}
-        <div>
-            <form>
-                <div class="widget-holder">
-                    <div class="widget">
-                        <div class="vertical-filler-l"></div>
-                        <input id="input-field-email" type="email" name="email" placeholder="email"
-                               class="text-form-field"
+                        <label for="input-field-email">Email</label>
+                        <input id="input-field-email" type="email" name="email" class="text-form-field" required autofocus/>
+                        <label for="input-field-password">Password</label>
+                        <input id="input-field-password" type="password" name="password" class="text-form-field"
                                required/>
-                        <input id="input-field-password" type="password" name="password" placeholder="password"
-                               class="text-form-field" required/>
-                        <p class="clr-error">Email og/eller password er ikke korrekt</p>
+                        {{{message}}}
                     </div>
                     <div class="widget">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
                         </button>
                         <div class="vertical-filler-m"></div>
                         <button class="btn btn-link" type="button" onclick="pageCreateUser()">Ny Bruger?</button>
-                        <button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>
+                        {{{extra}}}
                     </div>
                 </div>
             </form>
@@ -113,11 +67,63 @@
     <!-- MAIN MENU -->
     <script id="handlebars-main-menu" type="text/x-handlebars-template">
         {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <div class="vertical-filler-l"></div>
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Pensum</button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- QUIZ CATEGORY -->
+    <script id="handlebars-quiz-category" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <div class="vertical-filler-l"></div>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
+                    Quiz
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">1. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">2. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">3. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">4. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">5. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">6. dan</button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- QUIZ CONFIGURATION -->
+    <script id="handlebars-quiz-configuration" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <div class="vertical-filler-l"></div>
+                {{{select}}}
+                <div class="vertical-filler-m"></div>
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuiz()">Start</button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- INFO PAGE -->
+    <script id="handlebars-info" type="text/x-handlebars-template">
+        {% raw %}
         <div>
             <div class="vertical-filler-l"></div>
-            <button class="btn btn-large-wide btn-primary" type="button" onclick="handleSignIn()">Ny Quiz</button>
-            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Pensum</button>
-            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Admin</button>
+            <div class="info-box">
+                <div class="vertical-filler-s"></div>
+                {{{ message }}}
+                <div class="vertical-filler-s"></div>
+            </div>
+            <div class="vertical-filler-m"></div>
+            <button class="btn btn-link" type="button" onclick="{{buttonAction}}">{{buttonText}}</button>
         </div>
         {% endraw %}
     </script>
@@ -139,7 +145,7 @@
     <!-- TOP BAR SIGNED IN -->
     <script id="handlebars-top-bar-signed-in" type="text/x-handlebars-template">
         {% raw %}
-        <div>{{title}}</div>
+        <div class="title" onclick="pageIndex()">{{title}}</div>
         <div class='header-profile'></div>
         {% endraw %}
     </script>
@@ -147,7 +153,7 @@
     <!-- TOP BAR SIGNED OUT -->
     <script id="handlebars-top-bar-signed-out" type="text/x-handlebars-template">
         {% raw %}
-        <div>{{title}}</div>
+        <div class="title" onclick="pageIndex()">{{title}}</div>
         {% endraw %}
     </script>
 
@@ -165,7 +171,7 @@
         {% endraw %}
     </script>
 </head>
-<body onload="handleRoute()">
+<body onload="spaRouter()">
 <div class="content">
     <header id='header'></header>
     <article id='article'></article>

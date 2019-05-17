@@ -3,13 +3,14 @@
 
 import random
 import time
+from functools import lru_cache
 from typing import List, Dict
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
 from exceptions import Exceptions
 import response_codes
 from database import db
-from query import category, option, curriculum, question, quiz, result
+from query import category, option, curriculum, question, quiz, result, level
 from query import answer as query_answer
 from query import validate_input_data
 import config
@@ -90,6 +91,39 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
     except ArgumentError as e:
         print(e)
         return {ResponseKeys.status: response_codes.ResponseCodes.internal_server_error_500}
+
+
+@lru_cache()
+def get_configuration(session: 'Session') -> Dict:
+    """ Get quiz configuration options """
+
+    categories = list(category.get_categories(session))
+    categories.insert(0, "Fuld pensum")
+    levels = level.get_names(session)
+
+    return {ResponseKeys.status: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body: {
+                "categories": categories,
+                "levelMin": levels,
+                "levelMax": levels,
+                "questionCount": [10, 25, 50],
+                "optionCount": [3, 4, 5],
+                "timeLimit": [0, 10, 15, 20, 30],
+                "displayNames": {
+                    "categories": 'Kategorier',
+                    "levelMax": "Højeste bælte",
+                    "levelMin": "Laveste bælte",
+                    "questionCount": "Antal spørgsmål",
+                    "optionCount": "Antal svarmuligheder",
+                    "timeLimit": "Tidsgrænse i minutter"
+                    }
+                }
+            }
+
+
+def get_predefined_configurations() -> Dict:
+    # todo : move into database
+    raise NotImplementedError
 
 
 def get(session: 'Session', quiz_token: str) -> Dict:

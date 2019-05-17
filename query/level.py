@@ -42,6 +42,11 @@ def get_by_id(session: 'Session', id: int) -> Level:
         raise Exception
 
 
+def get_names(session: 'Session') -> List[str]:
+    # todo : these should be pulled from database at some point
+    return LEVEL_NAMES
+
+
 LEVEL_NAMES = ["10. kup", "9. kup", "8. kup", "7. kup", "6. kup", "5. kup", "4. kup", "3. kup", "2. kup", "1. kup",
                "1. dan", "2. dan", "3. dan", "4. dan", "5. dan", "6. dan", "Teori"]
 

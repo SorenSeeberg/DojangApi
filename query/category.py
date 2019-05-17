@@ -42,6 +42,10 @@ def get_by_id(session: 'Session', id: int) -> Category:
         raise Exception
 
 
+def get_categories(session: 'Session') -> List[str]:
+    return CATEGORY_NAMES
+
+
 CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal', 'Teori']
 
 

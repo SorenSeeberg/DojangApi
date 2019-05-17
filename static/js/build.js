@@ -36,54 +36,93 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var TITLE_CONTEXT = { title: 'Dojang' };
 function pageIndex() {
     if (!getAccessToken()) {
-        scilentRoute({ data: null, title: '', url: 'sign-in' });
-        componentTopBarSignedOut(TITLE_CONTEXT);
-        componentSignIn();
+        historyRouter({ data: null, title: '', url: routeNames.signIn });
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateSignIn();
     }
     else {
-        scilentRoute({ data: null, title: '', url: 'welcome' });
-        componentTopBarSignedIn(TITLE_CONTEXT);
-        componentMainMenu();
+        historyRouter({ data: null, title: '', url: routeNames.frontPage });
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateMainMenu();
     }
 }
 function pageCreateUser() {
     if (!getAccessToken()) {
-        scilentRoute({ data: null, title: 'Hello', url: 'create-user' });
-        componentTopBarSignedOut(TITLE_CONTEXT);
-        componentCreateUser();
+        historyRouter({ data: null, title: '', url: routeNames.createUser });
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateCreateUser();
     }
     else {
         pageIndex();
     }
 }
-function pageCreatedUserSuccess() {
-    scilentRoute({ data: null, title: '', url: '' });
-    componentTopBarSignedOut(TITLE_CONTEXT);
-    componentCreatedUser();
+function pageInfo(context) {
+    historyRouter({ data: null, title: '', url: '' });
+    templateTopBarSignedOut(TITLE_CONTEXT);
+    templateInfo(context);
+}
+function pageInfo401() {
+    pageInfo({ message: "<h1>401 Unauthorized</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden" });
+}
+function pageInfo404() {
+    pageInfo({ message: "<h1>404 Not Found</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden" });
 }
 function pageLoading(loggedIn) {
     if (loggedIn === void 0) { loggedIn = true; }
     loggedIn
-        ? componentTopBarSignedIn(TITLE_CONTEXT)
-        : componentTopBarSignedOut(TITLE_CONTEXT);
+        ? templateTopBarSignedIn(TITLE_CONTEXT)
+        : templateTopBarSignedOut(TITLE_CONTEXT);
     templateLoading();
 }
-var routes = {
-    '/': pageIndex,
-    '/sign-in': pageIndex,
-    '/welcome': pageIndex,
-    '/create-user': pageCreateUser,
-    '/curriculum': ''
+function pageQuizCategory() {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        historyRouter({ data: null, title: '', url: routeNames.quizCategory });
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateQuizCategory();
+    }
+}
+function pageQuizConfig(config) {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        historyRouter({ data: null, title: '', url: routeNames.quizConfig });
+        handleGetQuizConfiguration();
+    }
+}
+var _a;
+var routeNames = {
+    index: '/',
+    signIn: '/log-ind',
+    frontPage: '/forside',
+    createUser: '/opret-bruger',
+    quizCategory: '/quiz-category',
+    quizConfig: '/quiz-configuration',
+    curriculum: '/pensum'
 };
-function handleRoute() {
-    console.log('pathname');
+var routes = (_a = {},
+    _a[routeNames.index] = pageIndex,
+    _a[routeNames.signIn] = pageIndex,
+    _a[routeNames.frontPage] = pageIndex,
+    _a[routeNames.createUser] = pageCreateUser,
+    _a[routeNames.curriculum] = pageIndex,
+    _a[routeNames.quizCategory] = pageQuizCategory,
+    _a[routeNames.quizConfig] = pageQuizConfig,
+    _a);
+function spaRouter() {
+    console.log('spaRouter');
     console.log(window.location.pathname);
+    console.log(routes);
     routes[window.location.pathname]();
 }
-function scilentRoute(url) {
-    var values = Object.keys(url).map(function (k) { return url[k]; }).slice();
-    console.log(values);
-    history.replaceState(url.data, url.title, url.url);
+function historyRouter(url) {
+    console.log('historyRouter');
+    console.log(url);
+    console.log(routes);
+    history.pushState(url.data, url.title, url.url);
 }
 function setTemplate(templateId, contentTarget, context) {
     if (context === void 0) { context = {}; }
@@ -93,25 +132,36 @@ function setTemplate(templateId, contentTarget, context) {
     var contentContainer = document.getElementById(contentTarget);
     contentContainer.innerHTML = html;
 }
-function componentMainMenu() {
+function templateQuizCategory() {
+    setTemplate("handlebars-quiz-category", "article");
+}
+function templateQuizConfig(config) {
+    var select = [];
+    console.log('templateQuizConfig');
+    console.log(config);
+    Object.keys(config).forEach(function (k) {
+        if (k !== 'displayNames') {
+            select.push("<label>" + config['displayNames'][k] + "</label><select>" + config[k].map(function (o) { return "<option>" + o + "</option>"; }).join('') + "</select>");
+        }
+    });
+    setTemplate("handlebars-quiz-configuration", "article", { select: select.join('') });
+}
+function templateMainMenu() {
     setTemplate("handlebars-main-menu", "article");
 }
-function componentSignIn() {
-    setTemplate('handlebars-sign-in-form', "article");
+function templateSignIn(context) {
+    setTemplate('handlebars-sign-in-form', "article", context);
 }
-function templateSignInError() {
-    setTemplate('handlebars-sign-in-form-error', "article");
-}
-function componentCreateUser() {
+function templateCreateUser() {
     setTemplate('handlebars-create-user', "article");
 }
-function componentCreatedUser() {
-    setTemplate('handlebars-created-user', "article");
+function templateInfo(context) {
+    setTemplate('handlebars-info', "article", context);
 }
-function componentTopBarSignedIn(context) {
+function templateTopBarSignedIn(context) {
     setTemplate("handlebars-top-bar-signed-in", "header", context);
 }
-function componentTopBarSignedOut(context) {
+function templateTopBarSignedOut(context) {
     setTemplate("handlebars-top-bar-signed-out", "header", context);
 }
 function templateLoading() {
@@ -119,6 +169,11 @@ function templateLoading() {
 }
 var ACCESS_TOKEN_KEY = 'accessToken';
 var QUIZ_TOKEN_KEY = 'quizToken';
+function getAuthorizationHeader() {
+    var headers = new Headers();
+    headers.append('Authorization', getAccessToken());
+    return headers;
+}
 function getAccessToken() {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
@@ -139,16 +194,13 @@ function clearQuizToken() {
 }
 function handleSignIn() {
     return __awaiter(this, void 0, void 0, function () {
-        var email, password, formData, response, responseObject;
+        var email, password, response, responseObject;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     email = document.getElementById('input-field-email');
                     password = document.getElementById('input-field-password');
                     templateLoading();
-                    formData = new FormData();
-                    formData.append('email', email.value);
-                    formData.append('password', password.value);
                     return [4, fetch('/users/sign-in', {
                             body: formData,
                             method: "post"
@@ -163,7 +215,10 @@ function handleSignIn() {
                         pageIndex();
                         return [2, true];
                     }
-                    templateSignInError();
+                    templateSignIn({
+                        message: '<p class="clr-error">Email og/eller password er ikke korrekt</p>',
+                        extra: '<button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>'
+                    });
                     return [2, false];
             }
         });
@@ -171,14 +226,35 @@ function handleSignIn() {
 }
 function handleCreateUser() {
     return __awaiter(this, void 0, void 0, function () {
-        var email, password, passwordRepeat, formData, response, responseObject;
+        var email, password, passwordRepeat, formData, response, responseObject, message;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     email = document.getElementById('input-field-email');
                     password = document.getElementById('input-field-password');
                     passwordRepeat = document.getElementById('input-field-password-repeat');
+                    if (!email) {
+                        pageInfo({
+                            message: "Du skal indtaste en email",
+                            buttonAction: 'pageCreateUser()',
+                            buttonText: 'Create User'
+                        });
+                        return [2];
+                    }
                     if (password.value !== passwordRepeat.value) {
+                        pageInfo({
+                            message: "Passwords skal være forskelige",
+                            buttonAction: 'pageCreateUser()',
+                            buttonText: 'Create User'
+                        });
+                        return [2];
+                    }
+                    if (!password.value || !passwordRepeat.value) {
+                        pageInfo({
+                            message: "Du skal indtaste et password",
+                            buttonAction: 'pageCreateUser()',
+                            buttonText: 'Create User'
+                        });
                         return [2];
                     }
                     pageLoading(false);
@@ -195,9 +271,88 @@ function handleCreateUser() {
                 case 2:
                     responseObject = _a.sent();
                     if (responseObject.status === 201) {
-                        pageCreatedUserSuccess();
+                        message = "<p>Tillykke!</p><p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
+                            " via det link jeg netop har send til dig :)</p><br><p>Med venlig hilsen,</p><p>Grand Master Kwon!</p>";
+                        pageInfo({ message: message, buttonText: 'Til Log Ind', buttonAction: 'pageIndex()' });
                         return [2, true];
                     }
+                    pageInfo({
+                        message: "Emailen er allerede optaget. Måske har du glemt dit password?",
+                        buttonAction: 'pageCreateUser()',
+                        buttonText: 'Create User'
+                    });
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleGetQuizConfiguration() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseObject;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    templateLoading();
+                    return [4, fetch('/quiz/configuration', {
+                            method: "get",
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        templateTopBarSignedIn(TITLE_CONTEXT);
+                        templateQuizConfig(responseObject.body);
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleCreateNewQuiz() {
+    return __awaiter(this, void 0, void 0, function () {
+        var quiz, response, responseObject, quiz_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    quiz = {
+                        categoryId: 2,
+                        levelMin: 3,
+                        levelMax: 8,
+                        questionCount: 25,
+                        optionCount: 3,
+                        timeLimit: 10
+                    };
+                    templateLoading();
+                    return [4, fetch('/quiz', {
+                            method: "post",
+                            body: JSON.stringify(quiz),
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 201) {
+                        quiz_1 = responseObject.body;
+                        setQuizToken(quiz_1.quizToken);
+                        pageInfo({ message: 'Yep', buttonAction: 'pageIndex()', buttonText: 'Hell Yes!' });
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
                     return [2, false];
             }
         });

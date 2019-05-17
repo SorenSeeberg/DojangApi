@@ -5,7 +5,6 @@ import os
 import json
 from typing import Dict
 from flask import Flask, redirect, url_for, request, make_response, render_template, send_from_directory
-
 import response_codes
 from authorization import is_authorized
 from query import access_token
@@ -38,10 +37,13 @@ def favicon():
 
 # SPA ROUTES
 
+@app.route('/pensum')
 @app.route('/quiz')
-@app.route('/welcome')
-@app.route('/sign-in')
-@app.route('/create-user')
+@app.route('/quiz-category')
+@app.route('/quiz-configuration')
+@app.route('/forside')
+@app.route('/log-ind')
+@app.route('/opret-bruger')
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -147,6 +149,19 @@ def create_quiz():
     user_id: int = access_token.get_user_id_by_token(session, access_token_string)
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = quiz.create(session, user_id, data)
+    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
+
+
+@app.route('/quiz/configuration', methods=['GET'])
+def get_quiz_configuration():
+    session = db.SessionSingleton().get_session()
+    access_token_string: str = _get_access_token()
+
+    # Authorization
+    if not is_authorized(session, access_token_string, role='user'):
+        return _unauthorized_response()
+
+    return_data: Dict = quiz.get_configuration(session)
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 

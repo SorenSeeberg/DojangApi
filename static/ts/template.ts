@@ -5,10 +5,11 @@ type Template =
     | 'handlebars-main-menu'
     | 'handlebars-top-bar-signed-in'
     | 'handlebars-top-bar-signed-out'
-    | 'handlebars-sign-in-form-error'
     | 'handlebars-create-user'
-    | 'handlebars-created-user'
-    | 'handlebars-loading';
+    | 'handlebars-info'
+    | 'handlebars-loading'
+    | 'handlebars-quiz-category'
+    | 'handlebars-quiz-configuration';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
@@ -21,32 +22,53 @@ function setTemplate(templateId: Template, contentTarget: ContentTarget, context
     contentContainer.innerHTML = html;
 }
 
+function templateQuizCategory(): void {
+    setTemplate("handlebars-quiz-category", "article")
+}
 
-function componentMainMenu(): void {
+function templateQuizConfig(config: QuizConfigurationOptions): void {
+    let select = [];
+
+    console.log('templateQuizConfig');
+    console.log(config);
+
+    Object.keys(config).forEach(k =>{
+        if (k !== 'displayNames') {
+            select.push(`<label>${config['displayNames'][k]}</label><select>${config[k].map(o => `<option>${o}</option>`).join('')}</select>`)
+        }
+    }
+    );
+
+    setTemplate("handlebars-quiz-configuration", "article", {select: select.join('')})
+}
+
+function templateMainMenu(): void {
     setTemplate("handlebars-main-menu", "article")
 }
 
-function componentSignIn(): void {
-    setTemplate('handlebars-sign-in-form', "article");
+function templateSignIn(context?:{message:string, extra:string}): void {
+    setTemplate('handlebars-sign-in-form', "article", context);
 }
 
-function templateSignInError(): void {
-    setTemplate('handlebars-sign-in-form-error', "article");
-}
-
-function componentCreateUser(): void {
+function templateCreateUser(): void {
     setTemplate('handlebars-create-user', "article");
 }
 
-function componentCreatedUser(): void {
-    setTemplate('handlebars-created-user', "article");
+type ComponentInfo = {
+    message: string;
+    buttonAction: string;
+    buttonText: string;
 }
 
-function componentTopBarSignedIn(context: { title: string }): void {
+function templateInfo(context: ComponentInfo): void {
+    setTemplate('handlebars-info', "article", context);
+}
+
+function templateTopBarSignedIn(context: { title: string }): void {
     setTemplate("handlebars-top-bar-signed-in", "header", context)
 }
 
-function componentTopBarSignedOut(context: { title: string }): void {
+function templateTopBarSignedOut(context: { title: string }): void {
     setTemplate("handlebars-top-bar-signed-out", "header", context)
 }
 
