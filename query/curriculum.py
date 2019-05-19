@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from database.schemas import Curriculum
 from sqlalchemy.orm.exc import NoResultFound
 from data.import_data import extract_curriculum
+from functools import lru_cache
 
 
 def create_many(session: 'Session', curriculum: List[List], commit=True) -> bool:
@@ -22,6 +23,7 @@ def create_many(session: 'Session', curriculum: List[List], commit=True) -> bool
         raise Exception
 
 
+@lru_cache(maxsize=512)
 def get_by_id(session: 'Session', curriculum_id: int) -> Curriculum:
     try:
         return session.query(Curriculum).get(curriculum_id)
@@ -31,6 +33,7 @@ def get_by_id(session: 'Session', curriculum_id: int) -> Curriculum:
         raise Exception
 
 
+@lru_cache(maxsize=512)
 def get_by_level_and_category(session: 'Session', category_id: int, level_min: int, level_max: int) -> List[Curriculum]:
     try:
         return session.query(Curriculum).filter(Curriculum.categoryId == category_id, Curriculum.levelId >= level_min,

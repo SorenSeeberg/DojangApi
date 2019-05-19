@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import time
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
@@ -18,6 +19,7 @@ def create(session: 'Session',
            commit=True) -> Quiz:
 
     try:
+        creation_time = int(time.time())
         quiz_row: Quiz = Quiz(
             token=str(uuid4()),
             questionCount=question_count,
@@ -27,7 +29,8 @@ def create(session: 'Session',
             categoryId=category_id,
             userId=user_id,
             levelMin=level_min,
-            levelMax=level_max
+            levelMax=level_max,
+            timeStart=creation_time
         )
 
         session.add(quiz_row)

@@ -6,7 +6,8 @@ const routeNames = {
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
     quiz: '/quiz',
-    curriculum: '/pensum'
+    curriculum: '/pensum',
+    result: '/resultat'
 };
 
 const routes: { [key: string]: () => void } = {
@@ -17,7 +18,8 @@ const routes: { [key: string]: () => void } = {
     [routeNames.curriculum]: pageIndex,
     [routeNames.quizCategory]: pageQuizCategory,
     [routeNames.quizConfig]: pageQuizConfig,
-    [routeNames.quiz]: pageQuiz
+    [routeNames.quiz]: pageQuiz,
+    [routeNames.result]: pageQuizResult
 };
 
 function spaRouter(): void {

@@ -71,9 +71,11 @@
         <div class="widget-holder">
             <div class="widget">
                 <div class="vertical-filler-l"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz &#10026;
                 </button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">Pensum</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageInfoNotImplemented()">
+                    Pensum
+                </button>
             </div>
         </div>
         {% endraw %}
@@ -103,11 +105,17 @@
         <div class="widget-holder">
             <div class="widget">
                 <h2>{{category}}</h2>
-                <div class="vertical-filler-m"></div>
+                <div class="vertical-filler-s"></div>
+                <div class="info-box align-content-center-top">
+                    {{{stars}}}
+                </div>
+                <div class="vertical-filler-s"></div>
                 <p>Rigtige: {{percentageCorrect}}%</p>
                 <p>Tid: {{timeSpent}} minutter</p>
-                <h3>Svar</h3>
+                <div class="vertical-filler-s"></div>
+                <h3>Dine svar</h3>
                 {{{answers}}}
+                <div class="vertical-filler-m"></div>
                 <button class="btn btn-large btn-secondary" type="button" onclick="pageIndex()">Afslut</button>
             </div>
         </div>

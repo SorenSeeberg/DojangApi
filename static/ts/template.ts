@@ -50,7 +50,7 @@ function templateQuiz(context: {percentageComplete: number, progressBarText: str
     setTemplate("handlebars-quiz", "article", context)
 }
 
-function templateQuizResult(context: {percentageCorrect: number, category: string, timeSpent: string, answers: string}): void {
+function templateQuizResult(context: {stars: string, percentageCorrect: number, category: string, timeSpent: string, answers: string}): void {
     setTemplate("handlebars-quiz-result", "article", context)
 }
 

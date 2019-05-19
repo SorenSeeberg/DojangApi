@@ -36,6 +36,19 @@ type Quiz = {
     currentQuestion: Question;
 }
 
+type Answer = {
+    text: string;
+    correct: boolean;
+}
+
+type Result = {
+    categoryName: string;
+    quizToken: string;
+    percentageCorrect: number;
+    timeSpent: number;
+    answers: Answer[];
+}
+
 async function handleGetQuizConfiguration() {
 
     templateLoading();
@@ -88,7 +101,26 @@ async function handleCreateNewQuiz(quizConfig: QuizConfiguration = quizConfigTem
 }
 
 async function handleGetResult() {
+    const quizToken = getQuizToken();
 
+    let response = await fetch(`/quiz/result/${quizToken}`, {
+        method: "get",
+        headers: getAuthorizationHeader()
+    });
+
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        const result: Result = responseObject.body;
+        pageQuizResult(result);
+        return true;
+    }
+    if (responseObject.status === 401) {
+        pageInfo401();
+        return false;
+    }
+    pageInfo404();
+    return false;
 }
 
 async function handleGetQuiz() {
@@ -100,16 +132,14 @@ async function handleGetQuiz() {
     });
     let responseObject = await response.json();
 
-
     if (responseObject.status === 200) {
         const quiz: Quiz = responseObject.body;
         if (!responseObject.body.complete) {
             pageQuiz(quiz);
         } else {
             console.log('Complete!');
-
-            clearQuizToken();
-            pageQuizResult(quiz);
+            pageLoading();
+            await handleGetResult();
         }
         return true;
     }
@@ -119,6 +149,10 @@ async function handleGetQuiz() {
     }
     pageInfo404();
     return false;
+}
+
+async function handleClearQuiz() {
+
 }
 
 async function handleAnswerQuestion(optionIndex: number) {

@@ -9,11 +9,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import ArgumentError
 from exceptions import Exceptions
 import response_codes
-from database import db
 from query import category, option, curriculum, question, quiz, result, level
 from query import answer as query_answer
 from query import validate_input_data
-import config
 from response_codes import ResponseKeys
 
 
@@ -27,14 +25,23 @@ def _create_question(
         level_max: int):
     """ Creates a question with answer options. Not committed to db """
 
+    if category_id == 0:
+        category_id: int = random.randrange(1, category.count() + 1)
+
     curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
-    options_curriculum: List['Curriculum'] = random.sample(population=set(curriculum_rows), k=option_count)
-    answer_id: int = random.choice(options_curriculum).id
+    curriculum_ids: List[int] = [row.id for row in curriculum_rows]
+
+    if len(curriculum_ids) >= option_count:
+        option_ids: List[int] = random.sample(population=set(curriculum_ids), k=option_count)
+    else:
+        option_ids: List[int] = [random.choice(curriculum_ids) for i in range(option_count)]
+
+    answer_id: int = random.choice(option_ids)
 
     question_row: 'Question' = question.create(session, quiz_id, answer_id, question_number, commit=False)
     session.flush()
-    [option.create(session, o.id, question_row.quizId, question_row.id, i, commit=False) for i, o in
-     enumerate(options_curriculum)]
+    [option.create(session, o, question_row.quizId, question_row.id, i, commit=False) for i, o in
+     enumerate(option_ids)]
 
 
 def create(session: 'Session', user_id: int, data: Dict) -> Dict:
@@ -119,10 +126,15 @@ def get(session: 'Session', quiz_token: str) -> Dict:
                 "options": options
             }
 
+        if quiz_row.categoryId == 0:
+            title = 'Fuld Pensum'
+        else:
+            title = category.get_by_id(session, quiz_row.categoryId).name
+
         return {
             ResponseKeys.status: response_codes.ResponseCodes.ok_200,
             ResponseKeys.body: {
-                "title": category.get_by_id(session, quiz_row.categoryId).name,
+                "title": title,
                 "quizToken": quiz_row.token,
                 "complete": quiz_row.complete,
                 "totalQuestions": quiz_row.questionCount,
@@ -143,7 +155,7 @@ def get(session: 'Session', quiz_token: str) -> Dict:
 def get_configuration(session: 'Session') -> Dict:
     """ Get quiz configuration options """
 
-    categories = list(category.get_categories(session))
+    categories = list(category.get(session))
     categories.insert(0, "Fuld pensum")
     levels = level.get_names(session)
 
@@ -168,7 +180,7 @@ def get_configuration(session: 'Session') -> Dict:
 
 
 def get_predefined_configurations() -> Dict:
-    # todo : move into database
+    # TODO : move into database
     raise NotImplementedError
 
 
@@ -218,8 +230,28 @@ def get_current_question(session: 'Session', quiz_token: str) -> Dict:
                 'message': 'Quiz not found'}
 
 
-def get_result() -> Dict:
-    raise NotImplementedError
+def get_result(session: 'Session', quiz_token: str) -> Dict:
+
+    quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+    result_row: 'Result' = result.get_by_quiz_token(session, quiz_token)
+    answer_rows = query_answer.get_by_quiz_id(session, quiz_row.id)
+    percentage_correct: int = int(result_row.correctCount / (result_row.correctCount + result_row.incorrectCount) * 100)
+
+    if quiz_row.categoryId == 0:
+        category_name: str = 'Fuld Pensum'
+    else:
+        category_name: str = category.get_by_id(session, quiz_row.categoryId).name
+
+    return {
+            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body: {
+                'categoryName': category_name,
+                'quizToken': quiz_row.token,
+                'percentageCorrect': percentage_correct,
+                'timeSpent': result_row.timeSpent,
+                'answers': [{'text': curriculum.get_by_id(session, a.curriculumId).key, 'correct': a.correct} for a in answer_rows]
+            }
+        }
 
 
 def get_results() -> Dict:
@@ -255,9 +287,6 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
 
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
     option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
-
-    print(quiz_row.currentQuestion, quiz_row.questionCount)
-    print(quiz_row.complete)
 
     """ Creating answer row  """
     query_answer.create(session=session,
@@ -334,54 +363,54 @@ def delete(session: 'Session', quiz_token: str, commit=True) -> bool:
     return False
 
 
-def _new_quiz(session):
-    print(db.to_json(
-        create(
-            session=session,
-            data={
-                'questionCount': 10,
-                'optionCount': 3,
-                'categoryId': 2,
-                'levelMin': 3,
-                'levelMax': 8
-            }
-        )
-    ))
-
-
-def _current_question(session):
-    print(db.to_json(get_current_question(
-        session=session,
-        quiz_token=config.DEBUG_QUIZ_TOKEN))
-    )
-
-
-def _answer_question(session):
-    print(db.to_json(answer(
-        session=session,
-        quiz_token=config.DEBUG_QUIZ_TOKEN,
-        data={
-            'optionIndex': random.randrange(3)
-        }
-    )
-    ))
-
-
-def _get_quiz(session):
-    print(db.to_json(get(
-        session=session,
-        quiz_token=config.DEBUG_QUIZ_TOKEN))
-    )
-
-
-def _delete_quiz(session):
-    print(db.to_json(delete(
-        session=session,
-        quiz_token=config.DEBUG_QUIZ_TOKEN))
-    )
-
-    if __name__ == '__main__':
-        _session = db.SessionSingleton().get_session()
+# def _new_quiz(session):
+#     print(db.to_json(
+#         create(
+#             session=session,
+#             data={
+#                 'questionCount': 10,
+#                 'optionCount': 3,
+#                 'categoryId': 2,
+#                 'levelMin': 3,
+#                 'levelMax': 8
+#             }
+#         )
+#     ))
+#
+#
+# def _current_question(session):
+#     print(db.to_json(get_current_question(
+#         session=session,
+#         quiz_token=config.DEBUG_QUIZ_TOKEN))
+#     )
+#
+#
+# def _answer_question(session):
+#     print(db.to_json(answer(
+#         session=session,
+#         quiz_token=config.DEBUG_QUIZ_TOKEN,
+#         data={
+#             'optionIndex': random.randrange(3)
+#         }
+#     )
+#     ))
+#
+#
+# def _get_quiz(session):
+#     print(db.to_json(get(
+#         session=session,
+#         quiz_token=config.DEBUG_QUIZ_TOKEN))
+#     )
+#
+#
+# def _delete_quiz(session):
+#     print(db.to_json(delete(
+#         session=session,
+#         quiz_token=config.DEBUG_QUIZ_TOKEN))
+#     )
+#
+#     if __name__ == '__main__':
+#         _session = db.SessionSingleton().get_session()
 
     # for x in range(100):
     #     _new_quiz(_session)

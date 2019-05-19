@@ -17,9 +17,11 @@ def list_to_dict(labels: List[str]) -> Dict:
 
 category_names_dict = list_to_dict(CATEGORY_NAMES)
 belt_names_dict = list_to_dict(LEVEL_NAMES)
+category_names = set()
 
 
 def extract_row(row) -> List:
+    category_names.add(row[2])
     return [row[0], row[1], category_names_dict.get(row[2].lower(), -1), belt_names_dict.get(row[3].lower(), -1)]
 
 
@@ -34,4 +36,4 @@ def extract_curriculum() -> List[List]:
 if __name__ == '__main__':
 
     [print(row) for row in extract_curriculum()]
-
+    print(category_names)

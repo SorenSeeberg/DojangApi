@@ -84,6 +84,15 @@ function pageInfo404() {
         buttonText: "Til forsiden"
     });
 }
+function pageInfoNotImplemented() {
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "Not Implemented",
+        message: "På vej",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
+}
 function pageLoading(loggedIn) {
     if (loggedIn === void 0) { loggedIn = true; }
     loggedIn
@@ -128,12 +137,30 @@ function pageQuiz(quiz) {
         templateQuiz(context);
     }
 }
-function pageQuizResult(quiz) {
+function pageQuizResult(result) {
     if (!getAccessToken()) {
         pageIndex();
     }
     else {
-        var context = { category: quiz.title, percentageCorrect: 80, timeSpent: '1:43', answers: '' };
+        historyRouter({ data: null, title: '', url: routeNames.result + "/" + result.quizToken });
+        var star = '&#10026;';
+        var stars = result.percentageCorrect === 100
+            ? "<h1 class=\"gold-font star\">" + star + " " + star + " " + star + "</h1><p>Perfekt</p>"
+            : result.percentageCorrect >= 90
+                ? "<h1 class=\"silver-font star\">" + star + " " + star + "</h1><p>Flot pr\u00E6station</p>"
+                : result.percentageCorrect >= 75
+                    ? "<h1 class=\"bronze-font star\">" + star + "</h1><p>Du klarede den lige</p>"
+                    : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
+        var minutes = Math.floor(result.timeSpent / 60);
+        var seconds = Math.floor(result.timeSpent - (minutes * 60));
+        var timeSpent = minutes + ":" + (seconds > 9 ? seconds : "0" + seconds);
+        var context = {
+            category: "" + result.categoryName,
+            stars: stars,
+            percentageCorrect: result.percentageCorrect,
+            timeSpent: timeSpent,
+            answers: result.answers.map(function (a, i) { return "<p class=\"" + (a.correct ? '' : 'error') + "\">" + (i + 1) + ". " + a.text + "</p>"; }).join('')
+        };
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuizResult(context);
     }
@@ -206,8 +233,32 @@ function handleCreateNewQuiz(quizConfig) {
 }
 function handleGetResult() {
     return __awaiter(this, void 0, void 0, function () {
+        var quizToken, response, responseObject, result;
         return __generator(this, function (_a) {
-            return [2];
+            switch (_a.label) {
+                case 0:
+                    quizToken = getQuizToken();
+                    return [4, fetch("/quiz/result/" + quizToken, {
+                            method: "get",
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        result = responseObject.body;
+                        pageQuizResult(result);
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
         });
     });
 }
@@ -227,18 +278,20 @@ function handleGetQuiz() {
                     return [4, response.json()];
                 case 2:
                     responseObject = _a.sent();
-                    if (responseObject.status === 200) {
-                        quiz = responseObject.body;
-                        if (!responseObject.body.complete) {
-                            pageQuiz(quiz);
-                        }
-                        else {
-                            console.log('Complete!');
-                            clearQuizToken();
-                            pageQuizResult(quiz);
-                        }
-                        return [2, true];
-                    }
+                    if (!(responseObject.status === 200)) return [3, 6];
+                    quiz = responseObject.body;
+                    if (!!responseObject.body.complete) return [3, 3];
+                    pageQuiz(quiz);
+                    return [3, 5];
+                case 3:
+                    console.log('Complete!');
+                    pageLoading();
+                    return [4, handleGetResult()];
+                case 4:
+                    _a.sent();
+                    _a.label = 5;
+                case 5: return [2, true];
+                case 6:
                     if (responseObject.status === 401) {
                         pageInfo401();
                         return [2, false];
@@ -246,6 +299,13 @@ function handleGetQuiz() {
                     pageInfo404();
                     return [2, false];
             }
+        });
+    });
+}
+function handleClearQuiz() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2];
         });
     });
 }
@@ -361,7 +421,8 @@ var routeNames = {
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
     quiz: '/quiz',
-    curriculum: '/pensum'
+    curriculum: '/pensum',
+    result: '/resultat'
 };
 var routes = (_a = {},
     _a[routeNames.index] = pageIndex,
@@ -372,6 +433,7 @@ var routes = (_a = {},
     _a[routeNames.quizCategory] = pageQuizCategory,
     _a[routeNames.quizConfig] = pageQuizConfig,
     _a[routeNames.quiz] = pageQuiz,
+    _a[routeNames.result] = pageQuizResult,
     _a);
 function spaRouter() {
     console.log('spaRouter');

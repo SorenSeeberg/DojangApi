@@ -191,6 +191,19 @@ def get_question(quiz_token: str):
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
+@app.route('/quiz/result/<path:quiz_token>', methods=['GET'])
+def get_quiz_result(quiz_token):
+    session = db.SessionSingleton().get_session()
+    access_token_string: str = _get_access_token()
+
+    # Authorization
+    if not is_authorized(session, access_token_string, role='user'):
+        return _unauthorized_response()
+
+    return_data: Dict = quiz.get_result(session, quiz_token)
+    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
+
+
 @app.route('/quiz/question/<path:quiz_token>', methods=['PUT'])
 def answer_question(quiz_token: str):
     session = db.SessionSingleton().get_session()

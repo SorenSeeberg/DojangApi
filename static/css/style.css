@@ -16,6 +16,11 @@
     --color-primary: #ff7c81;
     --color-secondary: #7cd7ff;
     --color-tertiary: #ffec58;
+
+    --color-gold: gold;
+    --color-silver: silver;
+    --color-bronze: orange;
+    --color-runner-up: #666;
 }
 
 * {
@@ -143,7 +148,20 @@ input {
     flex: 1;
     align-items: center;
     justify-content: flex-start;
-    /*border: 1px solid red;*/
+}
+
+.align-content-center-top {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.align-content-left-top {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .text-form-field {
@@ -178,6 +196,26 @@ input {
 
 .success {
     background: var(--color-success);
+}
+
+.gold-font {
+    color: var(--color-gold)
+}
+
+.silver-font {
+    color: var(--color-silver)
+}
+
+.bronze-font {
+    color: var(--color-bronze)
+}
+
+.star {
+    font-size: 50px;
+}
+
+.runner-up-font {
+    color: var(--color-runner-up)
 }
 
 .btn {

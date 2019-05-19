@@ -54,6 +54,16 @@ function pageInfo404(): void {
     });
 }
 
+function pageInfoNotImplemented(): void {
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "Not Implemented",
+        message: "På vej",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
+}
+
 function pageLoading(loggedIn: boolean = true): void {
     loggedIn
         ? templateTopBarSignedIn(TITLE_CONTEXT)
@@ -99,12 +109,34 @@ function pageQuiz(quiz: Quiz): void {
     }
 }
 
-function pageQuizResult(quiz: Quiz): void {
-     if (!getAccessToken()) {
+function pageQuizResult(result: Result): void {
+    if (!getAccessToken()) {
         pageIndex();
     } else {
-         const context = {category: quiz.title, percentageCorrect: 80, timeSpent: '1:43', answers: ''};
-         templateTopBarSignedIn(TITLE_CONTEXT);
-         templateQuizResult(context)
-     }
+        historyRouter({data: null, title: '', url: `${routeNames.result}/${result.quizToken}`});
+        const star = '&#10026;';
+
+        const stars = result.percentageCorrect === 100
+            ? `<h1 class="gold-font star">${star} ${star} ${star}</h1><p>Perfekt</p>`
+            : result.percentageCorrect >= 90
+                ? `<h1 class="silver-font star">${star} ${star}</h1><p>Flot præstation</p>`
+                : result.percentageCorrect >= 75
+                    ? `<h1 class="bronze-font star">${star}</h1><p>Du klarede den lige</p>`
+                    : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
+
+        const minutes: number = Math.floor(result.timeSpent / 60);
+        const seconds: number = Math.floor(result.timeSpent - (minutes * 60));
+
+        const timeSpent = `${minutes}:${seconds > 9 ? seconds : `0${seconds}`}`;
+        const context = {
+            category: `${result.categoryName}`,
+            stars,
+            percentageCorrect: result.percentageCorrect,
+            timeSpent,
+            answers: result.answers.map((a: Answer, i: number) => `<p class="${a.correct ? '' : 'error'}">${i + 1}. ${a.text}</p>`).join('')
+        };
+
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateQuizResult(context)
+    }
 }

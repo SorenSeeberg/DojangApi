@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+from functools import lru_cache
 from typing import List
 from database.schemas import Category
 from sqlalchemy.exc import IntegrityError
@@ -33,6 +33,7 @@ def create_many(session: 'Session', category_names: List[str], commit=True) -> b
         raise Exception
 
 
+@lru_cache(maxsize=10)
 def get_by_id(session: 'Session', id: int) -> Category:
     try:
         return session.query(Category).get(id)
@@ -42,11 +43,15 @@ def get_by_id(session: 'Session', id: int) -> Category:
         raise Exception
 
 
-def get_categories(session: 'Session') -> List[str]:
+def get(session: 'Session') -> List[str]:
     return CATEGORY_NAMES
 
 
-CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal', 'Teori']
+def count() -> int:
+    return len(CATEGORY_NAMES)
+
+
+CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal']
 
 
 def setup(session: 'Session') -> None:

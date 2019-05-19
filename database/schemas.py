@@ -83,7 +83,7 @@ class Quiz(Base):
     currentQuestion = Column(INT)
     reverseQuestions = Column(BOOLEAN, default=False)
     categoryId = Column(INT)
-    timeStart = Column(INT, default=int(time.time()))
+    timeStart = Column(INT)
     userId = Column(INT, ForeignKey('User.id'))
     levelMin = Column(INT, ForeignKey('Level.id'))
     levelMax = Column(INT, ForeignKey('Level.id'))
