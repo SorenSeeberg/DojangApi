@@ -10,6 +10,7 @@
     --color-error: red;
     --color-success: #00b000;
     --color-info: #4975b0;
+    --color-impressive: #7649b0;
     --color-link: blue;
     --color-link-hover: purple;
 
@@ -17,9 +18,9 @@
     --color-secondary: #7cd7ff;
     --color-tertiary: #ffec58;
 
-    --color-gold: gold;
+    --color-gold: #ffb300;
     --color-silver: silver;
-    --color-bronze: orange;
+    --color-bronze: #ff7018;
     --color-runner-up: #666;
 }
 
@@ -188,6 +189,11 @@ input {
     margin: 20px 0;
     padding: 20px;
     width: calc(100% - 40px);
+}
+
+
+.impressive {
+    background: var(--color-impressive);
 }
 
 .error {
