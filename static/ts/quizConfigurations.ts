@@ -2,7 +2,7 @@ const quizConfigTemp: QuizConfiguration = {
     categoryId: 2,
     levelMin: 3,
     levelMax: 8,
-    questionCount: 25,
+    questionCount: 5,
     optionCount: 3,
     timeLimit: 10
 };

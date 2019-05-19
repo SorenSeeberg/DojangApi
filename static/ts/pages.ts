@@ -22,6 +22,12 @@ function pageCreateUser(): void {
     }
 }
 
+const infoBoxErrorLevel = {
+    info: 'info-box',
+    error: 'info-box error',
+    success: 'info-box success'
+};
+
 function pageInfo(context: ComponentInfo): void {
     historyRouter({data: null, title: '', url: ''});
     templateTopBarSignedOut(TITLE_CONTEXT);
@@ -29,11 +35,23 @@ function pageInfo(context: ComponentInfo): void {
 }
 
 function pageInfo401(): void {
-    pageInfo({message: "<h1>401 Unauthorized</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden"});
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "401 Unauthorized",
+        message: "",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
 }
 
 function pageInfo404(): void {
-    pageInfo({message: "<h1>404 Not Found</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden"});
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "404 Not Found",
+        message: "",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
 }
 
 function pageLoading(loggedIn: boolean = true): void {
@@ -68,9 +86,25 @@ function pageQuiz(quiz: Quiz): void {
         pageIndex();
     } else {
         const options: string = quiz.currentQuestion.options.map((o: Option) => `<button class="btn btn-large-wide btn-secondary" type="button" onclick="handleAnswerQuestion(${o.index})">${o.option}</button>`).join('');
-        const context = {category: quiz.title, question: quiz.currentQuestion.question, options};
+        const context = {
+            percentageComplete: Math.round(quiz.currentQuestionIndex / quiz.totalQuestions * 100),
+            progressBarText: `${quiz.currentQuestionIndex} / ${quiz.totalQuestions}`,
+            category: quiz.title,
+            question: quiz.currentQuestion.question,
+            options
+        };
         historyRouter({data: quiz.quizToken, title: '', url: routeNames.quiz});
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuiz(context);
     }
+}
+
+function pageQuizResult(quiz: Quiz): void {
+     if (!getAccessToken()) {
+        pageIndex();
+    } else {
+         const context = {category: quiz.title, percentageCorrect: 80, timeSpent: '1:43', answers: ''};
+         templateTopBarSignedIn(TITLE_CONTEXT);
+         templateQuizResult(context)
+     }
 }

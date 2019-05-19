@@ -87,6 +87,10 @@ async function handleCreateNewQuiz(quizConfig: QuizConfiguration = quizConfigTem
     return false;
 }
 
+async function handleGetResult() {
+
+}
+
 async function handleGetQuiz() {
     const quizToken = getQuizToken();
 
@@ -96,9 +100,17 @@ async function handleGetQuiz() {
     });
     let responseObject = await response.json();
 
+
     if (responseObject.status === 200) {
         const quiz: Quiz = responseObject.body;
-        pageQuiz(quiz);
+        if (!responseObject.body.complete) {
+            pageQuiz(quiz);
+        } else {
+            console.log('Complete!');
+
+            clearQuizToken();
+            pageQuizResult(quiz);
+        }
         return true;
     }
     if (responseObject.status === 401) {
@@ -112,8 +124,8 @@ async function handleGetQuiz() {
 async function handleAnswerQuestion(optionIndex: number) {
     const quizToken = getQuizToken();
     let response = await fetch(`/quiz/question/${quizToken}`, {
-        method:'put',
-        body:JSON.stringify({optionIndex}),
+        method: 'put',
+        body: JSON.stringify({optionIndex}),
         headers: getAuthorizationHeader()
     });
 
@@ -122,14 +134,19 @@ async function handleAnswerQuestion(optionIndex: number) {
     if (responseObject.status === 200) {
         console.log(responseObject);
 
-        if (responseObject.answer) {
+        if (responseObject.body.answer === true) {
             console.log('Korrekt');
             await handleGetQuiz();
 
-        }
-        else {
+        } else {
             console.log('Forkert');
-            await handleGetQuiz();
+            pageInfo({
+                title: 'Svaret er forkert',
+                message: responseObject.body.text,
+                errorLevel: infoBoxErrorLevel.error,
+                buttonText: 'Næste spørgsmål',
+                buttonAction: 'handleGetQuiz()'
+            })
         }
         return true;
     }

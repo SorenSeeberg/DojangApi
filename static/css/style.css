@@ -8,6 +8,8 @@
     --secondary: #4975b0;
     --secondary-hover: #6eb0d8;
     --color-error: red;
+    --color-success: #00b000;
+    --color-info: #4975b0;
     --color-link: blue;
     --color-link-hover: purple;
 
@@ -85,6 +87,36 @@ input {
     margin: 0 0 10px 0;
 }
 
+.progress-bar-frame {
+    position: relative;
+    width: 100%;
+    background: black;
+    border-radius: 4px;
+}
+
+.progress-bar-info {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    font-size: 24px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    background: var(--color-success);
+    border-radius: 4px;
+    height: 30px;
+}
+
+
 .title {
     cursor: pointer;
 }
@@ -127,13 +159,25 @@ input {
     color: var(--color-error);
 }
 
+.info-box > h3 {
+    color: white;
+}
+
 .info-box {
-    background: transparent;
-    border: 2px dashed var(--dark-font-color);
+    background: var(--color-info);
+    color: white;
     border-radius: 4px;
-    color: var(--dark-font-color);
-    padding: 10px;
-    margin: 3px;
+    margin: 20px 0;
+    padding: 20px;
+    width: calc(100% - 40px);
+}
+
+.error {
+    background: var(--color-error);
+}
+
+.success {
+    background: var(--color-success);
 }
 
 .btn {

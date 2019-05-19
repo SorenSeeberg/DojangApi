@@ -56,16 +56,33 @@ function pageCreateUser() {
         pageIndex();
     }
 }
+var infoBoxErrorLevel = {
+    info: 'info-box',
+    error: 'info-box error',
+    success: 'info-box success'
+};
 function pageInfo(context) {
     historyRouter({ data: null, title: '', url: '' });
     templateTopBarSignedOut(TITLE_CONTEXT);
     templateInfo(context);
 }
 function pageInfo401() {
-    pageInfo({ message: "<h1>401 Unauthorized</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden" });
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "401 Unauthorized",
+        message: "",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
 }
 function pageInfo404() {
-    pageInfo({ message: "<h1>404 Not Found</h1>", buttonAction: "pageIndex()", buttonText: "Til forsiden" });
+    pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "404 Not Found",
+        message: "",
+        buttonAction: "pageIndex()",
+        buttonText: "Til forsiden"
+    });
 }
 function pageLoading(loggedIn) {
     if (loggedIn === void 0) { loggedIn = true; }
@@ -99,10 +116,26 @@ function pageQuiz(quiz) {
     }
     else {
         var options = quiz.currentQuestion.options.map(function (o) { return "<button class=\"btn btn-large-wide btn-secondary\" type=\"button\" onclick=\"handleAnswerQuestion(" + o.index + ")\">" + o.option + "</button>"; }).join('');
-        var context = { category: quiz.title, question: quiz.currentQuestion.question, options: options };
+        var context = {
+            percentageComplete: Math.round(quiz.currentQuestionIndex / quiz.totalQuestions * 100),
+            progressBarText: quiz.currentQuestionIndex + " / " + quiz.totalQuestions,
+            category: quiz.title,
+            question: quiz.currentQuestion.question,
+            options: options
+        };
         historyRouter({ data: quiz.quizToken, title: '', url: routeNames.quiz });
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuiz(context);
+    }
+}
+function pageQuizResult(quiz) {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        var context = { category: quiz.title, percentageCorrect: 80, timeSpent: '1:43', answers: '' };
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateQuizResult(context);
     }
 }
 function handleGetQuizConfiguration() {
@@ -171,6 +204,13 @@ function handleCreateNewQuiz(quizConfig) {
         });
     });
 }
+function handleGetResult() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2];
+        });
+    });
+}
 function handleGetQuiz() {
     return __awaiter(this, void 0, void 0, function () {
         var quizToken, response, responseObject, quiz;
@@ -189,7 +229,14 @@ function handleGetQuiz() {
                     responseObject = _a.sent();
                     if (responseObject.status === 200) {
                         quiz = responseObject.body;
-                        pageQuiz(quiz);
+                        if (!responseObject.body.complete) {
+                            pageQuiz(quiz);
+                        }
+                        else {
+                            console.log('Complete!');
+                            clearQuizToken();
+                            pageQuizResult(quiz);
+                        }
                         return [2, true];
                     }
                     if (responseObject.status === 401) {
@@ -219,22 +266,26 @@ function handleAnswerQuestion(optionIndex) {
                     return [4, response.json()];
                 case 2:
                     responseObject = _a.sent();
-                    if (!(responseObject.status === 200)) return [3, 7];
+                    if (!(responseObject.status === 200)) return [3, 6];
                     console.log(responseObject);
-                    if (!responseObject.answer) return [3, 4];
+                    if (!(responseObject.body.answer === true)) return [3, 4];
                     console.log('Korrekt');
                     return [4, handleGetQuiz()];
                 case 3:
                     _a.sent();
-                    return [3, 6];
+                    return [3, 5];
                 case 4:
                     console.log('Forkert');
-                    return [4, handleGetQuiz()];
-                case 5:
-                    _a.sent();
-                    _a.label = 6;
-                case 6: return [2, true];
-                case 7:
+                    pageInfo({
+                        title: 'Svaret er forkert',
+                        message: responseObject.body.text,
+                        errorLevel: infoBoxErrorLevel.error,
+                        buttonText: 'Næste spørgsmål',
+                        buttonAction: 'handleGetQuiz()'
+                    });
+                    _a.label = 5;
+                case 5: return [2, true];
+                case 6:
                     if (responseObject.status === 401) {
                         pageInfo401();
                         return [2, false];
@@ -245,6 +296,62 @@ function handleAnswerQuestion(optionIndex) {
         });
     });
 }
+var quizConfigTemp = {
+    categoryId: 2,
+    levelMin: 3,
+    levelMax: 8,
+    questionCount: 5,
+    optionCount: 3,
+    timeLimit: 10
+};
+var quizConfig1Dan = {
+    questionCount: 25,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 11,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig2Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 12,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig3Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 13,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig4Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 14,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig5Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 15,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig6Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 16,
+    categoryId: 0,
+    timeLimit: 30
+};
 var _a;
 var routeNames = {
     index: '/',
@@ -302,6 +409,9 @@ function templateQuizConfig(config) {
 }
 function templateQuiz(context) {
     setTemplate("handlebars-quiz", "article", context);
+}
+function templateQuizResult(context) {
+    setTemplate("handlebars-quiz-result", "article", context);
 }
 function templateMainMenu() {
     setTemplate("handlebars-main-menu", "article");
@@ -395,6 +505,8 @@ function handleCreateUser() {
                     passwordRepeat = document.getElementById('input-field-password-repeat');
                     if (!email) {
                         pageInfo({
+                            errorLevel: infoBoxErrorLevel.error,
+                            title: "Valideringsfejl",
                             message: "Du skal indtaste en email",
                             buttonAction: 'pageCreateUser()',
                             buttonText: 'Create User'
@@ -403,6 +515,8 @@ function handleCreateUser() {
                     }
                     if (password.value !== passwordRepeat.value) {
                         pageInfo({
+                            errorLevel: infoBoxErrorLevel.error,
+                            title: "Valideringsfejl",
                             message: "Passwords skal være forskelige",
                             buttonAction: 'pageCreateUser()',
                             buttonText: 'Create User'
@@ -411,6 +525,8 @@ function handleCreateUser() {
                     }
                     if (!password.value || !passwordRepeat.value) {
                         pageInfo({
+                            errorLevel: infoBoxErrorLevel.error,
+                            title: "Valideringsfejl",
                             message: "Du skal indtaste et password",
                             buttonAction: 'pageCreateUser()',
                             buttonText: 'Create User'
@@ -431,75 +547,27 @@ function handleCreateUser() {
                 case 2:
                     responseObject = _a.sent();
                     if (responseObject.status === 201) {
-                        message = "<p>Tillykke!</p><p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
+                        message = "<p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
                             " via det link jeg netop har send til dig :)</p><br><p>Med venlig hilsen,</p><p>Grand Master Kwon!</p>";
-                        pageInfo({ message: message, buttonText: 'Til Log Ind', buttonAction: 'pageIndex()' });
+                        pageInfo({
+                            errorLevel: infoBoxErrorLevel.success,
+                            title: "Tillykke",
+                            message: message,
+                            buttonText: 'Log ind',
+                            buttonAction: 'pageIndex()'
+                        });
                         return [2, true];
                     }
                     pageInfo({
+                        errorLevel: infoBoxErrorLevel.error,
+                        title: "Valideringsfejl",
                         message: "Emailen er allerede optaget. Måske har du glemt dit password?",
                         buttonAction: 'pageCreateUser()',
-                        buttonText: 'Create User'
+                        buttonText: 'Prøv igen'
                     });
                     return [2, false];
             }
         });
     });
 }
-var quizConfigTemp = {
-    categoryId: 2,
-    levelMin: 3,
-    levelMax: 8,
-    questionCount: 25,
-    optionCount: 3,
-    timeLimit: 10
-};
-var quizConfig1Dan = {
-    questionCount: 25,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 11,
-    categoryId: 0,
-    timeLimit: 30
-};
-var quizConfig2Dan = {
-    questionCount: 50,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 12,
-    categoryId: 0,
-    timeLimit: 30
-};
-var quizConfig3Dan = {
-    questionCount: 50,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 13,
-    categoryId: 0,
-    timeLimit: 30
-};
-var quizConfig4Dan = {
-    questionCount: 50,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 14,
-    categoryId: 0,
-    timeLimit: 30
-};
-var quizConfig5Dan = {
-    questionCount: 50,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 15,
-    categoryId: 0,
-    timeLimit: 30
-};
-var quizConfig6Dan = {
-    questionCount: 50,
-    optionCount: 3,
-    levelMin: 1,
-    levelMax: 16,
-    categoryId: 0,
-    timeLimit: 30
-};
 //# sourceMappingURL=build.js.map

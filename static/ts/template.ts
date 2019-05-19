@@ -10,7 +10,9 @@ type Template =
     | 'handlebars-loading'
     | 'handlebars-quiz-category'
     | 'handlebars-quiz-configuration'
-    | 'handlebars-quiz';
+    | 'handlebars-quiz'
+    | 'handlebars-quiz-result'
+    | 'handlebars-quiz-wrong-answer';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
@@ -44,8 +46,12 @@ function templateQuizConfig(config: QuizConfigurationOptions): void {
     setTemplate("handlebars-quiz-configuration", "article", {select: select.join('')})
 }
 
-function templateQuiz(context: {category: string, question: string, options: string}): void {
+function templateQuiz(context: {percentageComplete: number, progressBarText: string, category: string, question: string, options: string}): void {
     setTemplate("handlebars-quiz", "article", context)
+}
+
+function templateQuizResult(context: {percentageCorrect: number, category: string, timeSpent: string, answers: string}): void {
+    setTemplate("handlebars-quiz-result", "article", context)
 }
 
 function templateMainMenu(): void {
@@ -61,6 +67,8 @@ function templateCreateUser(): void {
 }
 
 type ComponentInfo = {
+    errorLevel: string;
+    title: string;
     message: string;
     buttonAction: string;
     buttonText: string;

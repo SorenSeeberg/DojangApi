@@ -36,6 +36,8 @@ async function handleCreateUser() {
 
     if (!email) {
         pageInfo({
+            errorLevel: infoBoxErrorLevel.error,
+            title: "Valideringsfejl",
             message: "Du skal indtaste en email",
             buttonAction: 'pageCreateUser()',
             buttonText: 'Create User'
@@ -45,6 +47,8 @@ async function handleCreateUser() {
 
     if (password.value !== passwordRepeat.value) {
         pageInfo({
+            errorLevel: infoBoxErrorLevel.error,
+            title: "Valideringsfejl",
             message: "Passwords skal være forskelige",
             buttonAction: 'pageCreateUser()',
             buttonText: 'Create User'
@@ -54,6 +58,8 @@ async function handleCreateUser() {
 
     if (!password.value || !passwordRepeat.value) {
         pageInfo({
+            errorLevel: infoBoxErrorLevel.error,
+            title: "Valideringsfejl",
             message: "Du skal indtaste et password",
             buttonAction: 'pageCreateUser()',
             buttonText: 'Create User'
@@ -75,17 +81,25 @@ async function handleCreateUser() {
     let responseObject = await response.json();
 
     if (responseObject.status === 201) {
-        const message = "<p>Tillykke!</p><p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
+        const message = "<p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
             " via det link jeg netop har send til dig :)</p><br><p>Med venlig hilsen,</p><p>Grand Master Kwon!</p>";
 
-        pageInfo({message, buttonText: 'Til Log Ind', buttonAction: 'pageIndex()'});
+        pageInfo({
+            errorLevel: infoBoxErrorLevel.success,
+            title: "Tillykke",
+            message,
+            buttonText: 'Log ind',
+            buttonAction: 'pageIndex()'
+        });
         return true;
     }
 
     pageInfo({
+        errorLevel: infoBoxErrorLevel.error,
+        title: "Valideringsfejl",
         message: "Emailen er allerede optaget. Måske har du glemt dit password?",
         buttonAction: 'pageCreateUser()',
-        buttonText: 'Create User'
+        buttonText: 'Prøv igen'
     });
     return false;
 }

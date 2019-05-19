@@ -45,7 +45,8 @@
                     <div class="widget">
                         <div class="vertical-filler-l"></div>
                         <label for="input-field-email">Email</label>
-                        <input id="input-field-email" type="email" name="email" class="text-form-field" required autofocus/>
+                        <input id="input-field-email" type="email" name="email" class="text-form-field" required
+                               autofocus/>
                         <label for="input-field-password">Password</label>
                         <input id="input-field-password" type="password" name="password" class="text-form-field"
                                required/>
@@ -78,6 +79,41 @@
         {% endraw %}
     </script>
 
+    <!-- QUIZ -->
+    <script id="handlebars-quiz" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <h2>{{category}}</h2>
+                <div class="progress-bar-frame">
+                    <div style="width: {{percentageComplete}}%;" class="progress-bar"></div>
+                    <div class="progress-bar-info">{{progressBarText}}</div>
+                </div>
+                <div class="vertical-filler-m"></div>
+                <h3>{{question}}</h3>
+                {{{options}}}
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- QUIZ RESULT -->
+    <script id="handlebars-quiz-result" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <h2>{{category}}</h2>
+                <div class="vertical-filler-m"></div>
+                <p>Rigtige: {{percentageCorrect}}%</p>
+                <p>Tid: {{timeSpent}} minutter</p>
+                <h3>Svar</h3>
+                {{{answers}}}
+                <button class="btn btn-large btn-secondary" type="button" onclick="pageIndex()">Afslut</button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
     <!-- QUIZ CATEGORY -->
     <script id="handlebars-quiz-category" type="text/x-handlebars-template">
         {% raw %}
@@ -87,12 +123,24 @@
                 <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
                     Quiz
                 </button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig1Dan)">1. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig2Dan)">2. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig3Dan)">3. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig4Dan)">4. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig5Dan)">5. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig6Dan)">6. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig1Dan)">1. dan
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig2Dan)">2. dan
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig3Dan)">3. dan
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig4Dan)">4. dan
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig5Dan)">5. dan
+                </button>
+                <button class="btn btn-large-wide btn-secondary" type="button"
+                        onclick="handleCreateNewQuiz(quizConfig6Dan)">6. dan
+                </button>
             </div>
         </div>
         {% endraw %}
@@ -106,7 +154,8 @@
                 <div class="vertical-filler-l"></div>
                 {{{select}}}
                 <div class="vertical-filler-m"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuiz()">Start</button>
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuiz()">Start
+                </button>
             </div>
         </div>
         {% endraw %}
@@ -115,15 +164,17 @@
     <!-- INFO PAGE -->
     <script id="handlebars-info" type="text/x-handlebars-template">
         {% raw %}
-        <div>
-            <div class="vertical-filler-l"></div>
-            <div class="info-box">
-                <div class="vertical-filler-s"></div>
-                {{{ message }}}
-                <div class="vertical-filler-s"></div>
+        <div class="widget-holder">
+            <div class="widget">
+                <div class="vertical-filler-m"></div>
+                <div class="{{errorLevel}}">
+                    <h3>{{title}}</h3>
+                    {{{ message }}}
+                </div>
+                <div class="vertical-filler-m"></div>
+                <button class="btn btn-large btn-primary" type="button" onclick="{{buttonAction}}">{{buttonText}}
+                </button>
             </div>
-            <div class="vertical-filler-m"></div>
-            <button class="btn btn-link" type="button" onclick="{{buttonAction}}">{{buttonText}}</button>
         </div>
         {% endraw %}
     </script>
@@ -154,20 +205,6 @@
     <script id="handlebars-top-bar-signed-out" type="text/x-handlebars-template">
         {% raw %}
         <div class="title" onclick="pageIndex()">{{title}}</div>
-        {% endraw %}
-    </script>
-
-    <!-- QUIZ -->
-    <script id="handlebars-quiz" type="text/x-handlebars-template">
-        {% raw %}
-        <div>
-            <h2>{{category}}</h2>
-            <div class="progress-bar-background">
-                <div class="progress-bar-indicator"></div>
-            </div>
-            <h2>{{question}}</h2>
-            {{{options}}}
-        </div>
         {% endraw %}
     </script>
 </head>

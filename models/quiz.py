@@ -71,7 +71,7 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
         session.flush()
 
         [_create_question(session, quiz_row.id, category_id, i, option_count, level_min, level_max) for i in
-         range(question_count)]
+         range(1, question_count+1)]
 
         session.commit()
 
@@ -97,12 +97,27 @@ def get(session: 'Session', quiz_token: str) -> Dict:
                                                                           quiz_row.id,
                                                                           quiz_row.currentQuestion)
 
-        next_question_cur_row = curriculum.get_by_id(session, next_question_row.curriculumId)
-        option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
+        if not quiz_row.complete:
+            next_question_cur_row = curriculum.get_by_id(session, next_question_row.curriculumId)
+            option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
 
-        options = [{
-            "index": row.optionIndex,
-            "option": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
+            options = [{
+                "index": row.optionIndex,
+                "option": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
+
+            current_question = {
+                    "index": quiz_row.currentQuestion,
+                    "question": next_question_cur_row.value,
+                    "options": options
+                }
+
+        else:
+            options = list()
+            current_question = {
+                "index": -1,
+                "question": '',
+                "options": options
+            }
 
         return {
             ResponseKeys.status: response_codes.ResponseCodes.ok_200,
@@ -115,11 +130,7 @@ def get(session: 'Session', quiz_token: str) -> Dict:
                 "optionCount": quiz_row.optionCount,
                 "levelMin": quiz_row.levelMin,
                 "levelMax": quiz_row.levelMax,
-                "currentQuestion": {
-                    "index": quiz_row.currentQuestion,
-                    "question": next_question_cur_row.value,
-                    "options": options
-                }
+                "currentQuestion": current_question
             }
         }
 
@@ -245,6 +256,9 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
     question_row: 'Question' = question.get_by_quiz_id_and_index(session, quiz_row.id, quiz_row.currentQuestion)
     option_row: 'Option' = option.get_by_question_id_and_index(session, question_row.id, option_index)
 
+    print(quiz_row.currentQuestion, quiz_row.questionCount)
+    print(quiz_row.complete)
+
     """ Creating answer row  """
     query_answer.create(session=session,
                         quiz_id=quiz_row.id,
@@ -255,10 +269,7 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
                         )
 
     """ Advancing or concluding quiz """
-    if quiz_row.currentQuestion + 1 < quiz_row.questionCount:
-        quiz_row.currentQuestion += 1
-
-    else:
+    if quiz_row.currentQuestion == quiz_row.questionCount:
         answer_count: Dict = query_answer.get_answer_count(session, quiz_row.id)
         result.create(session,
                       user_id=quiz_row.userId,
@@ -271,6 +282,8 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
                       commit=False
                       )
         quiz_row.complete = True
+    else:
+        quiz_row.currentQuestion += 1
 
     session.commit()
 
@@ -280,9 +293,8 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
                 ResponseKeys.body:
                     {
                         'answer': False,
-                        'text': f'Svaret er forkert\n'
-                        f'Du har svaret: {curriculum.get_by_id(session, option_row.curriculumId).key}\n'
-                        f'Det rigtige svar er: {curriculum.get_by_id(session, question_row.curriculumId).key}'
+                        'text': f'<p>Du har svaret: <b>{curriculum.get_by_id(session, option_row.curriculumId).key}</b><p>'
+                        f'<p>Det rigtige svar er: <b>{curriculum.get_by_id(session, question_row.curriculumId).key}</b><p>'
                     }
                 }
 
@@ -290,7 +302,7 @@ def answer(session: 'Session', quiz_token: str, data: Dict) -> Dict:
             ResponseKeys.body:
                 {
                     'answer': True,
-                    'text': 'Svaret er korrekt'
+                    'text': '<p>Svaret er korrekt<p>'
                 }
             }
 
