@@ -9,13 +9,15 @@ type Template =
     | 'handlebars-info'
     | 'handlebars-loading'
     | 'handlebars-quiz-category'
-    | 'handlebars-quiz-configuration';
+    | 'handlebars-quiz-configuration'
+    | 'handlebars-quiz';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
 
 function setTemplate(templateId: Template, contentTarget: ContentTarget, context: Object = {}) {
     let template = document.getElementById(templateId).innerHTML;
+    // @ts-ignore
     let templateScript = Handlebars.compile(template);
     let html = templateScript(context);
     let contentContainer: HTMLElement = document.getElementById(contentTarget);
@@ -32,21 +34,25 @@ function templateQuizConfig(config: QuizConfigurationOptions): void {
     console.log('templateQuizConfig');
     console.log(config);
 
-    Object.keys(config).forEach(k =>{
-        if (k !== 'displayNames') {
-            select.push(`<label>${config['displayNames'][k]}</label><select>${config[k].map(o => `<option>${o}</option>`).join('')}</select>`)
+    Object.keys(config).forEach(k => {
+            if (k !== 'displayNames') {
+                select.push(`<label>${config['displayNames'][k]}</label><select>${config[k].map(o => `<option>${o}</option>`).join('')}</select>`)
+            }
         }
-    }
     );
 
     setTemplate("handlebars-quiz-configuration", "article", {select: select.join('')})
+}
+
+function templateQuiz(context: {category: string, question: string, options: string}): void {
+    setTemplate("handlebars-quiz", "article", context)
 }
 
 function templateMainMenu(): void {
     setTemplate("handlebars-main-menu", "article")
 }
 
-function templateSignIn(context?:{message:string, extra:string}): void {
+function templateSignIn(context?: { message: string, extra: string }): void {
     setTemplate('handlebars-sign-in-form', "article", context);
 }
 

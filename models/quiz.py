@@ -75,22 +75,57 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
 
         session.commit()
 
+        quiz_row = get(session, quiz_row.token)
+
         return {
             ResponseKeys.status: response_codes.ResponseCodes.created_201,
-            ResponseKeys.body: {
-                "title": category.get_by_id(session, quiz_row.categoryId).name,
-                "quizToken": quiz_row.token,
-                "totalQuestions": quiz_row.questionCount,
-                "currentQuestion": quiz_row.currentQuestion,
-                "optionCount": quiz_row.optionCount,
-                "levelMin": quiz_row.levelMin,
-                "levelMax": quiz_row.levelMax,
-            }
+            ResponseKeys.body: quiz_row.get('body', {})
         }
 
     except ArgumentError as e:
         print(e)
         return {ResponseKeys.status: response_codes.ResponseCodes.internal_server_error_500}
+
+
+def get(session: 'Session', quiz_token: str) -> Dict:
+    """ Get a quiz by access token """
+
+    try:
+        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
+
+        next_question_row: 'Question' = question.get_by_quiz_id_and_index(session,
+                                                                          quiz_row.id,
+                                                                          quiz_row.currentQuestion)
+
+        next_question_cur_row = curriculum.get_by_id(session, next_question_row.curriculumId)
+        option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
+
+        options = [{
+            "index": row.optionIndex,
+            "option": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
+
+        return {
+            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
+            ResponseKeys.body: {
+                "title": category.get_by_id(session, quiz_row.categoryId).name,
+                "quizToken": quiz_row.token,
+                "complete": quiz_row.complete,
+                "totalQuestions": quiz_row.questionCount,
+                "currentQuestionIndex": quiz_row.currentQuestion,
+                "optionCount": quiz_row.optionCount,
+                "levelMin": quiz_row.levelMin,
+                "levelMax": quiz_row.levelMax,
+                "currentQuestion": {
+                    "index": quiz_row.currentQuestion,
+                    "question": next_question_cur_row.value,
+                    "options": options
+                }
+            }
+        }
+
+    except ArgumentError as e:
+        print(e)
+        return {"responseCode": response_codes.ResponseCodes.not_found_404}
 
 
 @lru_cache()
@@ -116,39 +151,14 @@ def get_configuration(session: 'Session') -> Dict:
                     "questionCount": "Antal spørgsmål",
                     "optionCount": "Antal svarmuligheder",
                     "timeLimit": "Tidsgrænse i minutter"
-                    }
                 }
+            }
             }
 
 
 def get_predefined_configurations() -> Dict:
     # todo : move into database
     raise NotImplementedError
-
-
-def get(session: 'Session', quiz_token: str) -> Dict:
-    """ Get a quiz by access token """
-
-    try:
-        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
-
-        return {
-            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
-            ResponseKeys.body: {
-                "title": category.get_by_id(session, quiz_row.categoryId).name,
-                "quizToken": quiz_row.token,
-                "complete": quiz_row.complete,
-                "totalQuestions": quiz_row.questionCount,
-                "currentQuestion": quiz_row.currentQuestion,
-                "optionCount": quiz_row.optionCount,
-                "levelMin": quiz_row.levelMin,
-                "levelMax": quiz_row.levelMax,
-            }
-        }
-
-    except ArgumentError as e:
-        print(e)
-        return {"responseCode": response_codes.ResponseCodes.not_found_404}
 
 
 def get_current_question(session: 'Session', quiz_token: str) -> Dict:
@@ -172,8 +182,8 @@ def get_current_question(session: 'Session', quiz_token: str) -> Dict:
         option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
 
         options = [{
-            "pageIndex": row.optionIndex,
-            "text": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
+            "optionIndex": row.optionIndex,
+            "option": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
 
         return {
             ResponseKeys.status: response_codes.ResponseCodes.ok_200,

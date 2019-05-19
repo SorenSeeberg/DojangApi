@@ -5,6 +5,7 @@ const routeNames = {
     createUser: '/opret-bruger',
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
+    quiz: '/quiz',
     curriculum: '/pensum'
 };
 
@@ -15,7 +16,8 @@ const routes: { [key: string]: () => void } = {
     [routeNames.createUser]: pageCreateUser,
     [routeNames.curriculum]: pageIndex,
     [routeNames.quizCategory]: pageQuizCategory,
-    [routeNames.quizConfig]: pageQuizConfig
+    [routeNames.quizConfig]: pageQuizConfig,
+    [routeNames.quiz]: pageQuiz
 };
 
 function spaRouter(): void {

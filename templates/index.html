@@ -87,12 +87,12 @@
                 <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
                     Quiz
                 </button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">1. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">2. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">3. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">4. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">5. dan</button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleSignIn()">6. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig1Dan)">1. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig2Dan)">2. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig3Dan)">3. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig4Dan)">4. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig5Dan)">5. dan</button>
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleCreateNewQuiz(quizConfig6Dan)">6. dan</button>
             </div>
         </div>
         {% endraw %}
@@ -161,12 +161,12 @@
     <script id="handlebars-quiz" type="text/x-handlebars-template">
         {% raw %}
         <div>
-            <div>{{category}}</div>
+            <h2>{{category}}</h2>
             <div class="progress-bar-background">
                 <div class="progress-bar-indicator"></div>
             </div>
-            <div>{{question}}</div>
-            {{options}}
+            <h2>{{question}}</h2>
+            {{{options}}}
         </div>
         {% endraw %}
     </script>

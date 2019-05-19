@@ -17,14 +17,23 @@ type QuizConfiguration = {
     timeLimit: number;
 }
 
+type Option = { index: number; option: string }
+
+type Question = {
+    index: number;
+    question: string;
+    options: Option[]
+}
+
 type Quiz = {
-    currentQuestion: number;
     levelMax: number;
     levelMin: number;
     optionCount: number;
     quizToken: string;
     title: string;
     totalQuestions: number;
+    currentQuestionIndex: number;
+    currentQuestion: Question;
 }
 
 async function handleGetQuizConfiguration() {
@@ -52,29 +61,21 @@ async function handleGetQuizConfiguration() {
     return false;
 }
 
-async function handleCreateNewQuiz() {
-    const quiz: QuizConfiguration = {
-        categoryId: 2,
-        levelMin: 3,
-        levelMax: 8,
-        questionCount: 25,
-        optionCount: 3,
-        timeLimit: 10
-    };
-
+async function handleCreateNewQuiz(quizConfig: QuizConfiguration = quizConfigTemp) {
     templateLoading();
 
     let response = await fetch('/quiz', {
         method: "post",
-        body: JSON.stringify(quiz),
+        body: JSON.stringify(quizConfig),
         headers: getAuthorizationHeader()
     });
     let responseObject = await response.json();
 
     if (responseObject.status === 201) {
         const quiz: Quiz = responseObject.body;
+        console.log(quiz);
         setQuizToken(quiz.quizToken);
-        pageInfo({message: 'Yep', buttonAction: 'pageIndex()', buttonText: 'Hell Yes!'});
+        pageQuiz(quiz);
         return true;
     }
 
@@ -82,6 +83,62 @@ async function handleCreateNewQuiz() {
         pageInfo401();
         return false;
     }
+    pageInfo404();
+    return false;
+}
+
+async function handleGetQuiz() {
+    const quizToken = getQuizToken();
+
+    let response = await fetch(`/quiz/${quizToken}`, {
+        method: "get",
+        headers: getAuthorizationHeader()
+    });
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        const quiz: Quiz = responseObject.body;
+        pageQuiz(quiz);
+        return true;
+    }
+    if (responseObject.status === 401) {
+        pageInfo401();
+        return false;
+    }
+    pageInfo404();
+    return false;
+}
+
+async function handleAnswerQuestion(optionIndex: number) {
+    const quizToken = getQuizToken();
+    let response = await fetch(`/quiz/question/${quizToken}`, {
+        method:'put',
+        body:JSON.stringify({optionIndex}),
+        headers: getAuthorizationHeader()
+    });
+
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        console.log(responseObject);
+
+        if (responseObject.answer) {
+            console.log('Korrekt');
+            await handleGetQuiz();
+
+        }
+        else {
+            console.log('Forkert');
+            await handleGetQuiz();
+        }
+        return true;
+    }
+
+    if (responseObject.status === 401) {
+        pageInfo401();
+        return false;
+    }
+
     pageInfo404();
     return false;
 

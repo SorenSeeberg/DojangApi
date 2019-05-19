@@ -93,6 +93,18 @@ function pageQuizConfig(config) {
         handleGetQuizConfiguration();
     }
 }
+function pageQuiz(quiz) {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        var options = quiz.currentQuestion.options.map(function (o) { return "<button class=\"btn btn-large-wide btn-secondary\" type=\"button\" onclick=\"handleAnswerQuestion(" + o.index + ")\">" + o.option + "</button>"; }).join('');
+        var context = { category: quiz.title, question: quiz.currentQuestion.question, options: options };
+        historyRouter({ data: quiz.quizToken, title: '', url: routeNames.quiz });
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateQuiz(context);
+    }
+}
 function handleGetQuizConfiguration() {
     return __awaiter(this, void 0, void 0, function () {
         var response, responseObject;
@@ -124,24 +136,17 @@ function handleGetQuizConfiguration() {
         });
     });
 }
-function handleCreateNewQuiz() {
+function handleCreateNewQuiz(quizConfig) {
+    if (quizConfig === void 0) { quizConfig = quizConfigTemp; }
     return __awaiter(this, void 0, void 0, function () {
-        var quiz, response, responseObject, quiz_1;
+        var response, responseObject, quiz;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    quiz = {
-                        categoryId: 2,
-                        levelMin: 3,
-                        levelMax: 8,
-                        questionCount: 25,
-                        optionCount: 3,
-                        timeLimit: 10
-                    };
                     templateLoading();
                     return [4, fetch('/quiz', {
                             method: "post",
-                            body: JSON.stringify(quiz),
+                            body: JSON.stringify(quizConfig),
                             headers: getAuthorizationHeader()
                         })];
                 case 1:
@@ -150,11 +155,86 @@ function handleCreateNewQuiz() {
                 case 2:
                     responseObject = _a.sent();
                     if (responseObject.status === 201) {
-                        quiz_1 = responseObject.body;
-                        setQuizToken(quiz_1.quizToken);
-                        pageInfo({ message: 'Yep', buttonAction: 'pageIndex()', buttonText: 'Hell Yes!' });
+                        quiz = responseObject.body;
+                        console.log(quiz);
+                        setQuizToken(quiz.quizToken);
+                        pageQuiz(quiz);
                         return [2, true];
                     }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleGetQuiz() {
+    return __awaiter(this, void 0, void 0, function () {
+        var quizToken, response, responseObject, quiz;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    quizToken = getQuizToken();
+                    return [4, fetch("/quiz/" + quizToken, {
+                            method: "get",
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        quiz = responseObject.body;
+                        pageQuiz(quiz);
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleAnswerQuestion(optionIndex) {
+    return __awaiter(this, void 0, void 0, function () {
+        var quizToken, response, responseObject;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    quizToken = getQuizToken();
+                    return [4, fetch("/quiz/question/" + quizToken, {
+                            method: 'put',
+                            body: JSON.stringify({ optionIndex: optionIndex }),
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (!(responseObject.status === 200)) return [3, 7];
+                    console.log(responseObject);
+                    if (!responseObject.answer) return [3, 4];
+                    console.log('Korrekt');
+                    return [4, handleGetQuiz()];
+                case 3:
+                    _a.sent();
+                    return [3, 6];
+                case 4:
+                    console.log('Forkert');
+                    return [4, handleGetQuiz()];
+                case 5:
+                    _a.sent();
+                    _a.label = 6;
+                case 6: return [2, true];
+                case 7:
                     if (responseObject.status === 401) {
                         pageInfo401();
                         return [2, false];
@@ -173,6 +253,7 @@ var routeNames = {
     createUser: '/opret-bruger',
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
+    quiz: '/quiz',
     curriculum: '/pensum'
 };
 var routes = (_a = {},
@@ -183,6 +264,7 @@ var routes = (_a = {},
     _a[routeNames.curriculum] = pageIndex,
     _a[routeNames.quizCategory] = pageQuizCategory,
     _a[routeNames.quizConfig] = pageQuizConfig,
+    _a[routeNames.quiz] = pageQuiz,
     _a);
 function spaRouter() {
     console.log('spaRouter');
@@ -217,6 +299,9 @@ function templateQuizConfig(config) {
         }
     });
     setTemplate("handlebars-quiz-configuration", "article", { select: select.join('') });
+}
+function templateQuiz(context) {
+    setTemplate("handlebars-quiz", "article", context);
 }
 function templateMainMenu() {
     setTemplate("handlebars-main-menu", "article");
@@ -361,4 +446,60 @@ function handleCreateUser() {
         });
     });
 }
+var quizConfigTemp = {
+    categoryId: 2,
+    levelMin: 3,
+    levelMax: 8,
+    questionCount: 25,
+    optionCount: 3,
+    timeLimit: 10
+};
+var quizConfig1Dan = {
+    questionCount: 25,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 11,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig2Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 12,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig3Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 13,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig4Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 14,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig5Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 15,
+    categoryId: 0,
+    timeLimit: 30
+};
+var quizConfig6Dan = {
+    questionCount: 50,
+    optionCount: 3,
+    levelMin: 1,
+    levelMax: 16,
+    categoryId: 0,
+    timeLimit: 30
+};
 //# sourceMappingURL=build.js.map
