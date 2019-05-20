@@ -1,18 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from database.db import EngineSingleton
-from database.db import SessionSingleton
 from database import schemas
 from query import access_token
 from query import level
 from query import category
 from query import curriculum
 from query import user
+from app import get_session, get_engine
 
 if __name__ == '__main__':
-    engine = EngineSingleton().get_engine()
-    session: 'Session' = SessionSingleton().get_session()
+    session: 'Session' = get_session()
+    engine = get_engine()
 
     """ Creating tables """
     schemas.setup(engine)
@@ -21,4 +20,4 @@ if __name__ == '__main__':
     [s.setup(session) for s in [user, level, category, curriculum]]
     session.commit()
 
-    access_token.create(SessionSingleton().get_session(), user_id=1)
+    access_token.create(session, user_id=1)

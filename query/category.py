@@ -51,7 +51,8 @@ def count() -> int:
     return len(CATEGORY_NAMES)
 
 
-CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal']
+# CATEGORY_NAMES = ['Anatomi', 'Benteknikker', 'Bevægelse', 'Diverse', 'Håndteknikker', 'Kamp', 'Stande', 'Tal']
+CATEGORY_NAMES = ['Benteknikker', 'Diverse', 'Håndteknikker', 'Stande', 'Teori']
 
 
 def setup(session: 'Session') -> None:

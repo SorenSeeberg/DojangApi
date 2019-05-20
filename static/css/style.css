@@ -22,6 +22,7 @@
     --color-silver: silver;
     --color-bronze: #ff7018;
     --color-runner-up: #666;
+    --table-row-color: rgba(28, 69, 135, 0.1);
 }
 
 * {
@@ -31,18 +32,20 @@
 
 html {
     background: white;
+    overflow: hidden;
 }
 
 
 .content {
     display: flex;
     flex-flow: column;
-    max-width: 600px;
+    max-width: 700px;
     width: 100%;
     margin: 0 auto;
     background: var(--main-background);
     font-family: 'Roboto', sans-serif;
     height: calc(100vh);
+    overflow-y: auto;
 
 }
 
@@ -74,6 +77,14 @@ h1, h2, h3 {
     padding: 0 0 10px 0;
 }
 
+form {
+    width: 100%;
+}
+
+.form-box {
+    width: 100%
+}
+
 label {
     color: var(--dark-font-color);
 }
@@ -84,9 +95,22 @@ option {
 
 select {
     width: 100%;
-    height: 40px;
-    font-size: 20px;
+    height: 32px;
+    font-size: 18px;
     margin: 4px 0 15px 0;
+}
+
+.select-row {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.select-row > label {
+    width: 250px;
 }
 
 input {
@@ -178,8 +202,10 @@ input {
     color: var(--color-error);
 }
 
+.info-box > h2,
 .info-box > h3 {
     color: white;
+    font-weight: normal;
 }
 
 .info-box {
@@ -190,7 +216,6 @@ input {
     padding: 20px;
     width: calc(100% - 40px);
 }
-
 
 .impressive {
     background: var(--color-impressive);
@@ -287,4 +312,27 @@ input {
 
 .vertical-filler-l {
     height: 90px;
+}
+
+table {
+    border-collapse:collapse
+}
+
+th {
+    font-weight: bolder;
+}
+
+td {
+    font-weight: normal;
+}
+
+th,
+td {
+    height: 25px;
+    color: var(--dark-font-color);
+    text-align: left;
+}
+
+tr:nth-child(odd) {
+    background: var(--table-row-color);
 }

@@ -36,8 +36,13 @@ def get_by_id(session: 'Session', curriculum_id: int) -> Curriculum:
 @lru_cache(maxsize=512)
 def get_by_level_and_category(session: 'Session', category_id: int, level_min: int, level_max: int) -> List[Curriculum]:
     try:
-        return session.query(Curriculum).filter(Curriculum.categoryId == category_id, Curriculum.levelId >= level_min,
-                                                Curriculum.levelId <= level_max)
+        if category_id == 0:
+            return session.query(Curriculum).filter(Curriculum.levelId >= level_min,
+                                                    Curriculum.levelId <= level_max)
+        else:
+            return session.query(Curriculum).filter(Curriculum.categoryId == category_id,
+                                                    Curriculum.levelId >= level_min,
+                                                    Curriculum.levelId <= level_max)
     except NoResultFound:
         raise NoResultFound
     except Exception:

@@ -2,11 +2,11 @@ const TITLE_CONTEXT = {title: 'Dojang'};
 
 function pageIndex(): void {
     if (!getAccessToken()) {
-        historyRouter({data: null, title: '', url: routeNames.signIn});
+        historyRouter({data: null, path: routeNames.signIn});
         templateTopBarSignedOut(TITLE_CONTEXT);
         templateSignIn();
     } else {
-        historyRouter({data: null, title: '', url: routeNames.frontPage});
+        historyRouter({data: null, path: routeNames.frontPage});
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateMainMenu();
     }
@@ -14,7 +14,7 @@ function pageIndex(): void {
 
 function pageCreateUser(): void {
     if (!getAccessToken()) {
-        historyRouter({data: null, title: '', url: routeNames.createUser});
+        historyRouter({data: null, path: routeNames.createUser});
         templateTopBarSignedOut(TITLE_CONTEXT);
         templateCreateUser();
     } else {
@@ -29,7 +29,7 @@ const infoBoxErrorLevel = {
 };
 
 function pageInfo(context: ComponentInfo): void {
-    historyRouter({data: null, title: '', url: ''});
+    historyRouter({data: null, path: ''});
     templateTopBarSignedOut(TITLE_CONTEXT);
     templateInfo(context);
 }
@@ -76,7 +76,7 @@ function pageQuizCategory(): void {
     if (!getAccessToken()) {
         pageIndex();
     } else {
-        historyRouter({data: null, title: '', url: routeNames.quizCategory});
+        historyRouter({data: null, path: routeNames.quizCategory});
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuizCategory();
     }
@@ -86,7 +86,7 @@ function pageQuizConfig(config: QuizConfigurationOptions): void {
     if (!getAccessToken()) {
         pageIndex();
     } else {
-        historyRouter({data: null, title: '', url: routeNames.quizConfig});
+        historyRouter({data: null, path: routeNames.quizConfig});
         handleGetQuizConfiguration();
     }
 }
@@ -103,7 +103,7 @@ function pageQuiz(quiz: Quiz): void {
             question: quiz.currentQuestion.question,
             options
         };
-        historyRouter({data: quiz.quizToken, title: '', url: routeNames.quiz});
+        historyRouter({data: quiz.quizToken, path: routeNames.quiz});
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuiz(context);
     }
@@ -113,7 +113,7 @@ function pageQuizResult(result: Result): void {
     if (!getAccessToken()) {
         pageIndex();
     } else {
-        historyRouter({data: null, title: '', url: `${routeNames.result}/${result.quizToken}`});
+        historyRouter({data: null, path: `${routeNames.result}/${result.quizToken}`});
         const star = '&#10026;';
 
         const stars = result.percentageCorrect === 100
@@ -138,5 +138,22 @@ function pageQuizResult(result: Result): void {
 
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuizResult(context)
+    }
+}
+
+function pageCurriculum(curriculum: Curriculum): void {
+    if (!getAccessToken()) {
+        pageIndex();
+    } else {
+        historyRouter({data: {test: 3}, path: `${routeNames.curriculum}`});
+
+        const selectCategory = `<div class="select-row"><label>Kategori</label><select>${curriculum.categoryLabels.map(c => c === curriculum.categoryLabel ? `<option selected>${c}</option>` : `<option>${c}</option>`).join('')}</select></div>`;
+        const selectLevelMin = `<div class="select-row"><label>Laveste grad</label><select>${curriculum.levelLabels.map(l => l === curriculum.levelMinLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
+        const selectLevelMan = `<div class="select-row"><label>Højeste grad</label><select>${curriculum.levelLabels.map(l => l === curriculum.levelMaxLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
+        const rows = `<form>${curriculum.data.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`).join('')}</form>`;
+        const context = {rows, select: selectCategory + selectLevelMin + selectLevelMan};
+
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateCurriculum(context);
     }
 }

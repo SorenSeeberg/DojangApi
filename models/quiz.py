@@ -19,14 +19,17 @@ def _create_question(
         session: 'Session',
         quiz_id: int,
         category_id: int,
-        question_number: int,
+        question_index: int,
         option_count: int,
         level_min: int,
-        level_max: int):
+        level_max: int,
+        question_count: int,
+        used_ids: List[int]):
     """ Creates a question with answer options. Not committed to db """
 
     if category_id == 0:
-        category_id: int = random.randrange(1, category.count() + 1)
+        category_id = random.randrange(1, category.count()+1)
+        print(category_id)
 
     curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
     curriculum_ids: List[int] = [row.id for row in curriculum_rows]
@@ -36,9 +39,17 @@ def _create_question(
     else:
         option_ids: List[int] = [random.choice(curriculum_ids) for i in range(option_count)]
 
-    answer_id: int = random.choice(option_ids)
+    answer_id = -1
 
-    question_row: 'Question' = question.create(session, quiz_id, answer_id, question_number, commit=False)
+    if len(curriculum_ids) < question_count:
+        answer_id = random.choice(option_ids)
+    else:
+        while answer_id in used_ids or answer_id == -1:
+            answer_id = random.choice(option_ids)
+
+    used_ids.append(answer_id)
+
+    question_row: 'Question' = question.create(session, quiz_id, answer_id, question_index, commit=False)
     session.flush()
     [option.create(session, o, question_row.quizId, question_row.id, i, commit=False) for i, o in
      enumerate(option_ids)]
@@ -77,8 +88,10 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
 
         session.flush()
 
-        [_create_question(session, quiz_row.id, category_id, i, option_count, level_min, level_max) for i in
-         range(1, question_count+1)]
+        used_ids: List[int] = list()
+
+        [_create_question(session, quiz_row.id, category_id, i, option_count, level_min, level_max, question_count,
+                          used_ids) for i in range(1, question_count+1)]
 
         session.commit()
 
@@ -182,52 +195,6 @@ def get_configuration(session: 'Session') -> Dict:
 def get_predefined_configurations() -> Dict:
     # TODO : move into database
     raise NotImplementedError
-
-
-def get_current_question(session: 'Session', quiz_token: str) -> Dict:
-    """ Returns the current question with associated options and quiz info """
-
-    try:
-        quiz_row: 'Quiz' = quiz.get_by_token(session, quiz_token)
-
-        if not quiz_row:
-            raise NoResultFound
-
-        """ Checking if the quiz has been completed """
-        if quiz_row.complete:
-            raise Exceptions.QuizCompleteError
-
-        next_question_row: 'Question' = question.get_by_quiz_id_and_index(session,
-                                                                          quiz_row.id,
-                                                                          quiz_row.currentQuestion)
-
-        next_question_cur_row = curriculum.get_by_id(session, next_question_row.curriculumId)
-        option_rows: List['Option'] = option.get_by_question_id(session, next_question_row.id)
-
-        options = [{
-            "optionIndex": row.optionIndex,
-            "option": curriculum.get_by_id(session, row.curriculumId).key} for row in option_rows]
-
-        return {
-            ResponseKeys.status: response_codes.ResponseCodes.ok_200,
-            ResponseKeys.body: {
-                "questionIndex": quiz_row.currentQuestion,
-                "question": next_question_cur_row.value,
-                "options": options
-            }
-        }
-
-    except Exceptions.QuizCompleteError:
-        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
-                'message': 'No more questions. Quiz has been completed.'}
-
-    except AttributeError:
-        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
-                'message': 'Quiz not found'}
-
-    except NoResultFound:
-        return {ResponseKeys.status: response_codes.ResponseCodes.not_found_404,
-                'message': 'Quiz not found'}
 
 
 def get_result(session: 'Session', quiz_token: str) -> Dict:
@@ -415,7 +382,7 @@ def delete(session: 'Session', quiz_token: str, commit=True) -> bool:
     # for x in range(100):
     #     _new_quiz(_session)
 
-    _new_quiz(_session)
+    # _new_quiz(_session)
     # _get_quiz(_session)
     # _current_question(_session)
     # _answer_question(_session)

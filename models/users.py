@@ -6,7 +6,6 @@ from mailer.mailer import send_activation_mail
 from query import access_token, user
 from query import validate_input_data
 from query import verification_token
-from database.db import SessionSingleton
 from typing import Dict
 import response_codes
 from response_codes import ResponseKeys
@@ -145,15 +144,3 @@ def sign_out_all(session: 'Session', user_id: int) -> Dict:
 
     return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
-
-if __name__ == '__main__':
-    _session: 'Session' = SessionSingleton().get_session()
-    _token = sign_in(_session, {'email': 'soren.seeberg@gmail.com', 'password': 'hanadulsetmulighet'})
-    sign_in(_session, {'email': 'soren.seeberg@gmail.com', 'password': 'hanadulsetmulighet'})
-    sign_in(_session, {'email': 'soren.seeberg@gmail.com', 'password': 'hanadulsetmulighet'})
-    sign_in(_session, {'email': 'soren.seeberg@gmail.com', 'password': 'hanadulsetmulighet'})
-    sign_in(_session, {'email': 'sorense@configit.com', 'password': '1234'})
-
-    sign_out(_session, _token.get('accessToken'))
-    sign_out(_session, _token.get('accessToken'))
-    sign_out_all(_session, _token.get('accessToken'))

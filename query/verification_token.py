@@ -90,8 +90,4 @@ def delete_all_by_user_id(session: 'Session', user_id: int, commit=True) -> bool
         raise Exception
 
 
-if __name__ == '__main__':
-    from database import db
 
-    _session = db.SessionSingleton().get_session()
-    print(get_by_user_id(_session, 1).token)

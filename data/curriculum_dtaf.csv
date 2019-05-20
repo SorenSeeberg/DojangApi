@@ -1,0 +1,334 @@
+Kategori,Side i DTaF’s officielle grundteknikbog,Pensum,Koreansk,Dansk,AppearInTest
+Benteknikker,102,0,An-chagi,Indadgående spark,TRUE
+Benteknikker,94,0,Ap-chagi,Front spark,TRUE
+Benteknikker,103,0,Bakat-chagi,Udadgående spark,TRUE
+Benteknikker,102,0,Naeryo-chagi,Nedadgående spark,TRUE
+Håndteknikker,60-18,0,Arae hechyomakki,Lav sektion “adskille” blokering,TRUE
+Håndteknikker,77-3,0,Arae jireugi,Slag lav sektion,TRUE
+Håndteknikker,59-15,0,Arae-makki,Lav sektion blokering,TRUE
+Håndteknikker,77-1,0,Eolgul jireugi,Slag høj sektion,TRUE
+Håndteknikker,56-1,0,Eolgulmakki,Høj sektion blokering,TRUE
+Håndteknikker,59-11,0,Momtong anmakki,Midter sektion blokering (modsat arm / ben),TRUE
+Håndteknikker,77-2,0,Momtong jireugi,Slag midter sektion,TRUE
+Håndteknikker,59-10,0,Momtongmakki,Midter sektion blokering,TRUE
+Stande,42,0,Apkoobi,Lang stand,TRUE
+Stande,40,0,Apseogi,Kort stand,TRUE
+Stande,45-2,0,Dwichook-moa-seogi,Stand med samlede hæle (hilsestand),TRUE
+Stande,50-1,0,Gibon-joonbi-seogi,Klarstand ved grundteknik,TRUE
+Stande,38,0,Joochoom-seogi,Hestestand,TRUE
+Stande,45-1,0,Moa-seogi,Samlet fødder stand,TRUE
+Stande,35,0,Naranhi-seogi,Parallel stand,TRUE
+Teori,,0,An,Inderside / indadgående,TRUE
+Teori,,0,Ap,Front,TRUE
+Teori,,0,Arae,Lav sektion,TRUE
+Teori,,0,Bakat,Yderside / udadgående,TRUE
+Teori,93,0,Chagi,Spark,TRUE
+Teori,,0,Charyeo,Indtag hilsestand,TRUE
+Teori,,0,Dirro dorra,180 graders vending,TRUE
+Teori,,0,Do bok,Taekwondo dragt,TRUE
+Teori,,0,Do jang,Taekwondo træningssal,TRUE
+Teori,,0,Eolgul,Høj sektion,TRUE
+Teori,74,0,Jireugi,Slag fra hoften m. knyttet hånd,TRUE
+Teori,,0,Joonbi,Indtag klarstand,TRUE
+Teori,8,0,Jumeok,Knyttet hånd,TRUE
+Teori,,0,Keuman,Stop og indtag startposition,TRUE
+Teori,,0,Kukki jedeharjo kyeongne,Hilsen til flag,TRUE
+Teori,,0,Kyeongne,Hils (buk),TRUE
+Teori,,0,Kyosa-nim,Træner 1-3 dan,TRUE
+Teori,,0,Momtong,Midter sektion,TRUE
+Teori,,0,Sabum-nim,Træner 4. dan og mere,TRUE
+Teori,,0,Toga-nim,Træner under 1. dan,TRUE
+Teori,,0,Zuu,Hvil / slap af,TRUE
+Benteknikker,96,1,Baldeung dollyo-chagi,"Cirkelspark, hvor der rammes med vrist",TRUE
+Diverse,,1,Han bon kireugi,"Et skridts kamp, 3 stk.",FALSE
+Diverse,,1,Poomse Taegeuk il jang,Taegeuk nr 1,TRUE
+Håndteknikker,76-3,1,Bandae jireugi,Slag “over forreste ben”,TRUE
+Håndteknikker,76-2,1,Baro jireugi,Slag (modsat arm / ben),TRUE
+Håndteknikker,58-8,1,Momtong bakatmakki,Udadgående blokering i midter sektion,TRUE
+Håndteknikker,87-21,1,Sonnal eolgul bakat-chigi,Udadgående slag m. knivhånd,TRUE
+Stande,37,1,Pyeonhi-seogi,Hvilestand,TRUE
+Teori,32,1,Baldeung,Vrist,TRUE
+Teori,84,1,Chigi,"Slag, der kommer fra skulderen",TRUE
+Teori,,1,Dollyo,Cirkel,TRUE
+Teori,,1,DTaF,Dansk Taekwondo Forbund,TRUE
+Teori,,1,Dul,To (2),TRUE
+Teori,28,1,Dwichook,Underside af hæl,TRUE
+Teori,,1,Hanna,En (1),TRUE
+Teori,,1,Il,Første (1.),TRUE
+Teori,,1,Net,Fire (4),TRUE
+Teori,,1,Poom,Grundteknik,TRUE
+Teori,,1,Poomse,Sammensatte grundteknikker,TRUE
+Teori,,1,Set,Tre (3),TRUE
+Teori,16,1,Son,Hånd,TRUE
+Teori,16,1,Sonnal,Knivhånd,TRUE
+Teori,,1,Yi,Anden (2.),TRUE
+Benteknikker,96,2,Apchook dollyo-chagi,"Cirkelspark, hvor der rammes med fodballe",TRUE
+Benteknikker,95,2,Yeop-chagi,Sidespark,TRUE
+Diverse,,2,Han bon kireugi ,"Et skridts kamp, 5 stk.",FALSE
+Diverse,,2,Poomse Taegeuk yi jang,Taegeuk nr 2,TRUE
+Diverse,,2,Sam bon kireugi ,"Tre skridts kamp (udtales “sah” bon kireugi), 3 stk.",FALSE
+Håndteknikker,62-24,2,Anpalmok momtong bakatmakki,Udadgående blokering m. inderside af underarm,TRUE
+Håndteknikker,,2,Doo bon momtong jireugi,Dobbelt slag,TRUE
+Håndteknikker,,2,Hansonnal jebipoom mok-chigi,Slag mod hals (modsat arm / ben),TRUE
+Håndteknikker,,2,Hansonnal momtong bakatmakki,Enkelt knivhånds blokering,TRUE
+Håndteknikker,87-20,2,Sonnal eolgul anchigi,Slag med knivhånd i høj sektion,TRUE
+Håndteknikker,62-29,2,Sonnal momtongmakki,Knivhånds blokering,TRUE
+Stande,43,2,Dwit-koobi,Sidestand,TRUE
+Teori,26-2,2,An-palmok,Inderside af underarm,TRUE
+Teori,27,2,Apchook,Fodballe,TRUE
+Teori,26-1,2,Bakat-palmok,Yderside af underarm,TRUE
+Teori,29,2,Balnal,Knivfod,TRUE
+Teori,,2,ETU,European Taekwondo Union,TRUE
+Teori,,2,Jebipoom,Svaleteknik,TRUE
+Teori,,2,Mok,Hals,TRUE
+Teori,25,2,Pal,Arm,TRUE
+Teori,26,2,Palmok,Underarm (armhals),TRUE
+Teori,,2,Sam,Tredje (3.),TRUE
+Teori,,2,Tasut,Fem (5),TRUE
+Teori,,2,WTF,World Taekwondo Federation,TRUE
+Teori,,2,Yeop,Side,TRUE
+Benteknikker,97,3,Bandal-chagi,Halvmånespark,TRUE
+Benteknikker,98,3,Dwit-chagi,Bagud spark,TRUE
+Benteknikker,100,3,Mileo-chagi,Skubbe spark,TRUE
+Diverse,,3,Han bon kireugi,"Et skridts kamp, 7 stk.",FALSE
+Diverse,,3,Hosinsul,selvforsvar - frigørelse fra håndledsgreb,FALSE
+Diverse,,3,Kireugi,"der lægges vægt på : Afstandskontrol, rigtig bevægelse, rigtig teknik",FALSE
+Diverse,,3,Poomse Taegeuk sam jang,Taegeuk nr 3,TRUE
+Diverse,,3,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 5 stk.",FALSE
+Håndteknikker,84-1,3,Ap-chigi (deung-jumeok),Front slag (omvendt knoslag),TRUE
+Håndteknikker,67-64,3,Batangson momtong nulleomakki,Nedadgående blokering med håndrod,TRUE
+Håndteknikker,,3,Hansonnal momtong yeopmakki,Enkelt knivhånds blokering til siden,TRUE
+Håndteknikker,90-2,3,Jebipoom mok-chigi,Slag mod hals - Svaleteknik,TRUE
+Håndteknikker,91-1,3,Pyeonson-keut seweo chireugi,Fingerstik med lodret håndstilling,TRUE
+Stande,38,3,Na-chooeo-seogi,Dyb stand,TRUE
+Teori,32-7,3,Balbadak,Fodsål,TRUE
+Teori,22,3,Batangson,Håndrod,TRUE
+Teori,91,3,Chireugi,Stikslag,TRUE
+Teori,11,3,Deung-jumeok,Oversiden af knyttet hånd,TRUE
+Teori,,3,Doo bon,2 eller dobbelt slag,TRUE
+Teori,,3,Gyesok,Fortsæt,TRUE
+Teori,,3,Hvad betyder poomse ?,Imaginær kamp (se bilag 3),TRUE
+Teori,,3,Hvad er og betyder “Kihap” ?,"Kampråb -Ki= energi,hap= samle",TRUE
+Teori,,3,Kalyeo,Stop / ”Break”,TRUE
+Teori,,3,Mileo,Skubbe,TRUE
+Teori,18,3,Pyeunson-keut,Fingerstik,TRUE
+Teori,,3,Sah,Fjerde (4.),TRUE
+Teori,15,3,Sewoon-jumeok,Lodret håndstilling med knyttet hånd,TRUE
+Teori,,3,Shijak,Begynd / start,TRUE
+Teori,17,3,Son-deung,Håndryggen,TRUE
+Teori,7-6,3,Son-keut,Fingerspidserne,TRUE
+Teori,,3,Yusot,Seks (6),TRUE
+Benteknikker,99,4,Beodeo-chagi,Bøje-stræk spark,TRUE
+Benteknikker,97-2,4,Biteureo-chagi,Vridespark,TRUE
+Benteknikker,111,4,Ieo-chagi,Toensspark lige efter hinanden (forskelligeben),TRUE
+Benteknikker,28-2,4,Jijjigki,Stamp / tramp / pulverisere,TRUE
+Benteknikker,109,4,Seokeo-chagi,Toforskelligespark lige efter hinanden (sammeben),TRUE
+Diverse,,4,Han bon kireugi ,"Et skridts kamp, 9 stk. Der lægges vægt på : Gode blokeringer, gode stande, gode angreb, rigtige målområder",FALSE
+Diverse,,4,Hosinsul,selvforsvar - frigørelse fra skulder / brystgreb,TRUE
+Diverse,,4,Kireugi.,"Kamp,  3x2 min",FALSE
+Diverse,,4,Poomse Taegeuk sah jang,Taegeuk nr. 4,TRUE
+Diverse,,4,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 7 stk.",FALSE
+Håndteknikker,86-17,4,Me-jumeok momtong naeryo-chigi,Nedadgående slag med ydersiden af knyttet hånd,TRUE
+Håndteknikker,89-44,4,Palkoop dollyo-chigi,Cirkel albueslag,TRUE
+Håndteknikker,89-48,4,Palkoop pyojeok-chigi,Albue pletslag,TRUE
+Håndteknikker,78-1,4,Yeop-jireugi,Sideslag,TRUE
+Stande,47,4,Ap-koa-seogi,Forlæns krydsstand,TRUE
+Stande,47,4,Dwit-koa-seogi,Støttestand (baglæns krydsstand),TRUE
+Stande,36,4,Oen-seogi,Venstre stand,TRUE
+Stande,36,4,Oreun-seogi,Højre stand,TRUE
+Teori,33,4,Dari,Ben,TRUE
+Teori,,4,Ilkup,Syv (7),TRUE
+Teori,11,4,Me-jumeok,Ydersiden af den knyttede hånd,TRUE
+Teori,26-4,4,Mit-palmok,Undersiden af underarm,TRUE
+Teori,7-29,4,Mooreup,Knæ,TRUE
+Teori,,4,Oh,Femte (5.),TRUE
+Teori,25,4,Palkoop,Albue,TRUE
+Teori,,4,Pyojeok,Plet / punkt,TRUE
+Benteknikker,105,5,Goolleo-chagi,Trampe spark,TRUE
+Benteknikker,101,5,Hooryo-chagi,Sving spark,TRUE
+Benteknikker,111,5,Ieo seokeo-chagi,"Samme som Ieo-chagi, men forskellige spark",TRUE
+Benteknikker,109,5,Momdollyo-chagi,Dreje kroppen spark,TRUE
+Benteknikker,106,5,Twieo-chagi,Flyvende spark m. forreste ben,TRUE
+Diverse,,5,Han bon kireugi ,"Et skridts kamp, 11 stk",FALSE
+Diverse,,5,Hosinsul,selvforsvar - frigørelse fra halsgreb (kvælertag),FALSE
+Diverse,,5,Kireugi.,"Kamp,  3x2 min, Der lægges vægt på : Rigtige blokeringer, kraftfulde men kontrollerede teknikker",FALSE
+Diverse,,5,Poomse Taegeuk oh jang,Taegeuk nr. 5,TRUE
+Diverse,,5,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 9 stk.",FALSE
+Håndteknikker,66-63,5,Batangson momtongmakki,Håndrods blokering i midter sektion,TRUE
+Håndteknikker,57-2,5,Eolgul bakatmakki,Udadgående blokering i høj sektion,TRUE
+Håndteknikker,64-43,5,Hansonnal eolgul biteureomakki,Vride blokering med enkelt knivhånd,TRUE
+Teori,37,5,Anchong-seogi,Hvilestand (fødderne indad),TRUE
+Teori,45-3,5,Apchook-moa-seogi,Tæer samle stand,TRUE
+Teori,29,5,Balkeut,Tåspidser,TRUE
+Teori,,5,Dommerreglement,"”Start en kamp” (se Lovmappe - ""Dommerregler"")",FALSE
+Teori,31,5,Dwikoomchi,Hæl,TRUE
+Teori,,5,Jodul,Otte (8),TRUE
+Teori,,5,Mom,Krop,TRUE
+Teori,,5,Yook,Sjette (6.),TRUE
+Benteknikker,109,6,Geodeup chagi,To spark m. samme ben,TRUE
+Benteknikker,103,6,Mooreupchigi,Knæspark / slag,TRUE
+Benteknikker,100-2,6,Nakeo chagi,Krog spark,TRUE
+Benteknikker,"111-10,2",6,Pyojeok-chagi,Pletspark,TRUE
+Diverse,,6,Han bon kireugi ,"Et skridts kamp, 13 stk",FALSE
+Diverse,,6,Hosinsul,selvforsvar - frigørelse af omklamring bagfra,FALSE
+Diverse,,6,Kireugi.,"Kamp,  3x3 min",FALSE
+Diverse,,6,Poomse Taegeuk yook jang,Taegeuk nr. 6,TRUE
+Diverse,,6,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 11 stk.",FALSE
+Håndteknikker,,6,Batangson geodureo momtong anmakki,Håndrods blokering med støtte(modsat arm / ben),TRUE
+Håndteknikker,,6,Batangson momtong anmakki,Håndrods blokering(modsat arm / ben),TRUE
+Håndteknikker,15-5,6,Doo jumeok jecheo jireugi,Dobbelt slag m. knyttet næve med håndfladen opad,TRUE
+Håndteknikker,85-2,6,Eolgul bakatchigi,Udadgående slag,TRUE
+Håndteknikker,60-19,6,Eotgeoreo araemakki,Krydshånds blokering i lav sektion,TRUE
+Håndteknikker,71-10,6,Gawi makki,Sakse blokering,TRUE
+Håndteknikker,,6,Geodeureo deung-jumeok eolgul apchigi,Omvendt knoslag i høj sektion med støtte,TRUE
+Håndteknikker,59-13,6,Momtong hechyomakki,Udadgående adskille blokering,TRUE
+Stande,44-16,6,Beom-seogi,Tigerstand,TRUE
+Stande,52-4,6,Poom seogi : Bojumeok joonbi-seogi,Dækket næve retstand,TRUE
+Teori,,6,Ahope,Ni (9),TRUE
+Teori,52,6,Bo jumeok,Dækket næve,TRUE
+Teori,,6,Chill,Syvende (7.),TRUE
+Teori,15,6,Doo jumeok,Dobbelt knytnæve,TRUE
+Teori,,6,Eotgeoreo,Kryds,TRUE
+Teori,,6,Gawi,Saks,TRUE
+Teori,,6,Geodeureo,Støtte,TRUE
+Teori,21,6,Gomson,Bjørnehånd,TRUE
+Teori,,6,Jool,Ti (10),TRUE
+Teori,39,6,Mo-seogi,Spidsstand,TRUE
+Teori,12,6,Pyeon jumeok,Kattenæve,TRUE
+Benteknikker,107-2,7,Doo-baldangsang chagi,"2 flyvende spark efter hinanden, hvor det første er et “falsk spark”",TRUE
+Diverse,,7,Han bon kireugi ,"Et skridts kamp, 15 stk",FALSE
+Diverse,,7,Hosinsul,selvforsvar - frigørelse af omklamring forfra,TRUE
+Diverse,,7,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr",FALSE
+Diverse,,7,Poomse Taegeuk chill jang,Taegeuk nr. 7,TRUE
+Diverse,,7,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 13 stk.",FALSE
+Håndteknikker,83-7,7,Dan-gyo teok jireugi,Træk med en hånd og udfør slag med den anden hånd mod hage,TRUE
+Håndteknikker,60-15,7,Geodeureo araemakki,Blokering i lav sektion med støtte,TRUE
+Håndteknikker,"58-8,1",7,Geodeureo momtongmakki,Blokering i midter sektion med støtte,TRUE
+Håndteknikker,71-8,7,Oe-santeul makki,En hånds bjerg blokering,TRUE
+Teori,41,7,Ap-joochoom-seogi,Kort hestestand,TRUE
+Teori,30,7,Balnaldeung,Inderside af fod,TRUE
+Teori,13,7,Bamjumeok,Kastanjenæve,TRUE
+Teori,,7,Dangyo,Trække,TRUE
+Teori,39,7,Mo-joochoom-seogi,Spids hestestand,TRUE
+Teori,,7,Oe-santeul,Halvt bjerg,TRUE
+Teori,,7,Pal,Ottende (8.),TRUE
+Teori,,7,Santeul,Bjerg,TRUE
+Teori,,7,Taekwondo’s historie,Se bilag 4,FALSE
+Teori,,7,Teok,Hage,TRUE
+Benteknikker,111-14,8,Twieo ieo-chagi,Samme spark 2 gange - flyvende,TRUE
+Diverse,,8,Han bon kireugi ,"Et skridts kamp, 17 stk",FALSE
+Diverse,,8,Hosinsul,"selvforsvar - frigørelse af div. greb, når man ligger på ryggen",TRUE
+Diverse,,8,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr",FALSE
+Diverse,,8,Poomse Taegeuk pal jang,Taegeuk nr. 8,TRUE
+Diverse,,8,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 15 stk.",FALSE
+Håndteknikker,64-49,8,Hansonnal araemakki,Enkelt knivhånds blokering i lav sektion,TRUE
+Håndteknikker,89-45,8,Palkoop naeryochigi,Nedadgående albuestød,TRUE
+Håndteknikker,89-43,8,Palkoop olryeochigi,Opadgående albuestød,TRUE
+Håndteknikker,63-36,8,Sonnal araemakki,Knivhånds blokering i lav sektion,TRUE
+Teori,39,8,An-chung-joochoom-seogi,Indaddrejet hestestand,TRUE
+Teori,19-5,8,Gawison keut,Sakse-fingerstik,TRUE
+Teori,19-6,8,Hanson keut,Enkelt-fingerstik,TRUE
+Teori,14-6,8,Jibge jumeok,Pincetnæve,TRUE
+Teori,,8,Ko,Niende (9.),TRUE
+Teori,20-7,8,Moeun-dooson keut,Dobbelt fingerstik,TRUE
+Teori,20-8,8,Moeun-seson keut,Tre-fingerstik,TRUE
+Teori,,8,Olryeo,Opadgående,TRUE
+Teori,,8,Ship,Tiende (10.),TRUE
+Teori,17-2,8,Sonnal deung,Modsat knivhånd,TRUE
+Teori,,8,Udvidet kendskab til dommerreglementet: Advarsel og minuspoint,Se bilag 5,FALSE
+Benteknikker,107-4,9,Twieo baggueo chagi,Flyvende spark med bageste ben,TRUE
+Diverse,,9,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,9,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,9,Poomse Koryo,Kendskab til Poomse Koryo,FALSE
+Diverse,,9,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Håndteknikker,62-28,9,Anpalmok hechyomakki,Adskille blokering med indersiden af underarm,TRUE
+Håndteknikker,24,9,Kaljebi,Slag / stik mod hals,TRUE
+Håndteknikker,,9,Me jumeok arae pyojeokchigi,Pletslag i lav sektion,TRUE
+Håndteknikker,24,9,Mooreup keokki,“Knække knæ”,TRUE
+Håndteknikker,89-47,9,Palkoop yeop chigi,Albuestød til siden,TRUE
+Håndteknikker,18-6,9,Pyeonsonkeut jechyo-chireugi,Fingerstik med håndfladen opad,TRUE
+Håndteknikker,82-3,9,Pyojeok-jireugi,Plet slag,TRUE
+Stande,53,9,Poom seogi : Tongmilgi joonbi-seogi,Skubbe klar stand,TRUE
+Teori,24,9,Agwison,Rundingen mellem tommel- og pegefinger,TRUE
+Teori,46,9,Gyottari-seogi,Hjælpestand,TRUE
+Teori,18-3,9,Je chin pyeonsonkeut,Håndfladen opad (fingerstik),TRUE
+Teori,24,9,Kaljebi,Benævnelse for slag mod hals med agwison,TRUE
+Teori,24,9,Keokki,Knække,TRUE
+Teori,21,9,Modeumson keut,Femfingerstik,TRUE
+Teori,44,9,O-ja-seogi,T-stand,TRUE
+Diverse,,10,Gennembrydning,(kun over 15 år) 2 brædder. 1 slag stående + 1 flyvende spark (m.tilløb),FALSE
+Diverse,,10,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,10,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,10,Kursuskrav,Kursuskrav til 1. poom og 1. dan: Hjælpetræner kursus eller træner 1A,FALSE
+Diverse,,10,Poomse Koryo,Poomse nr 1,TRUE
+Diverse,,10,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,10,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,62-28,10,Anpalmok hecheyomakki,Midter sektion adskille blokering,TRUE
+Håndteknikker,88-36,10,Batangson teok chigi,Slag mod hage m. håndrod,TRUE
+Håndteknikker,64-46,10,Hansonnal momtong makki,Enkelt knivhåndsblokering,TRUE
+Håndteknikker,72-14,10,Keumgang makki,Diamant blokering,TRUE
+Håndteknikker,70-2,10,Keun-dolcheogi,Stort hængsel,TRUE
+Håndteknikker,70-4,10,Santeul-makki,Bjerg blokering,TRUE
+Stande,48-7,10,Haktari-seogi,Tranestand,TRUE
+Diverse,,11,Gennembrydning,(kun over 15 år) 2 brædder. 1 spark stående + 1 flyvende spark (evt. med tilløb),FALSE
+Diverse,,11,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,11,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,11,Kursuskrav,Kursuskrav til 2. poom og 2. dan: Hjælpetræner kursus eller træner 1A,FALSE
+Diverse,,11,Poomse Keumgang,Poomse nr 2,TRUE
+Diverse,,11,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,11,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,70-3,11,Jageun dolcheogi,Lille hængsel,TRUE
+Håndteknikker,72-15,11,Keumgang momtong makki,Diamant blokering i midtersektion,TRUE
+Håndteknikker,73-23,11,Miteuro paegi,Trækker rundt,TRUE
+Håndteknikker,63-37,11,Sonnal arae hechyo makki,"Lav sektion ""adskille"" blokering m. knivhånd",TRUE
+Benteknikker,"109-1,5",12,Momdolmyeo yeopchagi,Drej krop og udfør yeopchagi,TRUE
+Diverse,,12,Gennembrydning,"(kun over 15 år) 3 brædder. 2 spark+1 slag. 1 spark stående efterfulgt af slag, derefter flyvende spark eller 1 spark stående, efterfulgt af flyvende spark med slag.",FALSE
+Diverse,,12,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,12,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,12,Kursuskrav,Kursuskrav til 3. poom og 3. dan: Hjælpetræner kursus eller træner 1A,FALSE
+Diverse,,12,Poomse Taebaek,Poomse nr 3,TRUE
+Diverse,,12,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,12,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,90-3,12,Dan gyo teok-chigi,En hånd trækker og den anden udfører apchigi (deungjumeok),TRUE
+Håndteknikker,71-13,12,Geodeureo eolgol yeop makki,Høj hjælpe side blokering,TRUE
+Håndteknikker,70-6,12,Hechyo santeul makki,"""Adskille"" bjerg blokering",TRUE
+Håndteknikker,90-5,12,Meonge-chigi,Albuestød til siderne,TRUE
+Diverse,,13,Gennembrydning,"Gennembrydning: 3 brædder i luften. Spark eller slag, dog min. 2 spark",TRUE
+Diverse,,13,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,13,Kireugi.,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,13,Kursuskrav,Kursuskrav til 4. dan: Minimum ”TRÆNER 1” uddannelsen,FALSE
+Diverse,,13,Poomse Pyongwon,Poomse nr 4,TRUE
+Diverse,,13,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,13,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,72-19,13,Bawi milgi,"""Skubber en stor sten""",TRUE
+Håndteknikker,82-5,13,Chet-tan-jireugi,Begge jumeok udfører slag i momtong,TRUE
+Håndteknikker,71-11,13,Hwangso makki,Okse blokering,TRUE
+Håndteknikker,70-1,13,Keureo-olligi,Trækker opad,TRUE
+Håndteknikker,71-12,13,Sonbadak geodeureo yeop makki,Håndfladen hjælper sideblokering,TRUE
+Håndteknikker,63-38,13,Sonnal arae eotgeoreo makki,Lav krydshåndsblokering m. knivhånd,TRUE
+Håndteknikker,65-54,13,Sonnaldeung momtong makki,Omvendt knivhåndsblokering i midter sektion,TRUE
+Diverse,,14,Gennembrydning,"Gennembrydning: 3 brædder i luften. Spark eller slag, dog min. 2 spark",FALSE
+Diverse,,14,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,14,Kireugi,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,14,Kursuskrav,Krav om gennemførte kurser inden 5.DAN gradueringen: Minimum ”TRÆNER 1” uddannelsen,FALSE
+Diverse,,14,Poomse Sipjin,Poomse nr 5,TRUE
+Diverse,,14,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,14,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,,14,Hansonnal eolgul makki,Enkelt knivhåndsblokering i høj sektion,TRUE
+Håndteknikker,83-8,14,Keumgang ap jireugi,Diamant fremadgående slag i midtersektion,TRUE
+Håndteknikker,,14,Me-jumeok yeop pyojeok chigi,Pletslag til siden med lillefingersiden af knytnæve,TRUE
+Diverse,,15,Gennembrydning,"Gennembrydning: 3 brædder i luften. Spark eller slag, dog min. 2 spark",FALSE
+Diverse,,15,Han bon kireugi ,"Et skridts kamp, 19 stk",FALSE
+Diverse,,15,Kireugi,"Kamp,  3x3 min, med beskyttelsesudstyr, kamp mod 2 modstandere",FALSE
+Diverse,,15,Kursuskrav,Krav om gennemførte kurser inden 6.DAN gradueringen:Minimum ”TRÆNER 1” uddannelsen,FALSE
+Diverse,,15,Poomse Jitae,Poomse nr 6,TRUE
+Diverse,,15,Sam bon kireugi,"Tre skridts kamp (udtales “sah” bon kireugi), 17 stk.",FALSE
+Diverse,,15,Tidskrav,Krav om tidsinterval: Se Lovmappen afsnit 8 § 3 stk. 2,FALSE
+Håndteknikker,62-27,15,An-palmok momtong biteuro makki,Vride blokering med inderside af underarm,TRUE
+Håndteknikker,82-2,15,Bam-jumeok sosum jireugi,Kastanje-næve slag mod hals,TRUE
+Håndteknikker,,15,Hwidullo jabadangkigi,”Fange og skubbe væk”,TRUE
+Håndteknikker,,15,Hwidullo makki,”Skubbe væk”,TRUE
+Håndteknikker,83-9,15,Keumgang yeop jireugi,Diamant knytnæveslag til siden,TRUE
+Håndteknikker,73-22,15,Nalgae pyogi,Spredte vinger,TRUE
+Håndteknikker,71-9,15,Sonnal oesanteul makki,En hånds bjerg blokering med knivhånd,TRUE
+Håndteknikker,72-20,15,Taesan milgi,Skubber et stort bjerg,TRUE

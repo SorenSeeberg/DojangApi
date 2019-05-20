@@ -49,8 +49,30 @@ type Result = {
     answers: Answer[];
 }
 
-async function handleGetQuizConfiguration() {
+async function handleCreateNewQuizFromForm(){
+        console.log('handleCreateNewQuizFromForm()');
+        const select0 = <HTMLSelectElement>document.getElementById('select-0');
+        const select1 = <HTMLSelectElement>document.getElementById('select-1');
+        const select2 = <HTMLSelectElement>document.getElementById('select-2');
+        const select3 = <HTMLSelectElement>document.getElementById('select-3');
+        const select4 = <HTMLSelectElement>document.getElementById('select-4');
+        const select5 = <HTMLSelectElement>document.getElementById('select-5');
 
+        const categoryId: number = select0.selectedIndex;
+        const levelMin: number = select1.selectedIndex;
+        const levelMax: number = select2.selectedIndex;
+        const questionCount: number = parseInt(select3.value);
+        const optionCount: number= parseInt(select4.value);
+        const timeLimit: number = parseInt(select5.value);
+
+        const config: QuizConfiguration = { categoryId, levelMin, levelMax, questionCount, optionCount, timeLimit };
+        console.log('CONFIG');
+        console.log(config);
+
+        await handleCreateNewQuiz(config);
+}
+
+async function handleGetQuizConfiguration() {
     templateLoading();
 
     let response = await fetch('/quiz/configuration', {
@@ -74,7 +96,7 @@ async function handleGetQuizConfiguration() {
     return false;
 }
 
-async function handleCreateNewQuiz(quizConfig: QuizConfiguration = quizConfigTemp) {
+async function handleCreateNewQuiz(quizConfig: QuizConfiguration) {
     templateLoading();
 
     let response = await fetch('/quiz', {

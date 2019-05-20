@@ -33,22 +33,49 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function handleGetCurriculum(categoryId, levelMin, levelMax) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseObject, curriculum;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    templateLoading();
+                    return [4, fetch("/curriculum?categoryId=" + categoryId + "&levelMin=" + levelMin + "&levelMax=" + levelMax, {
+                            method: 'get',
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        console.log(responseObject);
+                        curriculum = responseObject.body;
+                        pageCurriculum(curriculum);
+                        return [2, true];
+                    }
+                    return [2, false];
+            }
+        });
+    });
+}
 var TITLE_CONTEXT = { title: 'Dojang' };
 function pageIndex() {
     if (!getAccessToken()) {
-        historyRouter({ data: null, title: '', url: routeNames.signIn });
+        historyRouter({ data: null, path: routeNames.signIn });
         templateTopBarSignedOut(TITLE_CONTEXT);
         templateSignIn();
     }
     else {
-        historyRouter({ data: null, title: '', url: routeNames.frontPage });
+        historyRouter({ data: null, path: routeNames.frontPage });
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateMainMenu();
     }
 }
 function pageCreateUser() {
     if (!getAccessToken()) {
-        historyRouter({ data: null, title: '', url: routeNames.createUser });
+        historyRouter({ data: null, path: routeNames.createUser });
         templateTopBarSignedOut(TITLE_CONTEXT);
         templateCreateUser();
     }
@@ -62,7 +89,7 @@ var infoBoxErrorLevel = {
     success: 'info-box success'
 };
 function pageInfo(context) {
-    historyRouter({ data: null, title: '', url: '' });
+    historyRouter({ data: null, path: '' });
     templateTopBarSignedOut(TITLE_CONTEXT);
     templateInfo(context);
 }
@@ -105,7 +132,7 @@ function pageQuizCategory() {
         pageIndex();
     }
     else {
-        historyRouter({ data: null, title: '', url: routeNames.quizCategory });
+        historyRouter({ data: null, path: routeNames.quizCategory });
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuizCategory();
     }
@@ -115,7 +142,7 @@ function pageQuizConfig(config) {
         pageIndex();
     }
     else {
-        historyRouter({ data: null, title: '', url: routeNames.quizConfig });
+        historyRouter({ data: null, path: routeNames.quizConfig });
         handleGetQuizConfiguration();
     }
 }
@@ -132,7 +159,7 @@ function pageQuiz(quiz) {
             question: quiz.currentQuestion.question,
             options: options
         };
-        historyRouter({ data: quiz.quizToken, title: '', url: routeNames.quiz });
+        historyRouter({ data: quiz.quizToken, path: routeNames.quiz });
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuiz(context);
     }
@@ -142,7 +169,7 @@ function pageQuizResult(result) {
         pageIndex();
     }
     else {
-        historyRouter({ data: null, title: '', url: routeNames.result + "/" + result.quizToken });
+        historyRouter({ data: null, path: routeNames.result + "/" + result.quizToken });
         var star = '&#10026;';
         var stars = result.percentageCorrect === 100
             ? "<h1 class=\"gold-font star\">" + star + " " + star + " " + star + "</h1><p>Perfekt</p>"
@@ -164,6 +191,51 @@ function pageQuizResult(result) {
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateQuizResult(context);
     }
+}
+function pageCurriculum(curriculum) {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        historyRouter({ data: { test: 3 }, path: "" + routeNames.curriculum });
+        var selectCategory = "<div class=\"select-row\"><label>Kategori</label><select>" + curriculum.categoryLabels.map(function (c) { return c === curriculum.categoryLabel ? "<option selected>" + c + "</option>" : "<option>" + c + "</option>"; }).join('') + "</select></div>";
+        var selectLevelMin = "<div class=\"select-row\"><label>Laveste grad</label><select>" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMinLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
+        var selectLevelMan = "<div class=\"select-row\"><label>H\u00F8jeste grad</label><select>" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMaxLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
+        var rows = "<form>" + curriculum.data.map(function (row) { return "<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td></tr>"; }).join('') + "</form>";
+        var context = { rows: rows, select: selectCategory + selectLevelMin + selectLevelMan };
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateCurriculum(context);
+    }
+}
+function handleCreateNewQuizFromForm() {
+    return __awaiter(this, void 0, void 0, function () {
+        var select0, select1, select2, select3, select4, select5, categoryId, levelMin, levelMax, questionCount, optionCount, timeLimit, config;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log('handleCreateNewQuizFromForm()');
+                    select0 = document.getElementById('select-0');
+                    select1 = document.getElementById('select-1');
+                    select2 = document.getElementById('select-2');
+                    select3 = document.getElementById('select-3');
+                    select4 = document.getElementById('select-4');
+                    select5 = document.getElementById('select-5');
+                    categoryId = select0.selectedIndex;
+                    levelMin = select1.selectedIndex;
+                    levelMax = select2.selectedIndex;
+                    questionCount = parseInt(select3.value);
+                    optionCount = parseInt(select4.value);
+                    timeLimit = parseInt(select5.value);
+                    config = { categoryId: categoryId, levelMin: levelMin, levelMax: levelMax, questionCount: questionCount, optionCount: optionCount, timeLimit: timeLimit };
+                    console.log('CONFIG');
+                    console.log(config);
+                    return [4, handleCreateNewQuiz(config)];
+                case 1:
+                    _a.sent();
+                    return [2];
+            }
+        });
+    });
 }
 function handleGetQuizConfiguration() {
     return __awaiter(this, void 0, void 0, function () {
@@ -197,7 +269,6 @@ function handleGetQuizConfiguration() {
     });
 }
 function handleCreateNewQuiz(quizConfig) {
-    if (quizConfig === void 0) { quizConfig = quizConfigTemp; }
     return __awaiter(this, void 0, void 0, function () {
         var response, responseObject, quiz;
         return __generator(this, function (_a) {
@@ -422,14 +493,14 @@ var routeNames = {
     quizConfig: '/quiz-configuration',
     quiz: '/quiz',
     curriculum: '/pensum',
-    result: '/resultat'
+    result: '/resultat',
 };
 var routes = (_a = {},
     _a[routeNames.index] = pageIndex,
     _a[routeNames.signIn] = pageIndex,
     _a[routeNames.frontPage] = pageIndex,
     _a[routeNames.createUser] = pageCreateUser,
-    _a[routeNames.curriculum] = pageIndex,
+    _a[routeNames.curriculum] = function () { return handleGetCurriculum(1, 1, 11); },
     _a[routeNames.quizCategory] = pageQuizCategory,
     _a[routeNames.quizConfig] = pageQuizConfig,
     _a[routeNames.quiz] = pageQuiz,
@@ -441,11 +512,16 @@ function spaRouter() {
     console.log(routes);
     routes[window.location.pathname]();
 }
-function historyRouter(url) {
+function historyRouter(url, type) {
+    if (type === void 0) { type = 'push'; }
     console.log('historyRouter');
     console.log(url);
-    console.log(routes);
-    history.pushState(url.data, url.title, url.url);
+    var origin = 'http://127.0.0.1:5000';
+    console.log(origin + url.path);
+    type === 'push'
+        ? history.pushState(url.data, url.path, origin + url.path)
+        : history.replaceState(url.data, url.path, origin + url.path);
+    console.log(history.length);
 }
 function setTemplate(templateId, contentTarget, context) {
     if (context === void 0) { context = {}; }
@@ -460,14 +536,15 @@ function templateQuizCategory() {
 }
 function templateQuizConfig(config) {
     var select = [];
-    console.log('templateQuizConfig');
-    console.log(config);
-    Object.keys(config).forEach(function (k) {
+    Object.keys(config).forEach(function (k, i) {
         if (k !== 'displayNames') {
-            select.push("<label>" + config['displayNames'][k] + "</label><select>" + config[k].map(function (o) { return "<option>" + o + "</option>"; }).join('') + "</select>");
+            select.push("<div class=\"select-row\"><label>" + config['displayNames'][k] + "</label><select id=\"select-" + i + "\">" + config[k].map(function (o) { return "<option>" + o + "</option>"; }).join('') + "</select></div>");
         }
     });
-    setTemplate("handlebars-quiz-configuration", "article", { select: select.join('') });
+    setTemplate("handlebars-quiz-configuration", "article", { select: "<form id='quiz-config-form'>" + select.join('') + "</form>" });
+}
+function templateCurriculum(context) {
+    setTemplate("handlebars-curriculum", "article", context);
 }
 function templateQuiz(context) {
     setTemplate("handlebars-quiz", "article", context);

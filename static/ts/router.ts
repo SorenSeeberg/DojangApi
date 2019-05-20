@@ -7,15 +7,15 @@ const routeNames = {
     quizConfig: '/quiz-configuration',
     quiz: '/quiz',
     curriculum: '/pensum',
-    result: '/resultat'
+    result: '/resultat',
 };
 
-const routes: { [key: string]: () => void } = {
+const routes: { [key: string]: any } = {
     [routeNames.index]: pageIndex,
     [routeNames.signIn]: pageIndex,
     [routeNames.frontPage]: pageIndex,
     [routeNames.createUser]: pageCreateUser,
-    [routeNames.curriculum]: pageIndex,
+    [routeNames.curriculum]: () => handleGetCurriculum(1,1,11),
     [routeNames.quizCategory]: pageQuizCategory,
     [routeNames.quizConfig]: pageQuizConfig,
     [routeNames.quiz]: pageQuiz,
@@ -31,15 +31,19 @@ function spaRouter(): void {
 
 type Url = {
     data: any;
-    title: string;
-    url: string;
+    path: string;
 }
 
-function historyRouter(url: Url): void {
+function historyRouter(url: Url, type: 'push' |'replace' = 'push'): void {
     console.log('historyRouter');
     console.log(url);
-    console.log(routes);
+    const origin = 'http://127.0.0.1:5000';
 
-    history.pushState(url.data, url.title, url.url);
-    // history.replaceState(url.data, url.title, url.url);
+    console.log(origin + url.path);
+
+    type === 'push'
+        ? history.pushState(url.data, url.path, origin + url.path)
+        : history.replaceState(url.data, url.path, origin + url.path);
+
+    console.log(history.length)
 }

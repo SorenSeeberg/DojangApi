@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +18,18 @@
                 <div class="widget-holder">
                     <div class="widget">
                         <div class="vertical-filler-l"></div>
-                        <label>Email</label>
-                        <input id="input-field-email" class="text-form-field" type="email" name="email" required/>
-                        <label>Password</label>
-                        <input id="input-field-password" class="text-form-field" type="password" name="password"
-                               required/>
-                        <label>Password gentaget</label>
-                        <input id="input-field-password-repeat" class="text-form-field" type="password"
-                               name="repeatPassword" required/>
+                        <div class="form-box">
+                            <div class="select-row"><label for="input-field-email">Email</label>
+                                <input id="input-field-email" class="text-form-field" type="email" name="email"
+                                       required/></div>
+                            <div class="select-row"><label for="input-field-password">Password</label>
+                                <input id="input-field-password" class="text-form-field" type="password" name="password"
+                                       required/></div>
+                            <div class="select-row"><label for="input-field-password-repeat">Password gentaget</label>
+                                <input id="input-field-password-repeat" class="text-form-field" type="password"
+                                       name="repeatPassword" required/></div>
+                        </div>
+                        <div class="vertical-filler-l"></div>
                     </div>
                     <div class="widget">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleCreateUser()">Opret
@@ -44,13 +49,15 @@
                 <div class="widget-holder">
                     <div class="widget">
                         <div class="vertical-filler-l"></div>
-                        <label for="input-field-email">Email</label>
-                        <input id="input-field-email" type="email" name="email" class="text-form-field" required
-                               autofocus/>
-                        <label for="input-field-password">Password</label>
-                        <input id="input-field-password" type="password" name="password" class="text-form-field"
-                               required/>
-                        {{{message}}}
+                        <div class="form-box">
+                            <div class="select-row"><label for="input-field-email">Email</label>
+                                <input id="input-field-email" type="email" name="email" class="text-form-field" required
+                                       autofocus/></div>
+                            <div class="select-row"><label for="input-field-password">Password</label>
+                                <input id="input-field-password" type="password" name="password" class="text-form-field"
+                                       required/></div>
+                            {{{message}}}
+                        </div>
                     </div>
                     <div class="widget">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
@@ -71,9 +78,10 @@
         <div class="widget-holder">
             <div class="widget">
                 <div class="vertical-filler-l"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz &#10026;
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz
+                    &#10026;
                 </button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageInfoNotImplemented()">
+                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleGetCurriculum(1,1,8)">
                     Pensum
                 </button>
             </div>
@@ -104,9 +112,9 @@
         {% raw %}
         <div class="widget-holder">
             <div class="widget">
-                <h2>{{category}}</h2>
                 <div class="vertical-filler-s"></div>
                 <div class="info-box impressive align-content-center-top">
+                    <h2>{{category}}</h2>
                     {{{stars}}}
                 </div>
                 <div class="vertical-filler-s"></div>
@@ -162,8 +170,28 @@
                 <div class="vertical-filler-l"></div>
                 {{{select}}}
                 <div class="vertical-filler-m"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuiz()">Start
+                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuizFromForm()">
+                    Start
                 </button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
+    <!-- CURRICULUM -->
+    <script id="handlebars-curriculum" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                {{{select}}}
+                <table style="width:100%">
+                    <tr>
+                        <th>Koreansk</th>
+                        <th>Dansk</th>
+                        <th>Grad</th>
+                    </tr>
+                    {{{rows}}}
+                </table>
             </div>
         </div>
         {% endraw %}
@@ -216,7 +244,7 @@
         {% endraw %}
     </script>
 </head>
-<body onload="spaRouter()">
+<body onload="spaRouter()" onpopstate="spaRouter()">
 <div class="content">
     <header id='header'></header>
     <article id='article'></article>

@@ -1,18 +1,38 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+from sqlalchemy import create_engine
+from sqlalchemy.pool import SingletonThreadPool
+from config import DB_CONNECTION_STRING, TEST_DB_CONNECTION_STRING
+from sqlalchemy.orm import sessionmaker
 import os
 import json
 from typing import Dict
-from flask import Flask, redirect, url_for, request, make_response, render_template, send_from_directory
+from flask import Flask, request, make_response, render_template, send_from_directory
 import response_codes
 from authorization import is_authorized
 from query import access_token
 from response_codes import ResponseKeys
 from models import quiz, users, curriculum
-from database import db
 
 app = Flask(__name__)
+
+
+def get_engine(test=False):
+    if test:
+        return create_engine(TEST_DB_CONNECTION_STRING, echo=False, poolclass=SingletonThreadPool)
+    else:
+        return create_engine(DB_CONNECTION_STRING, echo=False, poolclass=SingletonThreadPool)
+
+
+def get_session(test=False):
+    if test:
+        engine = create_engine(TEST_DB_CONNECTION_STRING, echo=False, poolclass=SingletonThreadPool)
+    else:
+        engine = create_engine(DB_CONNECTION_STRING, echo=False, poolclass=SingletonThreadPool)
+
+    session_class = sessionmaker(bind=engine)
+
+    return session_class()
 
 
 def _get_access_token() -> str:
@@ -32,7 +52,8 @@ def _unauthorized_response():
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 # SPA ROUTES
@@ -53,7 +74,7 @@ def index():
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     form = dict(request.form)
     data = {"email": form.get("email")[0], "password": form.get("password")[0]}
     return_data: Dict = users.create(session, data)
@@ -62,7 +83,7 @@ def create_user():
 
 @app.route('/users/activate/<path:activation_token>', methods=['GET'])
 def activate_user(activation_token):
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     return_data: Dict = users.activate(session, activation_token)
     print(return_data)
     if return_data.get('status', 500) == 204:
@@ -73,7 +94,7 @@ def activate_user(activation_token):
 
 @app.route('/users/current-user', methods=['GET'])
 def get_user():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -87,7 +108,7 @@ def get_user():
 
 @app.route('/users/email-exist', methods=['POST'])
 def email_exists():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = users.email_exists(session, data)
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
@@ -110,7 +131,7 @@ def get_results(user_id):
 
 @app.route('/users/sign-in', methods=['POST'])
 def sign_in():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     form = dict(request.form)
     data = {"email": form.get("email")[0], "password": form.get("password")[0]}
     return_data: Dict = users.sign_in(session, data)
@@ -119,7 +140,7 @@ def sign_in():
 
 @app.route('/users/sign-out', methods=['GET'])
 def sign_out():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -139,7 +160,7 @@ def change_password():
 
 @app.route('/quiz', methods=['POST'])
 def create_quiz():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -154,7 +175,7 @@ def create_quiz():
 
 @app.route('/quiz/configuration', methods=['GET'])
 def get_quiz_configuration():
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -167,7 +188,7 @@ def get_quiz_configuration():
 
 @app.route('/quiz/<path:quiz_token>', methods=['GET'])
 def get_quiz(quiz_token: str):
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -178,22 +199,9 @@ def get_quiz(quiz_token: str):
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
-@app.route('/quiz/question/<path:quiz_token>', methods=['GET'])
-def get_question(quiz_token: str):
-    session = db.SessionSingleton().get_session()
-    access_token_string: str = _get_access_token()
-
-    # Authorization
-    if not is_authorized(session, access_token_string, role='user'):
-        return _unauthorized_response()
-
-    return_data: Dict = quiz.get_current_question(session, quiz_token)
-    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
-
-
 @app.route('/quiz/result/<path:quiz_token>', methods=['GET'])
 def get_quiz_result(quiz_token):
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -206,7 +214,7 @@ def get_quiz_result(quiz_token):
 
 @app.route('/quiz/question/<path:quiz_token>', methods=['PUT'])
 def answer_question(quiz_token: str):
-    session = db.SessionSingleton().get_session()
+    session = get_session()
     access_token_string: str = _get_access_token()
 
     # Authorization
@@ -215,6 +223,30 @@ def answer_question(quiz_token: str):
 
     data = json.loads(request.data, encoding='utf-8')
     return_data: Dict = quiz.answer(session, quiz_token, data)
+    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
+
+
+# CURRICULUM
+@app.route('/curriculum', methods=['GET'])
+def get_curriculum():
+    # category_id: int = int(request.args.get('categoryId', -1))
+    # level_min: int = request.args.get('levelMin')
+    # level_max: int = request.args.get('levelMax')
+    # print(request.args)
+    data = {
+        'categoryId': int(request.args.get('categoryId', -1)),
+        'levelMin': int(request.args.get('levelMin', -1)),
+        'levelMax': int(request.args.get('levelMax', -1))
+    }
+
+    session = get_session()
+    access_token_string: str = _get_access_token()
+
+    # Authorization
+    if not is_authorized(session, access_token_string, role='user'):
+        return _unauthorized_response()
+
+    return_data: Dict = curriculum.get(session, data)
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 

@@ -12,7 +12,8 @@ type Template =
     | 'handlebars-quiz-configuration'
     | 'handlebars-quiz'
     | 'handlebars-quiz-result'
-    | 'handlebars-quiz-wrong-answer';
+    | 'handlebars-quiz-wrong-answer'
+    | 'handlebars-curriculum';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
@@ -33,17 +34,18 @@ function templateQuizCategory(): void {
 function templateQuizConfig(config: QuizConfigurationOptions): void {
     let select = [];
 
-    console.log('templateQuizConfig');
-    console.log(config);
-
-    Object.keys(config).forEach(k => {
+    Object.keys(config).forEach((k: string, i: number) => {
             if (k !== 'displayNames') {
-                select.push(`<label>${config['displayNames'][k]}</label><select>${config[k].map(o => `<option>${o}</option>`).join('')}</select>`)
+                select.push(`<div class="select-row"><label>${config['displayNames'][k]}</label><select id="select-${i}">${config[k].map((o: string) => `<option>${o}</option>`).join('')}</select></div>`)
             }
         }
     );
 
-    setTemplate("handlebars-quiz-configuration", "article", {select: select.join('')})
+    setTemplate("handlebars-quiz-configuration", "article", {select: `<form id='quiz-config-form'>${select.join('')}</form>`})
+}
+
+function templateCurriculum(context: {select: string, rows: string}): void {
+    setTemplate("handlebars-curriculum", "article", context)
 }
 
 function templateQuiz(context: {percentageComplete: number, progressBarText: string, category: string, question: string, options: string}): void {
