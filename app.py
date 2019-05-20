@@ -229,10 +229,6 @@ def answer_question(quiz_token: str):
 # CURRICULUM
 @app.route('/curriculum', methods=['GET'])
 def get_curriculum():
-    # category_id: int = int(request.args.get('categoryId', -1))
-    # level_min: int = request.args.get('levelMin')
-    # level_max: int = request.args.get('levelMax')
-    # print(request.args)
     data = {
         'categoryId': int(request.args.get('categoryId', -1)),
         'levelMin': int(request.args.get('levelMin', -1)),

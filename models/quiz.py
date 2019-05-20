@@ -27,12 +27,16 @@ def _create_question(
         used_ids: List[int]):
     """ Creates a question with answer options. Not committed to db """
 
-    if category_id == 0:
-        category_id = random.randrange(1, category.count()+1)
-        print(category_id)
+    curriculum_ids = list()
 
-    curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
-    curriculum_ids: List[int] = [row.id for row in curriculum_rows]
+    if category_id == 0:
+        while not curriculum_ids:
+            category_id = random.randrange(1, category.count()+1)
+            curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
+            curriculum_ids: List[int] = [row.id for row in curriculum_rows]
+    else:
+        curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
+        curriculum_ids: List[int] = [row.id for row in curriculum_rows]
 
     if len(curriculum_ids) >= option_count:
         option_ids: List[int] = random.sample(population=set(curriculum_ids), k=option_count)
@@ -72,6 +76,9 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
     category_id: int = data.get('categoryId')
     level_min: int = data.get('levelMin')
     level_max: int = data.get('levelMax')
+
+    if level_min >= level_max-1:
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
 
     """ Creates new quiz with associated questions and options """
     try:
@@ -329,61 +336,3 @@ def delete(session: 'Session', quiz_token: str, commit=True) -> bool:
 
     return False
 
-
-# def _new_quiz(session):
-#     print(db.to_json(
-#         create(
-#             session=session,
-#             data={
-#                 'questionCount': 10,
-#                 'optionCount': 3,
-#                 'categoryId': 2,
-#                 'levelMin': 3,
-#                 'levelMax': 8
-#             }
-#         )
-#     ))
-#
-#
-# def _current_question(session):
-#     print(db.to_json(get_current_question(
-#         session=session,
-#         quiz_token=config.DEBUG_QUIZ_TOKEN))
-#     )
-#
-#
-# def _answer_question(session):
-#     print(db.to_json(answer(
-#         session=session,
-#         quiz_token=config.DEBUG_QUIZ_TOKEN,
-#         data={
-#             'optionIndex': random.randrange(3)
-#         }
-#     )
-#     ))
-#
-#
-# def _get_quiz(session):
-#     print(db.to_json(get(
-#         session=session,
-#         quiz_token=config.DEBUG_QUIZ_TOKEN))
-#     )
-#
-#
-# def _delete_quiz(session):
-#     print(db.to_json(delete(
-#         session=session,
-#         quiz_token=config.DEBUG_QUIZ_TOKEN))
-#     )
-#
-#     if __name__ == '__main__':
-#         _session = db.SessionSingleton().get_session()
-
-    # for x in range(100):
-    #     _new_quiz(_session)
-
-    # _new_quiz(_session)
-    # _get_quiz(_session)
-    # _current_question(_session)
-    # _answer_question(_session)
-    # _delete_quiz(_session)
