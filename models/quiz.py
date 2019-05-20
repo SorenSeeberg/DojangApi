@@ -28,12 +28,16 @@ def _create_question(
     """ Creates a question with answer options. Not committed to db """
 
     curriculum_ids = list()
+    attempts = 0
 
     if category_id == 0:
         while not curriculum_ids:
+            if attempts == 20:
+                return False
             category_id = random.randrange(1, category.count()+1)
             curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
             curriculum_ids: List[int] = [row.id for row in curriculum_rows]
+            attempts += 1
     else:
         curriculum_rows = curriculum.get_by_level_and_category(session, category_id, level_min, level_max)
         curriculum_ids: List[int] = [row.id for row in curriculum_rows]
@@ -58,6 +62,8 @@ def _create_question(
     [option.create(session, o, question_row.quizId, question_row.id, i, commit=False) for i, o in
      enumerate(option_ids)]
 
+    return True
+
 
 def create(session: 'Session', user_id: int, data: Dict) -> Dict:
     input_schema = {
@@ -78,7 +84,8 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
     level_max: int = data.get('levelMax')
 
     if level_min >= level_max-1:
-        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400,
+                ResponseKeys.message: 'Der skal være større afstand mellem største og mindste grad'}
 
     """ Creates new quiz with associated questions and options """
     try:
@@ -97,8 +104,20 @@ def create(session: 'Session', user_id: int, data: Dict) -> Dict:
 
         used_ids: List[int] = list()
 
-        [_create_question(session, quiz_row.id, category_id, i, option_count, level_min, level_max, question_count,
-                          used_ids) for i in range(1, question_count+1)]
+        for i in range(1, question_count+1):
+            result = _create_question(session,
+                                      quiz_row.id,
+                                      category_id, i,
+                                      option_count,
+                                      level_min,
+                                      level_max,
+                                      question_count,
+                                      used_ids)
+
+            if not result:
+                session.rollback()
+                return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400,
+                        ResponseKeys.message: 'Kunne ikke oprette quizzen'}
 
         session.commit()
 

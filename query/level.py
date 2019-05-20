@@ -48,7 +48,7 @@ def get_names(session: 'Session') -> List[str]:
 
 
 LEVEL_NAMES = ["10. kup", "9. kup", "8. kup", "7. kup", "6. kup", "5. kup", "4. kup", "3. kup", "2. kup", "1. kup",
-               "1. dan", "2. dan", "3. dan", "4. dan", "5. dan", "6. dan", "Teori"]
+               "1. dan", "2. dan", "3. dan", "4. dan", "5. dan", "6. dan"]
 
 
 def setup(session: 'Session') -> None:
