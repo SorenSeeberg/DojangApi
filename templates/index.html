@@ -16,22 +16,21 @@
         <div>
             <form>
                 <div class="widget-holder">
-                    <div class="widget">
-                        <div class="vertical-filler-l"></div>
-                        <div class="form-box">
-                            <div class="select-row"><label for="input-field-email">Email</label>
-                                <input id="input-field-email" class="text-form-field" type="email" name="email"
-                                       required/></div>
-                            <div class="select-row"><label for="input-field-password">Password</label>
-                                <input id="input-field-password" class="text-form-field" type="password" name="password"
-                                       required/></div>
-                            <div class="select-row"><label for="input-field-password-repeat">Password gentaget</label>
-                                <input id="input-field-password-repeat" class="text-form-field" type="password"
-                                       name="repeatPassword" required/></div>
-                        </div>
-                        <div class="vertical-filler-l"></div>
+                    <h2>Opret bruger</h2>
+                    <div class="vertical-filler-m"></div>
+                    <div class="form-box">
+                        <div class="select-row"><label for="input-field-email">Email</label>
+                            <input id="input-field-email" class="text-form-field" type="email" name="email"
+                                   required/></div>
+                        <div class="select-row"><label for="input-field-password">Password</label>
+                            <input id="input-field-password" class="text-form-field" type="password" name="password"
+                                   required/></div>
+                        <div class="select-row"><label for="input-field-password-repeat">Password gentaget</label>
+                            <input id="input-field-password-repeat" class="text-form-field" type="password"
+                                   name="repeatPassword" required/></div>
                     </div>
-                    <div class="widget">
+                    <div class="vertical-filler-l"></div>
+                    <div class="align-content-center-top">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleCreateUser()">Opret
                         </button>
                     </div>
@@ -47,19 +46,19 @@
         <div>
             <form>
                 <div class="widget-holder">
-                    <div class="widget">
-                        <div class="vertical-filler-l"></div>
-                        <div class="form-box">
-                            <div class="select-row"><label for="input-field-email">Email</label>
-                                <input id="input-field-email" type="email" name="email" class="text-form-field" required
-                                       autofocus/></div>
-                            <div class="select-row"><label for="input-field-password">Password</label>
-                                <input id="input-field-password" type="password" name="password" class="text-form-field"
-                                       required/></div>
-                            {{{message}}}
-                        </div>
+                    <h2>Log ind</h2>
+                    <div class="vertical-filler-m"></div>
+                    <div class="form-box">
+                        <div class="select-row"><label for="input-field-email">Email</label>
+                            <input id="input-field-email" type="email" name="email" class="text-form-field" required
+                                   autofocus/></div>
+                        <div class="select-row"><label for="input-field-password">Password</label>
+                            <input id="input-field-password" type="password" name="password" class="text-form-field"
+                                   required/></div>
+                        {{{message}}}
                     </div>
-                    <div class="widget">
+                    <div class="vertical-filler-l"></div>
+                    <div class="align-content-center-top">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
                         </button>
                         <div class="vertical-filler-m"></div>
@@ -72,19 +71,44 @@
         {% endraw %}
     </script>
 
+    <!-- CURRENT USER -->
+    <script id="handlebars-current-user" type="text/x-handlebars-template">
+        {% raw %}
+        <div class="widget-holder">
+            <div class="widget">
+                <div class="vertical-filler-m"></div>
+                <h2>{{email}}</h2>
+                <div class="vertical-filler-m"></div>
+                <h3>Seneste Resultater</h3>
+                <table style="width:100%">
+                    <tr>
+                        <th>Grad</th>
+                        <th>Tid</th>
+                        <th>Karakter</th>
+                    </tr>
+                    {{{resultRows}}}
+                </table>
+                <div class="vertical-filler-s"></div>
+                <button class="btn btn-large btn-secondary" type="button" onclick="handleSignOut()">
+                    Log ud
+                </button>
+            </div>
+        </div>
+        {% endraw %}
+    </script>
+
     <!-- MAIN MENU -->
     <script id="handlebars-main-menu" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-l"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz
-                    &#10026;
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleGetCurriculum(1,1,8)">
-                    Pensum
-                </button>
-            </div>
+            <h2>Forside</h2>
+            <div class="vertical-filler-l"></div>
+            <button class="btn btn-large-wide btn-primary" type="button" onclick="pageQuizCategory()">Ny Quiz
+                &#10026;
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleGetCurriculum(1,1,8)">
+                Pensum
+            </button>
         </div>
         {% endraw %}
     </script>
@@ -93,16 +117,14 @@
     <script id="handlebars-quiz" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                <h2>{{category}}</h2>
-                <div class="progress-bar-frame">
-                    <div style="width: {{percentageComplete}}%;" class="progress-bar"></div>
-                    <div class="progress-bar-info">{{progressBarText}}</div>
-                </div>
-                <div class="vertical-filler-m"></div>
-                <h3>{{question}}</h3>
-                {{{options}}}
+            <h2>{{category}}</h2>
+            <div class="progress-bar-frame">
+                <div style="width: {{percentageComplete}}%;" class="progress-bar"></div>
+                <div class="progress-bar-info">{{progressBarText}}</div>
             </div>
+            <div class="vertical-filler-m"></div>
+            <h3>{{question}}</h3>
+            {{{options}}}
         </div>
         {% endraw %}
     </script>
@@ -111,12 +133,12 @@
     <script id="handlebars-quiz-result" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-s"></div>
-                <div class="info-box impressive align-content-center-top">
-                    <h2>{{category}}</h2>
-                    {{{stars}}}
-                </div>
+            <div class="vertical-filler-s"></div>
+            <div class="info-box impressive align-content-center-top">
+                <h2>{{category}}</h2>
+                {{{stars}}}
+            </div>
+            <div class="align-content-center-top">
                 <div class="vertical-filler-s"></div>
                 <p>Rigtige: {{percentageCorrect}}%</p>
                 <p>Tid: {{timeSpent}} minutter</p>
@@ -134,30 +156,28 @@
     <script id="handlebars-quiz-category" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-l"></div>
-                <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
-                    Quiz
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig1Dan)">1. dan
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig2Dan)">2. dan
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig3Dan)">3. dan
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig4Dan)">4. dan
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig5Dan)">5. dan
-                </button>
-                <button class="btn btn-large-wide btn-secondary" type="button"
-                        onclick="handleCreateNewQuiz(quizConfig6Dan)">6. dan
-                </button>
-            </div>
+            <h2>Ny Quiz</h2>
+            <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
+                Quiz
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig1Dan)">1. dan
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig2Dan)">2. dan
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig3Dan)">3. dan
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig4Dan)">4. dan
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig5Dan)">5. dan
+            </button>
+            <button class="btn btn-large-wide btn-secondary" type="button"
+                    onclick="handleCreateNewQuiz(quizConfig6Dan)">6. dan
+            </button>
         </div>
         {% endraw %}
     </script>
@@ -166,14 +186,12 @@
     <script id="handlebars-quiz-configuration" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-l"></div>
-                {{{select}}}
-                <div class="vertical-filler-m"></div>
-                <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuizFromForm()">
-                    Start
-                </button>
-            </div>
+            <h2>Quiz Konfiguration</h2>
+            {{{select}}}
+            <div class="vertical-filler-m"></div>
+            <button class="btn btn-large-wide btn-primary" type="button" onclick="handleCreateNewQuizFromForm()">
+                Start
+            </button>
         </div>
         {% endraw %}
     </script>
@@ -182,17 +200,19 @@
     <script id="handlebars-curriculum" type="text/x-handlebars-template">
         {% raw %}
         <div class="widget-holder">
-            <div class="widget">
-                {{{select}}}
-                <table style="width:100%">
-                    <tr>
-                        <th>Koreansk</th>
-                        <th>Dansk</th>
-                        <th>Grad</th>
-                    </tr>
-                    {{{rows}}}
-                </table>
-            </div>
+            <h2>Pensum</h2>
+            {{{select}}}
+            <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleUpdateCurriculumFromForm()">
+                Opdater
+            </button>
+            <table style="width:100%">
+                <tr>
+                    <th>Koreansk</th>
+                    <th>Dansk</th>
+                    <th>Grad</th>
+                </tr>
+                {{{rows}}}
+            </table>
         </div>
         {% endraw %}
     </script>
@@ -233,7 +253,7 @@
     <script id="handlebars-top-bar-signed-in" type="text/x-handlebars-template">
         {% raw %}
         <div class="title" onclick="pageIndex()">{{title}}</div>
-        <div class='header-profile'></div>
+        <div class='header-profile' onclick="handleGetCurrentUser()"></div>
         {% endraw %}
     </script>
 

@@ -7,7 +7,7 @@ from query import level
 from query import category
 from query import curriculum
 from query import user
-from app import get_session, get_engine
+from flask_app import get_session, get_engine
 
 if __name__ == '__main__':
     session: 'Session' = get_session()

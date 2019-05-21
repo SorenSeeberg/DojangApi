@@ -5,6 +5,7 @@ const routeNames = {
     createUser: '/opret-bruger',
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
+    currentUser: '/min-bruger',
     quiz: '/quiz',
     curriculum: '/pensum',
     result: '/resultat',
@@ -19,7 +20,8 @@ const routes: { [key: string]: any } = {
     [routeNames.quizCategory]: pageQuizCategory,
     [routeNames.quizConfig]: pageQuizConfig,
     [routeNames.quiz]: pageQuiz,
-    [routeNames.result]: pageQuizResult
+    [routeNames.result]: pageQuizResult,
+    [routeNames.currentUser]: handleGetCurrentUser
 };
 
 function spaRouter(): void {
@@ -38,6 +40,7 @@ function historyRouter(url: Url, type: 'push' |'replace' = 'push'): void {
     console.log('historyRouter');
     console.log(url);
     const origin = 'http://127.0.0.1:5000';
+    // const origin = 'http://sorenseeberg.pythonanywhere.com';
 
     console.log(origin + url.path);
 

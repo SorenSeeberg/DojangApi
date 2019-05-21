@@ -25,7 +25,29 @@ async function handleSignIn() {
         message: '<p class="clr-error">Email og/eller password er ikke korrekt</p>',
         extra: '<button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>'
     });
-    // templateSignInError();
+    return false;
+}
+
+async function handleSignOut() {
+    templateLoading();
+
+    let response = await fetch(`/users/sign-out`, {
+        method: "get",
+        headers: getAuthorizationHeader()
+    });
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        clearAccessToken();
+        clearQuizToken();
+        pageIndex();
+        return true;
+    }
+    if (responseObject.status === 401) {
+        pageInfo401();
+        return false;
+    }
+    pageInfo404();
     return false;
 }
 
@@ -33,6 +55,7 @@ async function handleCreateUser() {
     const email = <HTMLInputElement>document.getElementById('input-field-email');
     const password = <HTMLInputElement>document.getElementById('input-field-password');
     const passwordRepeat = <HTMLInputElement>document.getElementById('input-field-password-repeat');
+    pageLoading(false);
 
     if (!email) {
         pageInfo({
@@ -67,8 +90,6 @@ async function handleCreateUser() {
         return;
     }
 
-    pageLoading(false);
-
     let formData = new FormData();
     formData.append('email', email.value);
     formData.append('password', password.value);
@@ -101,5 +122,37 @@ async function handleCreateUser() {
         buttonAction: 'pageCreateUser()',
         buttonText: 'Prøv igen'
     });
+    return false;
+}
+
+type QuizResult = {
+    timeSpent: string;
+    level: string;
+    percentageCorrect: number;
+}
+
+type CurrentUser = {
+    email: string;
+    results: QuizResult[]
+}
+
+async function handleGetCurrentUser() {
+
+    let response = await fetch(`/users/current-user`, {
+        method: "get",
+        headers: getAuthorizationHeader()
+    });
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        const user: CurrentUser = responseObject.body;
+        pageCurrentUser(user);
+        return true;
+    }
+    if (responseObject.status === 401) {
+        pageInfo401();
+        return false;
+    }
+    pageInfo404();
     return false;
 }

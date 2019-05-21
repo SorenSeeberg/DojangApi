@@ -13,7 +13,8 @@ type Template =
     | 'handlebars-quiz'
     | 'handlebars-quiz-result'
     | 'handlebars-quiz-wrong-answer'
-    | 'handlebars-curriculum';
+    | 'handlebars-curriculum'
+    | 'handlebars-current-user';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
@@ -25,6 +26,10 @@ function setTemplate(templateId: Template, contentTarget: ContentTarget, context
     let html = templateScript(context);
     let contentContainer: HTMLElement = document.getElementById(contentTarget);
     contentContainer.innerHTML = html;
+}
+
+function templateCurrentUser(context: {email:string, resultRows: string}): void {
+    setTemplate("handlebars-current-user", "article", context)
 }
 
 function templateQuizCategory(): void {

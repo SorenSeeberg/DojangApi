@@ -3,9 +3,15 @@
 
 import os
 
+DEV = True
 
-def db_connection_string(db_name:str):
-    return f'sqlite:///{os.path.realpath(os.path.dirname(__file__))}\\{db_name}'
+
+def db_connection_string(db_name: str):
+    if DEV:
+        return f'sqlite:///{os.path.dirname(os.path.realpath(__file__))}\\{db_name}'
+    else:
+        # return f'sqlite:///{os.path.dirname(os.path.realpath(__file__))}\\dojang\\{db_name}'
+        return f'sqlite:///{os.path.join("home", "sorenseeberg", "dojang", db_name)}'
 
 
 DB_CONNECTION_STRING = db_connection_string('quiz.db')
@@ -24,6 +30,7 @@ DEBUG_ACCESS_TOKEN = 'b2b88120-fb66-4640-ac97-fe315cd250fd'
 DEBUG_QUIZ_TOKEN = 'a36ed453-02d3-4190-9de9-520ff1955a82'
 DEBUG_EMAIL = "soren.seeberg@gmail.com"
 
-DEV_SITE = 'http://127.0.0.1:5000'
-
-
+if DEV:
+    SITE_URL = 'http://127.0.0.1:5000'
+else:
+    SITE_URL = 'http://sorenseeberg.pythonanywhere.com'

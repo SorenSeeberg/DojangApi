@@ -10,6 +10,18 @@ type Curriculum = {
     data: CurriculumRow[];
 }
 
+async function handleUpdateCurriculumFromForm(){
+        const select0 = <HTMLSelectElement>document.getElementById('select-curriculum-category');
+        const select1 = <HTMLSelectElement>document.getElementById('select-curriculum-level-min');
+        const select2 = <HTMLSelectElement>document.getElementById('select-curriculum-level-max');
+
+        const categoryId: number = select0.selectedIndex;
+        const levelMin: number = select1.selectedIndex + 1;
+        const levelMax: number = select2.selectedIndex + 1;
+
+        await handleGetCurriculum(categoryId, levelMin, levelMax);
+}
+
 async function handleGetCurriculum(categoryId: number, levelMin: number, levelMax: number) {
     templateLoading();
 

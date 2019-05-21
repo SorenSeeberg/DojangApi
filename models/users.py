@@ -3,7 +3,7 @@
 
 from database.schemas import User
 from mailer.mailer import send_activation_mail
-from query import access_token, user
+from query import access_token, user, result, level
 from query import validate_input_data
 from query import verification_token
 from typing import Dict
@@ -52,6 +52,40 @@ def get(session: 'Session', user_id: int) -> Dict:
             "confirmed": user_row.confirmed,
             "enabled": user_row.enabled,
             "administrator": user_row.administrator
+        }
+    }
+
+
+def get_current(session: 'Session', user_id: int) -> Dict:
+    user_row: 'User' = user.get_by_id(session, user_id)
+    results: 'Result' = result.get_last_user_results(session, user_id)
+
+    def percentage_correct(r) -> int:
+        return int(r.correctCount / (r.correctCount + r.incorrectCount) * 100)
+
+    def time_spent(r) -> str:
+        minutes = int(r.timeSpent / 60)
+        seconds = r.timeSpent - (minutes * 60)
+
+        if seconds < 10:
+            seconds_string = f'0{seconds}'
+        else:
+            seconds_string = seconds
+
+        return f'{minutes}:{seconds_string}'
+
+    def level_label(r) -> str:
+
+        names = level.get_names(session)
+        return f'{names[r.levelMin]} til {names[r.levelMax]}'
+
+    processed_results = [{'percentageCorrect': percentage_correct(x), "timeSpent": time_spent(x), "level": level_label(x)} for x in results]
+
+    return {
+        ResponseKeys.status: response_codes.ResponseCodes.ok_200,
+        ResponseKeys.body: {
+            "email": user_row.email,
+            "results": processed_results
         }
     }
 

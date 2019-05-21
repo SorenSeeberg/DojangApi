@@ -52,8 +52,7 @@ def _unauthorized_response():
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
-                               mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 # SPA ROUTES
@@ -65,6 +64,7 @@ def favicon():
 @app.route('/forside')
 @app.route('/log-ind')
 @app.route('/opret-bruger')
+@app.route('/min-bruger')
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -92,8 +92,9 @@ def activate_user(activation_token):
         return _unauthorized_response()
 
 
-@app.route('/users/current-user', methods=['GET'])
-def get_user():
+@app.route('/users', methods=['GET'])
+def get_users():
+    # TODO : needs to be looked at
     session = get_session()
     access_token_string: str = _get_access_token()
 
@@ -103,6 +104,20 @@ def get_user():
 
     user_id: int = access_token.get_user_id_by_token(session, access_token_string)
     return_data: Dict = users.get(session, user_id)
+    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
+
+
+@app.route('/users/current-user', methods=['GET'])
+def get_current_user():
+    session = get_session()
+    access_token_string: str = _get_access_token()
+
+    # Authorization
+    if not is_authorized(session, access_token_string, role='user'):
+        return _unauthorized_response()
+
+    user_id: int = access_token.get_user_id_by_token(session, access_token_string)
+    return_data: Dict = users.get_current(session, user_id)
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 

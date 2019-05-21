@@ -7,6 +7,8 @@ from exceptions import Exceptions
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 
+from query import access_token
+
 
 def hash_password(password) -> str:
     return str(sha3_256(password.encode()).hexdigest())
@@ -60,6 +62,15 @@ def get_by_email(session: 'Session', email: str) -> 'User':
 def get_by_id(session: 'Session', id: int) -> 'User':
     try:
         return session.query(User).get(id)
+    except NoResultFound:
+        raise NoResultFound
+
+
+def get_by_token(session: 'Session', access_token_string: str) -> 'User':
+    user_id = access_token.get_user_id_by_token(session, access_token_string)
+
+    try:
+        return session.query(User).get(user_id)
     except NoResultFound:
         raise NoResultFound
 
@@ -120,5 +131,4 @@ def email_exists(session: 'Session', email: str) -> bool:
 
 def setup(session: 'Session') -> None:
     create_admin(session, email='admin@masterkwon.com', password='hanadul', commit=False)
-    # create_admin(session, email='soren.seeberg@gmail.com', password='123', commit=False)
     create(session, 'sorense@configit.com', '1234', commit=False)

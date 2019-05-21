@@ -33,6 +33,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function handleUpdateCurriculumFromForm() {
+    return __awaiter(this, void 0, void 0, function () {
+        var select0, select1, select2, categoryId, levelMin, levelMax;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    select0 = document.getElementById('select-curriculum-category');
+                    select1 = document.getElementById('select-curriculum-level-min');
+                    select2 = document.getElementById('select-curriculum-level-max');
+                    categoryId = select0.selectedIndex;
+                    levelMin = select1.selectedIndex + 1;
+                    levelMax = select2.selectedIndex + 1;
+                    return [4, handleGetCurriculum(categoryId, levelMin, levelMax)];
+                case 1:
+                    _a.sent();
+                    return [2];
+            }
+        });
+    });
+}
 function handleGetCurriculum(categoryId, levelMin, levelMax) {
     return __awaiter(this, void 0, void 0, function () {
         var response, responseObject, curriculum;
@@ -61,6 +81,26 @@ function handleGetCurriculum(categoryId, levelMin, levelMax) {
     });
 }
 var TITLE_CONTEXT = { title: 'Dojang' };
+function starBuilder(percentage) {
+    var star = '&#10026;';
+    return percentage === 100
+        ? "<h1 class=\"gold-font star\">" + star + " " + star + " " + star + "</h1><p>Perfekt</p>"
+        : percentage >= 90
+            ? "<h1 class=\"silver-font star\">" + star + " " + star + "</h1><p>Flot pr\u00E6station</p>"
+            : percentage >= 75
+                ? "<h1 class=\"bronze-font star\">" + star + "</h1><p>Du klarede den lige</p>"
+                : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
+}
+function starsRowBuilder(percentage) {
+    var star = '&#10026;';
+    return percentage === 100
+        ? "<p class=\"gold-font star\">" + star + " " + star + " " + star + "</p>"
+        : percentage >= 90
+            ? "<p class=\"silver-font star\">" + star + " " + star + "</p>"
+            : percentage >= 75
+                ? "<p class=\"bronze-font star\">" + star + "</p>"
+                : '<p></p>';
+}
 function pageIndex() {
     if (!getAccessToken()) {
         historyRouter({ data: null, path: routeNames.signIn });
@@ -127,6 +167,18 @@ function pageLoading(loggedIn) {
         : templateTopBarSignedOut(TITLE_CONTEXT);
     templateLoading();
 }
+function pageCurrentUser(user) {
+    if (!getAccessToken()) {
+        pageIndex();
+    }
+    else {
+        var resultRows = "" + user.results.map(function (r) { return "<tr><td>" + r.level + "</td><td>" + r.timeSpent + "</td><td>" + starsRowBuilder(r.percentageCorrect) + "</td></tr>"; }).join('');
+        var context = { email: user.email, resultRows: resultRows };
+        historyRouter({ data: null, path: routeNames.currentUser });
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateCurrentUser(context);
+    }
+}
 function pageQuizCategory() {
     if (!getAccessToken()) {
         pageIndex();
@@ -170,14 +222,7 @@ function pageQuizResult(result) {
     }
     else {
         historyRouter({ data: null, path: routeNames.result + "/" + result.quizToken });
-        var star = '&#10026;';
-        var stars = result.percentageCorrect === 100
-            ? "<h1 class=\"gold-font star\">" + star + " " + star + " " + star + "</h1><p>Perfekt</p>"
-            : result.percentageCorrect >= 90
-                ? "<h1 class=\"silver-font star\">" + star + " " + star + "</h1><p>Flot pr\u00E6station</p>"
-                : result.percentageCorrect >= 75
-                    ? "<h1 class=\"bronze-font star\">" + star + "</h1><p>Du klarede den lige</p>"
-                    : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
+        var stars = starBuilder(result.percentageCorrect);
         var minutes = Math.floor(result.timeSpent / 60);
         var seconds = Math.floor(result.timeSpent - (minutes * 60));
         var timeSpent = minutes + ":" + (seconds > 9 ? seconds : "0" + seconds);
@@ -197,11 +242,11 @@ function pageCurriculum(curriculum) {
         pageIndex();
     }
     else {
-        historyRouter({ data: { test: 3 }, path: "" + routeNames.curriculum });
-        var selectCategory = "<div class=\"select-row\"><label>Kategori</label><select>" + curriculum.categoryLabels.map(function (c) { return c === curriculum.categoryLabel ? "<option selected>" + c + "</option>" : "<option>" + c + "</option>"; }).join('') + "</select></div>";
-        var selectLevelMin = "<div class=\"select-row\"><label>Laveste grad</label><select>" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMinLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
-        var selectLevelMan = "<div class=\"select-row\"><label>H\u00F8jeste grad</label><select>" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMaxLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
-        var rows = "<form>" + curriculum.data.map(function (row) { return "<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td></tr>"; }).join('') + "</form>";
+        historyRouter({ data: null, path: "" + routeNames.curriculum });
+        var selectCategory = "<div class=\"select-row\"><label>Kategori</label><select id=\"select-curriculum-category\">" + curriculum.categoryLabels.map(function (c) { return c === curriculum.categoryLabel ? "<option selected>" + c + "</option>" : "<option>" + c + "</option>"; }).join('') + "</select></div>";
+        var selectLevelMin = "<div class=\"select-row\"><label>Laveste grad</label><select id=\"select-curriculum-level-min\">" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMinLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
+        var selectLevelMan = "<div class=\"select-row\"><label>H\u00F8jeste grad</label><select id=\"select-curriculum-level-max\">" + curriculum.levelLabels.map(function (l) { return l === curriculum.levelMaxLabel ? "<option selected>" + l + "</option>" : "<option>" + l + "</option>"; }).join('') + "</select></div>";
+        var rows = "" + curriculum.data.map(function (row) { return "<tr><td>" + row[0] + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td></tr>"; }).join('');
         var context = { rows: rows, select: selectCategory + selectLevelMin + selectLevelMan };
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateCurriculum(context);
@@ -213,7 +258,6 @@ function handleCreateNewQuizFromForm() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log('handleCreateNewQuizFromForm()');
                     select0 = document.getElementById('select-0');
                     select1 = document.getElementById('select-1');
                     select2 = document.getElementById('select-2');
@@ -491,6 +535,7 @@ var routeNames = {
     createUser: '/opret-bruger',
     quizCategory: '/quiz-category',
     quizConfig: '/quiz-configuration',
+    currentUser: '/min-bruger',
     quiz: '/quiz',
     curriculum: '/pensum',
     result: '/resultat',
@@ -505,6 +550,7 @@ var routes = (_a = {},
     _a[routeNames.quizConfig] = pageQuizConfig,
     _a[routeNames.quiz] = pageQuiz,
     _a[routeNames.result] = pageQuizResult,
+    _a[routeNames.currentUser] = handleGetCurrentUser,
     _a);
 function spaRouter() {
     console.log('spaRouter');
@@ -530,6 +576,9 @@ function setTemplate(templateId, contentTarget, context) {
     var html = templateScript(context);
     var contentContainer = document.getElementById(contentTarget);
     contentContainer.innerHTML = html;
+}
+function templateCurrentUser(context) {
+    setTemplate("handlebars-current-user", "article", context);
 }
 function templateQuizCategory() {
     setTemplate("handlebars-quiz-category", "article");
@@ -633,6 +682,38 @@ function handleSignIn() {
         });
     });
 }
+function handleSignOut() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseObject;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    templateLoading();
+                    return [4, fetch("/users/sign-out", {
+                            method: "get",
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        clearAccessToken();
+                        clearQuizToken();
+                        pageIndex();
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
+        });
+    });
+}
 function handleCreateUser() {
     return __awaiter(this, void 0, void 0, function () {
         var email, password, passwordRepeat, formData, response, responseObject, message;
@@ -642,6 +723,7 @@ function handleCreateUser() {
                     email = document.getElementById('input-field-email');
                     password = document.getElementById('input-field-password');
                     passwordRepeat = document.getElementById('input-field-password-repeat');
+                    pageLoading(false);
                     if (!email) {
                         pageInfo({
                             errorLevel: infoBoxErrorLevel.error,
@@ -672,7 +754,6 @@ function handleCreateUser() {
                         });
                         return [2];
                     }
-                    pageLoading(false);
                     formData = new FormData();
                     formData.append('email', email.value);
                     formData.append('password', password.value);
@@ -704,6 +785,35 @@ function handleCreateUser() {
                         buttonAction: 'pageCreateUser()',
                         buttonText: 'Prøv igen'
                     });
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleGetCurrentUser() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseObject, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, fetch("/users/current-user", {
+                        method: "get",
+                        headers: getAuthorizationHeader()
+                    })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        user = responseObject.body;
+                        pageCurrentUser(user);
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        return [2, false];
+                    }
+                    pageInfo404();
                     return [2, false];
             }
         });

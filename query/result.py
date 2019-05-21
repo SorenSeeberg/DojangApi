@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+from typing import List
 
 from sqlalchemy.exc import IntegrityError
 from database.schemas import Result
@@ -51,3 +52,8 @@ def get_by_quiz_token(session: 'Session', token: str) -> Result:
         raise NoResultFound
     except Exception:
         raise Exception
+
+
+def get_last_user_results(session: 'Session', user_id: int) -> List[Result]:
+
+    return session.query(Result).filter(Result.userId == user_id).order_by(Result.id.desc()).limit(5)

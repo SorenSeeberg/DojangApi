@@ -1,5 +1,29 @@
 const TITLE_CONTEXT = {title: 'Dojang'};
 
+
+function starBuilder(percentage: number): string {
+    const star = '&#10026;';
+    return percentage === 100
+        ? `<h1 class="gold-font star">${star} ${star} ${star}</h1><p>Perfekt</p>`
+        : percentage >= 90
+            ? `<h1 class="silver-font star">${star} ${star}</h1><p>Flot præstation</p>`
+            : percentage >= 75
+                ? `<h1 class="bronze-font star">${star}</h1><p>Du klarede den lige</p>`
+                : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
+}
+
+function starsRowBuilder(percentage: number): string {
+    const star = '&#10026;';
+    return percentage === 100
+        ? `<p class="gold-font star">${star} ${star} ${star}</p>`
+        : percentage >= 90
+            ? `<p class="silver-font star">${star} ${star}</p>`
+            : percentage >= 75
+                ? `<p class="bronze-font star">${star}</p>`
+                : '<p></p>';
+}
+
+
 function pageIndex(): void {
     if (!getAccessToken()) {
         historyRouter({data: null, path: routeNames.signIn});
@@ -72,6 +96,19 @@ function pageLoading(loggedIn: boolean = true): void {
     templateLoading()
 }
 
+function pageCurrentUser(user: CurrentUser): void {
+    if (!getAccessToken()) {
+        pageIndex();
+    } else {
+        const resultRows = `${user.results.map(r => `<tr><td>${r.level}</td><td>${r.timeSpent}</td><td>${starsRowBuilder(r.percentageCorrect)}</td></tr>`).join('')}`;
+        const context = {email: user.email, resultRows};
+
+        historyRouter({data: null, path: routeNames.currentUser});
+        templateTopBarSignedIn(TITLE_CONTEXT);
+        templateCurrentUser(context);
+    }
+}
+
 function pageQuizCategory(): void {
     if (!getAccessToken()) {
         pageIndex();
@@ -114,16 +151,7 @@ function pageQuizResult(result: Result): void {
         pageIndex();
     } else {
         historyRouter({data: null, path: `${routeNames.result}/${result.quizToken}`});
-        const star = '&#10026;';
-
-        const stars = result.percentageCorrect === 100
-            ? `<h1 class="gold-font star">${star} ${star} ${star}</h1><p>Perfekt</p>`
-            : result.percentageCorrect >= 90
-                ? `<h1 class="silver-font star">${star} ${star}</h1><p>Flot præstation</p>`
-                : result.percentageCorrect >= 75
-                    ? `<h1 class="bronze-font star">${star}</h1><p>Du klarede den lige</p>`
-                    : '<h3 class="runner-up-font">Ikke bestået</h3><p>Wax on  . . was off . .</p>';
-
+        const stars = starBuilder(result.percentageCorrect)
         const minutes: number = Math.floor(result.timeSpent / 60);
         const seconds: number = Math.floor(result.timeSpent - (minutes * 60));
 
@@ -145,15 +173,16 @@ function pageCurriculum(curriculum: Curriculum): void {
     if (!getAccessToken()) {
         pageIndex();
     } else {
-        historyRouter({data: {test: 3}, path: `${routeNames.curriculum}`});
+        historyRouter({data: null, path: `${routeNames.curriculum}`});
 
-        const selectCategory = `<div class="select-row"><label>Kategori</label><select>${curriculum.categoryLabels.map(c => c === curriculum.categoryLabel ? `<option selected>${c}</option>` : `<option>${c}</option>`).join('')}</select></div>`;
-        const selectLevelMin = `<div class="select-row"><label>Laveste grad</label><select>${curriculum.levelLabels.map(l => l === curriculum.levelMinLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
-        const selectLevelMan = `<div class="select-row"><label>Højeste grad</label><select>${curriculum.levelLabels.map(l => l === curriculum.levelMaxLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
-        const rows = `<form>${curriculum.data.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`).join('')}</form>`;
+        const selectCategory = `<div class="select-row"><label>Kategori</label><select id="select-curriculum-category">${curriculum.categoryLabels.map(c => c === curriculum.categoryLabel ? `<option selected>${c}</option>` : `<option>${c}</option>`).join('')}</select></div>`;
+        const selectLevelMin = `<div class="select-row"><label>Laveste grad</label><select id="select-curriculum-level-min">${curriculum.levelLabels.map(l => l === curriculum.levelMinLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
+        const selectLevelMan = `<div class="select-row"><label>Højeste grad</label><select id="select-curriculum-level-max">${curriculum.levelLabels.map(l => l === curriculum.levelMaxLabel ? `<option selected>${l}</option>` : `<option>${l}</option>`).join('')}</select></div>`;
+        const rows = `${curriculum.data.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`).join('')}`;
         const context = {rows, select: selectCategory + selectLevelMin + selectLevelMan};
 
         templateTopBarSignedIn(TITLE_CONTEXT);
         templateCurriculum(context);
     }
 }
+

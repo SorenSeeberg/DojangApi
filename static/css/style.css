@@ -19,7 +19,7 @@
     --color-tertiary: #ffec58;
 
     --color-gold: #ffb300;
-    --color-silver: silver;
+    --color-silver: #a09e9e;
     --color-bronze: #ff7018;
     --color-runner-up: #666;
     --table-row-color: rgba(28, 69, 135, 0.1);
@@ -54,27 +54,30 @@ header {
     flex-flow: row;
     justify-content: space-between;
     align-items: center;
-    background: transparent;
+    background: var(--table-row-color);
     color: var(--dark-font-color);
     font-size: 40px;
-    min-height: 50px;
+    padding: 0 0 0 8px;
+    min-height: 70px;
 }
 
 article {
     display: flex;
     flex-flow: column;
-    flex: 1;
-    align-content: stretch;
 }
 
 footer {
-    min-height: 50px;
+    min-height: 30px;
     background: transparent;
 }
 
 h1, h2, h3 {
     color: var(--dark-font-color);
     padding: 0 0 10px 0;
+}
+
+h2 {
+    margin: 10px;
 }
 
 form {
@@ -104,9 +107,7 @@ select {
     width: 100%;
     display: flex;
     flex-flow: row;
-    flex: 1;
     align-items: center;
-    justify-content: space-between;
 }
 
 .select-row > label {
@@ -152,17 +153,19 @@ input {
 }
 
 .header-profile {
-    background: white;
+    cursor: pointer;
+    background-color: transparent;
+    background-image: url("/static/favicon.png");
+    background-size:cover;
     border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    margin-right: 4px;
+    width: 60px;
+    height: 60px;
+    margin: 6px 6px;
 }
 
 .widget-holder {
     display: flex;
     flex-flow: column;
-    flex: 1;
     height: calc(100vh - 100px);
     padding: 0 10px;
 }
@@ -170,7 +173,6 @@ input {
 .widget {
     display: flex;
     flex-flow: column;
-    flex: 1;
     align-items: center;
     justify-content: flex-start;
 }
@@ -277,13 +279,16 @@ input {
 
 .btn-large {
     width: 200px;
-    height: 60px;
+    height: 50px;
+    min-height: 50px;
+    margin: 6px 3px;
 }
 
 .btn-large-wide {
-    width: 100%;
-    height: 60px;
-    margin: 3px 0;
+    width: calc(100% - 6px);
+    height: 50px;
+    min-height: 50px;
+    margin: 6px 3px;
 }
 
 .btn-primary {

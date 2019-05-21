@@ -50,7 +50,6 @@ type Result = {
 }
 
 async function handleCreateNewQuizFromForm(){
-        console.log('handleCreateNewQuizFromForm()');
         const select0 = <HTMLSelectElement>document.getElementById('select-0');
         const select1 = <HTMLSelectElement>document.getElementById('select-1');
         const select2 = <HTMLSelectElement>document.getElementById('select-2');

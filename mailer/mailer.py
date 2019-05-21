@@ -3,9 +3,6 @@ import smtplib
 import config
 
 
-# https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
-
-
 def _build_email(sent_from: str, to: List[str], subject: str, body: str) -> str:
     return f'From: {sent_from}\n' \
            f'To: {"".join(to)}\n' \
@@ -33,7 +30,7 @@ def send_activation_mail(target_email: str, activation_token: str):
         f'Hej {target_email},\n\n' \
         f'Velkommen til DOJANG, en Taekwondo teoriapp som virker!\n\n' \
         f'Aktiver din profil med dette link\n' \
-        f'{config.DEV_SITE}/users/activate/{activation_token}\n\n' \
+        f'{config.SITE_URL}/users/activate/{activation_token}\n\n' \
         f'Med venlig hilsen,\n' \
         f'Grand Master Kwon'
 
