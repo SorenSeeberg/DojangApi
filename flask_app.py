@@ -85,7 +85,6 @@ def create_user():
 def activate_user(activation_token):
     session = get_session()
     return_data: Dict = users.activate(session, activation_token)
-    print(return_data)
     if return_data.get('status', 500) == 204:
         return render_template('user-enabled.html')
     else:
@@ -94,7 +93,6 @@ def activate_user(activation_token):
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    # TODO : needs to be looked at
     session = get_session()
     access_token_string: str = _get_access_token()
 
@@ -139,11 +137,6 @@ def update_user():
     raise NotImplementedError
 
 
-@app.route('/user/results/<path:user_id>', methods=['GET'])
-def get_results(user_id):
-    return "Get Results " + user_id
-
-
 @app.route('/users/sign-in', methods=['POST'])
 def sign_in():
     session = get_session()
@@ -168,7 +161,7 @@ def sign_out():
 
 @app.route('/users/change-password')
 def change_password():
-    return "Change password"
+    raise NotImplementedError
 
 
 # QUIZ

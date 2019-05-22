@@ -76,7 +76,6 @@ def get_by_token(session: 'Session', access_token_string: str) -> 'User':
 
 
 def update_password(session: 'Session', email: str, new_password_value: str, commit=True) -> bool:
-    # TODO: setup try-except
 
     user_row = get_by_email(session, email)
 
@@ -85,9 +84,7 @@ def update_password(session: 'Session', email: str, new_password_value: str, com
 
         if commit:
             session.commit()
-
         return True
-
     return False
 
 
@@ -108,7 +105,6 @@ def update_confirmed(session: 'Session', user_id: int, confirmed_value: bool, en
 
 
 def delete(session: 'Session', email: str, commit=True) -> bool:
-    # TODO: setup try-except
 
     user_row = get_by_email(session, email)
 
@@ -124,7 +120,6 @@ def delete(session: 'Session', email: str, commit=True) -> bool:
 
 
 def email_exists(session: 'Session', email: str) -> bool:
-    # TODO: setup try-except
 
     return False if session.query(User).filter(User.email == email).count() == 0 else True
 
