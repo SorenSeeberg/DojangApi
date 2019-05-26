@@ -17,6 +17,16 @@ from models import quiz, users, curriculum
 app = Flask(__name__)
 
 
+def validate_db_string() -> str:
+    sqlite_root = 'sqlite:///'
+
+    if DB_CONNECTION_STRING.startswith(sqlite_root):
+        is_file = os.path.isfile(DB_CONNECTION_STRING[len(sqlite_root):])
+    else:
+        is_file = None
+    return f'{DB_CONNECTION_STRING} ({is_file})'
+
+
 def get_engine(test=False):
     if test:
         return create_engine(TEST_DB_CONNECTION_STRING, echo=False, poolclass=SingletonThreadPool)
@@ -67,7 +77,7 @@ def favicon():
 @app.route('/min-bruger')
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", connection_string=validate_db_string())
 
 
 # USERS
