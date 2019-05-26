@@ -151,6 +151,7 @@ async function handleGetCurrentUser() {
     }
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
     pageInfo404();

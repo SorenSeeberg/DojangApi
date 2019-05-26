@@ -78,6 +78,7 @@ def favicon():
 @app.route('/')
 def index():
     return render_template("index.html", connection_string=validate_db_string())
+    # return render_template("index.html", connection_string=validate_db_string())
 
 
 # USERS

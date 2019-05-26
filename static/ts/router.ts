@@ -39,8 +39,8 @@ type Url = {
 function historyRouter(url: Url, type: 'push' |'replace' = 'push'): void {
     console.log('historyRouter');
     console.log(url);
-    const origin = 'http://127.0.0.1:5000';
-    // const origin = 'http://sorenseeberg.pythonanywhere.com';
+    // const origin = 'http://127.0.0.1:5000';
+    const origin = 'http://sorenseeberg.pythonanywhere.com';
 
     console.log(origin + url.path);
 

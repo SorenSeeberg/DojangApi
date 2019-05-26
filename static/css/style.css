@@ -3,13 +3,13 @@
     --bright-font-color: white;
     --main-background: rgb(207, 226, 243);
     --info-box-background: rgb(119, 168, 201);
-    --primary: #649253;
-    --primary-hover: #96c97d;
+    --primary: #e47423;
+    --primary-hover: #ff8227;
     --secondary: #4975b0;
     --secondary-hover: #6eb0d8;
     --color-error: red;
-    --color-success: #00b000;
-    --color-info: #4975b0;
+    --color-success: #33b036;
+    --color-info: #eca319;
     --color-impressive: #7649b0;
     --color-link: blue;
     --color-link-hover: purple;
@@ -54,8 +54,8 @@ header {
     flex-flow: row;
     justify-content: space-between;
     align-items: center;
-    background: var(--table-row-color);
-    color: var(--dark-font-color);
+    background: var(--dark-font-color);
+    color: var(--bright-font-color);
     font-size: 40px;
     padding: 0 0 0 8px;
     min-height: 70px;
@@ -74,6 +74,7 @@ footer {
 h1, h2, h3 {
     color: var(--dark-font-color);
     padding: 0 0 10px 0;
+    font-weight: normal;
 }
 
 h2 {
@@ -150,6 +151,7 @@ input {
 
 .title {
     cursor: pointer;
+    font-weight: normal;
 }
 
 .header-profile {
@@ -175,6 +177,13 @@ input {
     flex-flow: column;
     align-items: center;
     justify-content: flex-start;
+}
+
+.align-content-center-center {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .align-content-center-top {
@@ -317,6 +326,10 @@ input {
 
 .vertical-filler-l {
     height: 90px;
+}
+
+.vertical-filler-xl {
+    height: 150px;
 }
 
 table {

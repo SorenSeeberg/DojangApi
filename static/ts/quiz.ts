@@ -89,6 +89,7 @@ async function handleGetQuizConfiguration() {
 
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
     pageInfo404();
@@ -115,6 +116,7 @@ async function handleCreateNewQuiz(quizConfig: QuizConfiguration) {
 
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
     pageInfo404();
@@ -138,6 +140,7 @@ async function handleGetResult() {
     }
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
     pageInfo404();
@@ -166,6 +169,7 @@ async function handleGetQuiz() {
     }
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
     pageInfo404();
@@ -208,6 +212,7 @@ async function handleAnswerQuestion(optionIndex: number) {
 
     if (responseObject.status === 401) {
         pageInfo401();
+        clearQuizToken();
         return false;
     }
 

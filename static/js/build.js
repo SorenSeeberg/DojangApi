@@ -75,6 +75,12 @@ function handleGetCurriculum(categoryId, levelMin, levelMax) {
                         pageCurriculum(curriculum);
                         return [2, true];
                     }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        clearQuizToken();
+                        return [2, false];
+                    }
+                    pageInfo404();
                     return [2, false];
             }
         });
@@ -304,6 +310,7 @@ function handleGetQuizConfiguration() {
                     }
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
@@ -338,6 +345,7 @@ function handleCreateNewQuiz(quizConfig) {
                     }
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
@@ -369,6 +377,7 @@ function handleGetResult() {
                     }
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
@@ -409,6 +418,7 @@ function handleGetQuiz() {
                 case 6:
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
@@ -463,6 +473,7 @@ function handleAnswerQuestion(optionIndex) {
                 case 6:
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
@@ -562,7 +573,7 @@ function historyRouter(url, type) {
     if (type === void 0) { type = 'push'; }
     console.log('historyRouter');
     console.log(url);
-    var origin = 'http://127.0.0.1:5000';
+    var origin = 'http://sorenseeberg.pythonanywhere.com';
     console.log(origin + url.path);
     type === 'push'
         ? history.pushState(url.data, url.path, origin + url.path)
@@ -811,6 +822,7 @@ function handleGetCurrentUser() {
                     }
                     if (responseObject.status === 401) {
                         pageInfo401();
+                        clearQuizToken();
                         return [2, false];
                     }
                     pageInfo404();
