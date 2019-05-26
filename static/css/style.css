@@ -256,6 +256,10 @@ input {
     font-size: 50px;
 }
 
+p.star {
+    font-size: 22px;
+}
+
 .runner-up-font {
     color: var(--color-runner-up)
 }
@@ -288,16 +292,16 @@ input {
 
 .btn-large {
     width: 200px;
-    height: 50px;
-    min-height: 50px;
-    margin: 6px 3px;
+    height: 45px;
+    min-height: 45px;
+    margin: 4px 3px;
 }
 
 .btn-large-wide {
     width: calc(100% - 6px);
-    height: 50px;
-    min-height: 50px;
-    margin: 6px 3px;
+    height: 45px;
+    min-height: 45px;
+    margin: 4px 3px;
 }
 
 .btn-primary {

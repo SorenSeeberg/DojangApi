@@ -102,12 +102,13 @@ async function handleCreateUser() {
     let responseObject = await response.json();
 
     if (responseObject.status === 201) {
-        const message = "<p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
-            " via det link jeg netop har send til dig :)</p><br><p>Med venlig hilsen,</p><p>Grand Master Kwon!</p>";
+        const message = "<p>Jeg har nu oprettet din nye profil, men den er endnu ikke aktiv. Du kan aktivere den" +
+            " ved at trykke på det link jeg netop har sendt til dig på mail :)</p><br><p>Med venlig hilsen,</p>" +
+            "<p>Grand Master Kwon</p>";
 
         pageInfo({
             errorLevel: infoBoxErrorLevel.success,
-            title: "Tillykke",
+            title: "Hov Vent!",
             message,
             buttonText: 'Log ind',
             buttonAction: 'pageIndex()'
@@ -117,7 +118,7 @@ async function handleCreateUser() {
 
     pageInfo({
         errorLevel: infoBoxErrorLevel.error,
-        title: "Valideringsfejl",
+        title: "Fejl!",
         message: "Emailen er allerede optaget. Måske har du glemt dit password?",
         buttonAction: 'pageCreateUser()',
         buttonText: 'Prøv igen'

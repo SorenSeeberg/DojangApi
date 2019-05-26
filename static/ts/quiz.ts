@@ -49,26 +49,24 @@ type Result = {
     answers: Answer[];
 }
 
-async function handleCreateNewQuizFromForm(){
-        const select0 = <HTMLSelectElement>document.getElementById('select-0');
-        const select1 = <HTMLSelectElement>document.getElementById('select-1');
-        const select2 = <HTMLSelectElement>document.getElementById('select-2');
-        const select3 = <HTMLSelectElement>document.getElementById('select-3');
-        const select4 = <HTMLSelectElement>document.getElementById('select-4');
-        const select5 = <HTMLSelectElement>document.getElementById('select-5');
+async function handleCreateNewQuizFromForm() {
+    const select0 = <HTMLSelectElement>document.getElementById('select-0');
+    const select1 = <HTMLSelectElement>document.getElementById('select-1');
+    const select2 = <HTMLSelectElement>document.getElementById('select-2');
+    const select3 = <HTMLSelectElement>document.getElementById('select-3');
+    const select4 = <HTMLSelectElement>document.getElementById('select-4');
+    const select5 = <HTMLSelectElement>document.getElementById('select-5');
 
-        const categoryId: number = select0.selectedIndex;
-        const levelMin: number = select1.selectedIndex;
-        const levelMax: number = select2.selectedIndex;
-        const questionCount: number = parseInt(select3.value);
-        const optionCount: number= parseInt(select4.value);
-        const timeLimit: number = parseInt(select5.value);
+    const categoryId: number = select0.selectedIndex;
+    const levelMin: number = select1.selectedIndex;
+    const levelMax: number = select2.selectedIndex;
+    const questionCount: number = parseInt(select3.value);
+    const optionCount: number = parseInt(select4.value);
+    const timeLimit: number = parseInt(select5.value);
 
-        const config: QuizConfiguration = { categoryId, levelMin, levelMax, questionCount, optionCount, timeLimit };
-        console.log('CONFIG');
-        console.log(config);
+    const config: QuizConfiguration = {categoryId, levelMin, levelMax, questionCount, optionCount, timeLimit};
 
-        await handleCreateNewQuiz(config);
+    await handleCreateNewQuiz(config);
 }
 
 async function handleGetQuizConfiguration() {
@@ -108,7 +106,6 @@ async function handleCreateNewQuiz(quizConfig: QuizConfiguration) {
 
     if (responseObject.status === 201) {
         const quiz: Quiz = responseObject.body;
-        console.log(quiz);
         setQuizToken(quiz.quizToken);
         pageQuiz(quiz);
         return true;
@@ -124,6 +121,7 @@ async function handleCreateNewQuiz(quizConfig: QuizConfiguration) {
 }
 
 async function handleGetResult() {
+    templateLoading();
     const quizToken = getQuizToken();
 
     let response = await fetch(`/quiz/result/${quizToken}`, {
@@ -148,6 +146,7 @@ async function handleGetResult() {
 }
 
 async function handleGetQuiz() {
+    templateLoading();
     const quizToken = getQuizToken();
 
     let response = await fetch(`/quiz/${quizToken}`, {
@@ -161,7 +160,6 @@ async function handleGetQuiz() {
         if (!responseObject.body.complete) {
             pageQuiz(quiz);
         } else {
-            console.log('Complete!');
             pageLoading();
             await handleGetResult();
         }
@@ -181,6 +179,8 @@ async function handleClearQuiz() {
 }
 
 async function handleAnswerQuestion(optionIndex: number) {
+    templateLoading();
+
     const quizToken = getQuizToken();
     let response = await fetch(`/quiz/question/${quizToken}`, {
         method: 'put',
@@ -191,14 +191,11 @@ async function handleAnswerQuestion(optionIndex: number) {
     let responseObject = await response.json();
 
     if (responseObject.status === 200) {
-        console.log(responseObject);
 
         if (responseObject.body.answer === true) {
-            console.log('Korrekt');
             await handleGetQuiz();
 
         } else {
-            console.log('Forkert');
             pageInfo({
                 title: 'Svaret er forkert',
                 message: responseObject.body.text,

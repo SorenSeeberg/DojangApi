@@ -33,59 +33,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-function handleUpdateCurriculumFromForm() {
-    return __awaiter(this, void 0, void 0, function () {
-        var select0, select1, select2, categoryId, levelMin, levelMax;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    select0 = document.getElementById('select-curriculum-category');
-                    select1 = document.getElementById('select-curriculum-level-min');
-                    select2 = document.getElementById('select-curriculum-level-max');
-                    categoryId = select0.selectedIndex;
-                    levelMin = select1.selectedIndex + 1;
-                    levelMax = select2.selectedIndex + 1;
-                    return [4, handleGetCurriculum(categoryId, levelMin, levelMax)];
-                case 1:
-                    _a.sent();
-                    return [2];
-            }
-        });
-    });
-}
-function handleGetCurriculum(categoryId, levelMin, levelMax) {
-    return __awaiter(this, void 0, void 0, function () {
-        var response, responseObject, curriculum;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    templateLoading();
-                    return [4, fetch("/curriculum?categoryId=" + categoryId + "&levelMin=" + levelMin + "&levelMax=" + levelMax, {
-                            method: 'get',
-                            headers: getAuthorizationHeader()
-                        })];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.json()];
-                case 2:
-                    responseObject = _a.sent();
-                    if (responseObject.status === 200) {
-                        console.log(responseObject);
-                        curriculum = responseObject.body;
-                        pageCurriculum(curriculum);
-                        return [2, true];
-                    }
-                    if (responseObject.status === 401) {
-                        pageInfo401();
-                        clearQuizToken();
-                        return [2, false];
-                    }
-                    pageInfo404();
-                    return [2, false];
-            }
-        });
-    });
-}
 var TITLE_CONTEXT = { title: 'Dojang' };
 function starBuilder(percentage) {
     var star = '&#10026;';
@@ -277,8 +224,6 @@ function handleCreateNewQuizFromForm() {
                     optionCount = parseInt(select4.value);
                     timeLimit = parseInt(select5.value);
                     config = { categoryId: categoryId, levelMin: levelMin, levelMax: levelMax, questionCount: questionCount, optionCount: optionCount, timeLimit: timeLimit };
-                    console.log('CONFIG');
-                    console.log(config);
                     return [4, handleCreateNewQuiz(config)];
                 case 1:
                     _a.sent();
@@ -338,7 +283,6 @@ function handleCreateNewQuiz(quizConfig) {
                     responseObject = _a.sent();
                     if (responseObject.status === 201) {
                         quiz = responseObject.body;
-                        console.log(quiz);
                         setQuizToken(quiz.quizToken);
                         pageQuiz(quiz);
                         return [2, true];
@@ -360,6 +304,7 @@ function handleGetResult() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    templateLoading();
                     quizToken = getQuizToken();
                     return [4, fetch("/quiz/result/" + quizToken, {
                             method: "get",
@@ -392,6 +337,7 @@ function handleGetQuiz() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    templateLoading();
                     quizToken = getQuizToken();
                     return [4, fetch("/quiz/" + quizToken, {
                             method: "get",
@@ -408,7 +354,6 @@ function handleGetQuiz() {
                     pageQuiz(quiz);
                     return [3, 5];
                 case 3:
-                    console.log('Complete!');
                     pageLoading();
                     return [4, handleGetResult()];
                 case 4:
@@ -440,6 +385,7 @@ function handleAnswerQuestion(optionIndex) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    templateLoading();
                     quizToken = getQuizToken();
                     return [4, fetch("/quiz/question/" + quizToken, {
                             method: 'put',
@@ -452,15 +398,12 @@ function handleAnswerQuestion(optionIndex) {
                 case 2:
                     responseObject = _a.sent();
                     if (!(responseObject.status === 200)) return [3, 6];
-                    console.log(responseObject);
                     if (!(responseObject.body.answer === true)) return [3, 4];
-                    console.log('Korrekt');
                     return [4, handleGetQuiz()];
                 case 3:
                     _a.sent();
                     return [3, 5];
                 case 4:
-                    console.log('Forkert');
                     pageInfo({
                         title: 'Svaret er forkert',
                         message: responseObject.body.text,
@@ -564,21 +507,22 @@ var routes = (_a = {},
     _a[routeNames.currentUser] = handleGetCurrentUser,
     _a);
 function spaRouter() {
-    console.log('spaRouter');
-    console.log(window.location.pathname);
-    console.log(routes);
+    if (DEV) {
+        console.log('spaRouter');
+        console.log(window.location.pathname);
+        console.log(routes);
+    }
     routes[window.location.pathname]();
 }
 function historyRouter(url, type) {
     if (type === void 0) { type = 'push'; }
-    console.log('historyRouter');
-    console.log(url);
-    var origin = 'http://sorenseeberg.pythonanywhere.com';
-    console.log(origin + url.path);
+    if (DEV) {
+        console.log('historyRouter');
+        console.log(url);
+    }
     type === 'push'
-        ? history.pushState(url.data, url.path, origin + url.path)
-        : history.replaceState(url.data, url.path, origin + url.path);
-    console.log(history.length);
+        ? history.pushState(url.data, url.path, ORIGIN + url.path)
+        : history.replaceState(url.data, url.path, ORIGIN + url.path);
 }
 function setTemplate(templateId, contentTarget, context) {
     if (context === void 0) { context = {}; }
@@ -778,11 +722,12 @@ function handleCreateUser() {
                 case 2:
                     responseObject = _a.sent();
                     if (responseObject.status === 201) {
-                        message = "<p>Vi har nu oprettet din nye profil. Nu mangler du blot at aktivere den" +
-                            " via det link jeg netop har send til dig :)</p><br><p>Med venlig hilsen,</p><p>Grand Master Kwon!</p>";
+                        message = "<p>Jeg har nu oprettet din nye profil, men den er endnu ikke aktiv. Du kan aktivere den" +
+                            " ved at trykke på det link jeg netop har sendt til dig på mail :)</p><br><p>Med venlig hilsen,</p>" +
+                            "<p>Grand Master Kwon</p>";
                         pageInfo({
                             errorLevel: infoBoxErrorLevel.success,
-                            title: "Tillykke",
+                            title: "Hov Vent!",
                             message: message,
                             buttonText: 'Log ind',
                             buttonAction: 'pageIndex()'
@@ -791,7 +736,7 @@ function handleCreateUser() {
                     }
                     pageInfo({
                         errorLevel: infoBoxErrorLevel.error,
-                        title: "Valideringsfejl",
+                        title: "Fejl!",
                         message: "Emailen er allerede optaget. Måske har du glemt dit password?",
                         buttonAction: 'pageCreateUser()',
                         buttonText: 'Prøv igen'
@@ -831,4 +776,61 @@ function handleGetCurrentUser() {
         });
     });
 }
+function handleUpdateCurriculumFromForm() {
+    return __awaiter(this, void 0, void 0, function () {
+        var select0, select1, select2, categoryId, levelMin, levelMax;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    select0 = document.getElementById('select-curriculum-category');
+                    select1 = document.getElementById('select-curriculum-level-min');
+                    select2 = document.getElementById('select-curriculum-level-max');
+                    categoryId = select0.selectedIndex;
+                    levelMin = select1.selectedIndex + 1;
+                    levelMax = select2.selectedIndex + 1;
+                    return [4, handleGetCurriculum(categoryId, levelMin, levelMax)];
+                case 1:
+                    _a.sent();
+                    return [2];
+            }
+        });
+    });
+}
+function handleGetCurriculum(categoryId, levelMin, levelMax) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseObject, curriculum;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    templateLoading();
+                    return [4, fetch("/curriculum?categoryId=" + categoryId + "&levelMin=" + levelMin + "&levelMax=" + levelMax, {
+                            method: 'get',
+                            headers: getAuthorizationHeader()
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        if (DEV) {
+                            console.log(responseObject);
+                        }
+                        curriculum = responseObject.body;
+                        pageCurriculum(curriculum);
+                        return [2, true];
+                    }
+                    if (responseObject.status === 401) {
+                        pageInfo401();
+                        clearQuizToken();
+                        return [2, false];
+                    }
+                    pageInfo404();
+                    return [2, false];
+            }
+        });
+    });
+}
+var DEV = false;
+var ORIGIN = DEV ? 'http://127.0.0.1:5000' : 'http://sorenseeberg.pythonanywhere.com';
 //# sourceMappingURL=build.js.map

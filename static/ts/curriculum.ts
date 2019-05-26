@@ -32,7 +32,9 @@ async function handleGetCurriculum(categoryId: number, levelMin: number, levelMa
     let responseObject = await response.json();
 
     if (responseObject.status === 200) {
-        console.log(responseObject);
+        if (DEV) {
+            console.log(responseObject);
+        }
         const curriculum: Curriculum = responseObject.body;
         pageCurriculum(curriculum);
         return true;

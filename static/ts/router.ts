@@ -25,9 +25,11 @@ const routes: { [key: string]: any } = {
 };
 
 function spaRouter(): void {
-    console.log('spaRouter');
-    console.log(window.location.pathname);
-    console.log(routes);
+    if (DEV) {
+        console.log('spaRouter');
+        console.log(window.location.pathname);
+        console.log(routes);
+    }
     routes[window.location.pathname]();
 }
 
@@ -37,16 +39,12 @@ type Url = {
 }
 
 function historyRouter(url: Url, type: 'push' |'replace' = 'push'): void {
-    console.log('historyRouter');
-    console.log(url);
-    // const origin = 'http://127.0.0.1:5000';
-    const origin = 'http://sorenseeberg.pythonanywhere.com';
-
-    console.log(origin + url.path);
+    if (DEV) {
+        console.log('historyRouter');
+        console.log(url);
+    }
 
     type === 'push'
-        ? history.pushState(url.data, url.path, origin + url.path)
-        : history.replaceState(url.data, url.path, origin + url.path);
-
-    console.log(history.length)
+        ? history.pushState(url.data, url.path, ORIGIN + url.path)
+        : history.replaceState(url.data, url.path, ORIGIN + url.path);
 }
