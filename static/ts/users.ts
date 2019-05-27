@@ -44,11 +44,20 @@ async function handleSignOut() {
         return true;
     }
     if (responseObject.status === 401) {
-        pageInfo401();
+        clearQuizToken();
+        clearAccessToken();
         return false;
     }
     pageInfo404();
     return false;
+}
+
+class Handler {
+
+    constructor() {
+
+    }
+
 }
 
 async function handleCreateUser() {
@@ -153,6 +162,7 @@ async function handleGetCurrentUser() {
     if (responseObject.status === 401) {
         pageInfo401();
         clearQuizToken();
+        clearAccessToken();
         return false;
     }
     pageInfo404();

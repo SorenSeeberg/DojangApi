@@ -1,12 +1,12 @@
 :root {
     --dark-font-color: rgb(28, 69, 135);
     --bright-font-color: white;
-    --main-background: rgb(207, 226, 243);
+    --main-background: rgb(215, 234, 251);
     --info-box-background: rgb(119, 168, 201);
-    --primary: #e47423;
-    --primary-hover: #ff8227;
+    --primary: #f54e64;
+    --primary-hover: #cb2028;
     --secondary: #4975b0;
-    --secondary-hover: #6eb0d8;
+    --secondary-hover: rgb(28, 69, 135);
     --color-error: red;
     --color-success: #33b036;
     --color-info: #eca319;
@@ -46,7 +46,10 @@ html {
     font-family: 'Roboto', sans-serif;
     height: calc(100vh);
     overflow-y: auto;
+}
 
+.margin {
+    margin: 0 3px;
 }
 
 header {
@@ -58,27 +61,27 @@ header {
     color: var(--bright-font-color);
     font-size: 40px;
     padding: 0 0 0 8px;
-    min-height: 70px;
+    min-height: 72px;
 }
 
 article {
-    display: flex;
+    color: var(--dark-font-color);
+    /*display: flex;*/
     flex-flow: column;
 }
 
-footer {
-    min-height: 30px;
-    background: transparent;
-}
+/*footer {*/
+/*    min-height: 30px;*/
+/*    background: transparent;*/
+/*}*/
 
 h1, h2, h3 {
-    color: var(--dark-font-color);
     padding: 0 0 10px 0;
     font-weight: normal;
 }
 
 h2 {
-    margin: 10px;
+    margin: 10px 0;
 }
 
 form {
@@ -101,7 +104,7 @@ select {
     width: 100%;
     height: 32px;
     font-size: 18px;
-    margin: 4px 0 15px 0;
+    margin: 4px 3px 15px 0;
 }
 
 .select-row {
@@ -109,14 +112,16 @@ select {
     display: flex;
     flex-flow: row;
     align-items: center;
+
 }
 
 .select-row > label {
     width: 250px;
-}
+    margin: 0 0 0 3px;
+ }
 
 input {
-    margin: 0 0 10px 0;
+    margin: 0 3px 10px 0;
 }
 
 .progress-bar-frame {
@@ -165,19 +170,19 @@ input {
     margin: 6px 6px;
 }
 
-.widget-holder {
-    display: flex;
-    flex-flow: column;
-    height: calc(100vh - 100px);
-    padding: 0 10px;
-}
+/*.widget-holder {*/
+/*    display: flex;*/
+/*    flex-flow: column;*/
+/*    height: calc(100vh - 100px);*/
+/*    padding: 0 10px;*/
+/*}*/
 
-.widget {
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: flex-start;
-}
+/*.widget {*/
+/*    display: flex;*/
+/*    flex-flow: column;*/
+/*    align-items: center;*/
+/*    justify-content: flex-start;*/
+/*}*/
 
 .align-content-center-center {
     display: flex;
@@ -205,7 +210,7 @@ input {
     height: 30px;
     font-size: 20px;
     color: var(--dark-font-color);
-    margin: 4px 0 14px 0;
+    margin: 4px 3px 14px 0;
     padding: 3px;
 }
 
@@ -213,31 +218,32 @@ input {
     color: var(--color-error);
 }
 
-.info-box > h2,
-.info-box > h3 {
-    color: white;
+.info-box {
     font-weight: normal;
+    border-radius: 4px;
+    margin: 10px 3px;
+    padding: 20px;
 }
 
-.info-box {
-    background: var(--color-info);
-    color: white;
-    border-radius: 4px;
-    margin: 20px 0;
-    padding: 20px;
-    width: calc(100% - 40px);
+.info {
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--dark-font-color);
+    border: 5px dashed var(--dark-font-color);
 }
 
 .impressive {
     background: var(--color-impressive);
+    color: white;
 }
 
 .error {
     background: var(--color-error);
+    color: white;
 }
 
 .success {
     background: var(--color-success);
+    color: white;
 }
 
 .gold-font {
@@ -337,7 +343,7 @@ p.star {
 }
 
 table {
-    border-collapse:collapse
+    border-collapse:collapse;
 }
 
 th {
@@ -353,6 +359,7 @@ td {
     height: 25px;
     color: var(--dark-font-color);
     text-align: left;
+    padding: 0 3px;
 }
 
 tr:nth-child(odd) {

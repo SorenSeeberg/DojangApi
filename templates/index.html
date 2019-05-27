@@ -15,7 +15,7 @@
         {% raw %}
         <div>
             <form>
-                <div class="widget-holder">
+                <div class="align-content-center-top">
                     <h2>Opret bruger</h2>
                     <div class="vertical-filler-m"></div>
                     <div class="form-box">
@@ -45,18 +45,18 @@
         {% raw %}
         <div>
             <form>
-                <div class="widget-holder">
+                <div class="align-content-center-top">
                     <h2>Log ind</h2>
                     <div class="vertical-filler-m"></div>
-                    <div class="form-box">
-                        <div class="select-row"><label for="input-field-email">Email</label>
-                            <input id="input-field-email" type="email" name="email" class="text-form-field" required
-                                   autofocus/></div>
-                        <div class="select-row"><label for="input-field-password">Password</label>
-                            <input id="input-field-password" type="password" name="password" class="text-form-field"
-                                   required/></div>
-                        {{{message}}}
-                    </div>
+                    <div class="select-row">
+                        <label for="input-field-email">Email</label>
+                        <input id="input-field-email" type="email" name="email" class="text-form-field" required
+                               autofocus/></div>
+                    <div class="select-row">
+                        <label for="input-field-password">Password</label>
+                        <input id="input-field-password" type="password" name="password" class="text-form-field"
+                               required/></div>
+                    {{{message}}}
                     <div class="vertical-filler-l"></div>
                     <div class="align-content-center-top">
                         <button class="btn btn-large btn-primary" type="button" onclick="handleSignIn()">Log Ind
@@ -74,25 +74,23 @@
     <!-- CURRENT USER -->
     <script id="handlebars-current-user" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-m"></div>
-                <h2>{{email}}</h2>
-                <div class="vertical-filler-m"></div>
-                <h3>Seneste Resultater</h3>
-                <table style="width:100%">
-                    <tr>
-                        <th>Grad</th>
-                        <th>Tid</th>
-                        <th>Karakter</th>
-                    </tr>
-                    {{{resultRows}}}
-                </table>
-                <div class="vertical-filler-s"></div>
-                <button class="btn btn-large btn-secondary" type="button" onclick="handleSignOut()">
-                    Log ud
-                </button>
-            </div>
+        <div class="align-content-center-top">
+            <div class="vertical-filler-s"></div>
+            <h2>{{email}}</h2>
+            <div class="vertical-filler-s"></div>
+            <h3>Seneste Resultater</h3>
+            <table style="width:100%">
+                <tr>
+                    <th>Grad</th>
+                    <th>Tid</th>
+                    <th>Karakter</th>
+                </tr>
+                {{{resultRows}}}
+            </table>
+            <div class="vertical-filler-s"></div>
+            <button class="btn btn-large btn-secondary" type="button" onclick="handleSignOut()">
+                Log ud
+            </button>
         </div>
         {% endraw %}
     </script>
@@ -100,8 +98,9 @@
     <!-- FRONT PAGE -->
     <script id="handlebars-main-menu" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
-            <div class="info-box"><h3>Velkommen til Dojang</h3>Jeg hedder Grand Master Kwon. I min dojang kan du studere
+        <div class="align-content-center-top">
+            <div class="info-box info"><h3>Velkommen til Dojang</h3>Jeg hedder Grand Master Kwon. I min dojang kan du
+                studere
                 DTaF taekwondo-pensum.<br>
                 Først må du studere. Når du er klar vil du blive testet i talrige quizzer! Resultatet må vise om du er
                 værdig til næste og højere bæltegrad.<br>
@@ -121,7 +120,7 @@
     <!-- QUIZ -->
     <script id="handlebars-quiz" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
+        <div class="align-content-center-top">
             <h2>{{category}}</h2>
             <div class="progress-bar-frame">
                 <div style="width: {{percentageComplete}}%;" class="progress-bar"></div>
@@ -137,8 +136,7 @@
     <!-- QUIZ RESULT -->
     <script id="handlebars-quiz-result" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
-            <div class="vertical-filler-s"></div>
+        <div class="align-content-center-top">
             <div class="info-box impressive align-content-center-top">
                 <h2>{{category}}</h2>
                 {{{stars}}}
@@ -160,7 +158,7 @@
     <!-- QUIZ CATEGORY -->
     <script id="handlebars-quiz-category" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
+        <div class="align-content-center-top">
             <h2>Ny Quiz</h2>
             <button class="btn btn-large-wide btn-secondary" type="button" onclick="pageQuizConfig()">Fri
                 Quiz
@@ -190,7 +188,7 @@
     <!-- QUIZ CONFIGURATION -->
     <script id="handlebars-quiz-configuration" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
+        <div class="align-content-center-top">
             <h2>Quiz Konfiguration</h2>
             {{{select}}}
             <div class="vertical-filler-m"></div>
@@ -204,8 +202,8 @@
     <!-- CURRICULUM -->
     <script id="handlebars-curriculum" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
-            <h2>Pensum</h2>
+        <div class="align-content-center-top">
+            <div><h2>Pensum</h2></div>
             {{{select}}}
             <button class="btn btn-large-wide btn-secondary" type="button" onclick="handleUpdateCurriculumFromForm()">
                 Opdater
@@ -272,7 +270,6 @@
 <div class="content">
     <header id='header'></header>
     <article id='article'></article>
-    <footer id='footer'></footer>
 </div>
 </body>
 </html>

@@ -43,6 +43,7 @@ async function handleGetCurriculum(categoryId: number, levelMin: number, levelMa
     if (responseObject.status === 401) {
         pageInfo401();
         clearQuizToken();
+        clearAccessToken();
         return false;
     }
 
