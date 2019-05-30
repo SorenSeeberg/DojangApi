@@ -137,7 +137,7 @@
     <script id="handlebars-quiz-result" type="text/x-handlebars-template">
         {% raw %}
         <div class="align-content-center-top">
-            <div class="info-box impressive align-content-center-top">
+            <div class="info-box impressive align-content-center-center">
                 <h2>{{category}}</h2>
                 {{{stars}}}
             </div>
@@ -223,17 +223,15 @@
     <!-- INFO PAGE -->
     <script id="handlebars-info" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
-            <div class="widget">
-                <div class="vertical-filler-m"></div>
-                <div class="{{errorLevel}}">
-                    <h3>{{title}}</h3>
-                    {{{ message }}}
-                </div>
-                <div class="vertical-filler-m"></div>
-                <button class="btn btn-large btn-primary" type="button" onclick="{{buttonAction}}">{{buttonText}}
-                </button>
+        <div class="align-content-center-top">
+            <div class="vertical-filler-m"></div>
+            <div class="{{errorLevel}}">
+                <h3>{{title}}</h3>
+                {{{ message }}}
             </div>
+            <div class="vertical-filler-m"></div>
+            <button class="btn btn-large btn-primary" type="button" onclick="{{buttonAction}}">{{buttonText}}
+            </button>
         </div>
         {% endraw %}
     </script>
@@ -241,7 +239,7 @@
     <!-- LOADING -->
     <script id="handlebars-loading" type="text/x-handlebars-template">
         {% raw %}
-        <div class="widget-holder">
+        <div class="align-content-center-top">
             <div class="vertical-filler-xl"></div>
             <div class="align-content-center-center">
                 <img src="/static/svg/loading.svg"/>
