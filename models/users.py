@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import random
 
 from database.schemas import User
-from mailer.mailer import send_activation_mail
+from mailer.mailer import send_activation_mail, send_restoration_mail
 from query import access_token, user, result, level
 from query import validate_input_data
 from query import verification_token
@@ -129,6 +130,20 @@ def activate(session: 'Session', verification_token_string: str) -> Dict:
 
     return {
         ResponseKeys.status: response_codes.ResponseCodes.ok_no_content_204,
+    }
+
+
+def restore(session: 'Session', email: str) -> Dict:
+    if not user.email_exists(session, email):
+        return {ResponseKeys.status: response_codes.ResponseCodes.bad_request_400}
+
+    digits = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+    pwd: str = "".join(random.sample(digits, 6))
+    user.update_password(session, email, pwd)
+    send_restoration_mail(email, pwd)
+
+    return {
+        ResponseKeys.status: response_codes.ResponseCodes.ok_no_content_204
     }
 
 

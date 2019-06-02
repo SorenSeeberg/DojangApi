@@ -9,6 +9,8 @@ const routeNames = {
     quiz: '/quiz',
     curriculum: '/pensum',
     result: '/resultat',
+    changePassword: '/skift-password',
+    restoreUser: '/glemt-password'
 };
 
 const routes: { [key: string]: any } = {
@@ -21,7 +23,9 @@ const routes: { [key: string]: any } = {
     [routeNames.quizConfig]: pageQuizConfig,
     [routeNames.quiz]: pageQuiz,
     [routeNames.result]: pageQuizResult,
-    [routeNames.currentUser]: handleGetCurrentUser
+    [routeNames.currentUser]: handleGetCurrentUser,
+    [routeNames.restoreUser]: handleRestoreUser,
+    [routeNames.changePassword]: handleChangePassword
 };
 
 function spaRouter(): void {

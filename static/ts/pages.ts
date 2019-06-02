@@ -46,6 +46,27 @@ function pageCreateUser(): void {
     }
 }
 
+function pageRestoreUser(): void {
+    if (!getAccessToken()) {
+        historyRouter({data: null, path: routeNames.restoreUser});
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateRestoreUser();
+    } else {
+        pageIndex();
+    }
+
+}
+
+function pageChangePassword(): void {
+    if (!getAccessToken()) {
+        historyRouter({data: null, path: routeNames.changePassword});
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateChangePassword();
+    } else {
+        pageIndex();
+    }
+}
+
 const infoBoxErrorLevel = {
     info: 'info-box',
     error: 'info-box error',

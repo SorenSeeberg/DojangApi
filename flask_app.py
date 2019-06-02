@@ -67,18 +67,19 @@ def favicon():
 
 # SPA ROUTES
 
-@app.route('/pensum')
-@app.route('/quiz')
-@app.route('/quiz-category')
-@app.route('/quiz-configuration')
-@app.route('/forside')
-@app.route('/log-ind')
-@app.route('/opret-bruger')
-@app.route('/min-bruger')
-@app.route('/')
+@app.route('/pensum', methods=['GET'])
+@app.route('/quiz', methods=['GET'])
+@app.route('/quiz-category', methods=['GET'])
+@app.route('/quiz-configuration', methods=['GET'])
+@app.route('/forside', methods=['GET'])
+@app.route('/log-ind', methods=['GET'])
+@app.route('/opret-bruger', methods=['GET'])
+@app.route('/min-bruger', methods=['GET'])
+@app.route('/glemt-password', methods=['GET'])
+@app.route('/nyt-password', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     return render_template("index.html", connection_string=validate_db_string())
-    # return render_template("index.html", connection_string=validate_db_string())
 
 
 # USERS
@@ -98,6 +99,19 @@ def activate_user(activation_token):
     return_data: Dict = users.activate(session, activation_token)
     if return_data.get('status', 500) == 204:
         return render_template('user-enabled.html')
+    else:
+        return _unauthorized_response()
+
+
+@app.route('/users/restore', methods=['PUT'])
+def restore_user():
+    session = get_session()
+    form = dict(request.form)
+    print('restore_user')
+    print(form.get("email")[0])
+    return_data: Dict = users.restore(session, form.get("email")[0])
+    if return_data.get('status', 500) == 204:
+        return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
     else:
         return _unauthorized_response()
 

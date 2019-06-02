@@ -40,6 +40,61 @@
         {% endraw %}
     </script>
 
+    <!-- RESTORE USER -->
+    <script id="handlebars-restore-user" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <form>
+                <div class="align-content-center-top">
+                    <h2>Glemt dit password?</h2>
+                    <div class="vertical-filler-m"></div>
+                    <div class="form-box">
+                        <div class="select-row"><label for="input-field-email">Email</label>
+                            <input id="input-field-email" class="text-form-field" type="email" name="email"
+                                   required autofocus/></div>
+                    </div>
+                    <div class="vertical-filler-l"></div>
+                    <div class="align-content-center-top">
+                        <button class="btn btn-large btn-primary" type="button" onclick="handleRestoreUser()">OK
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endraw %}
+    </script>
+
+
+    <!-- CHANGE PASSWORD -->
+    <script id="handlebars-change-password" type="text/x-handlebars-template">
+        {% raw %}
+        <div>
+            <form>
+                <div class="align-content-center-top">
+                    <h2>Nyt Password</h2>
+                    <div class="vertical-filler-m"></div>
+                    <div class="form-box">
+                        <div class="select-row"><label for="input-field-email">Password</label>
+                            <input id="input-field-email" class="text-form-field" type="email" name="password"
+                                   required/></div>
+                        <div class="select-row"><label for="input-field-password">Nyt password</label>
+                            <input id="input-field-password" class="text-form-field" type="password" name="password"
+                                   required/></div>
+                        <div class="select-row"><label for="input-field-password-repeat"> Nyt password gentaget</label>
+                            <input id="input-field-password-repeat" class="text-form-field" type="password"
+                                   name="repeatPassword" required/></div>
+                    </div>
+                    <div class="vertical-filler-l"></div>
+                    <div class="align-content-center-top">
+                        <button class="btn btn-large btn-primary" type="button" onclick="handleCreateUser()">Opret
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% endraw %}
+    </script>
+
     <!-- SIGN IN -->
     <script id="handlebars-sign-in-form" type="text/x-handlebars-template">
         {% raw %}

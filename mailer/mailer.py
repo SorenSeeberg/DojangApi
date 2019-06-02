@@ -37,3 +37,20 @@ def send_activation_mail(target_email: str, activation_token: str):
     content = _build_email(config.MAIL_SENDER, [target_email], subject, body)
 
     _send_email(target_email, content)
+
+
+def send_restoration_mail(target_email: str, password: str):
+
+    subject = 'Genoprettelse af DOJNAG profil'
+
+    body = f'' \
+        f'Hej,\n\n' \
+        f'Du kan nu logge ind med dette password\n\n' \
+        f'<b>{password}</b>\n\n' \
+        f'Husk at ændre det, når du er logget ind\n\n' \
+        f'Med venlig hilsen,\n' \
+        f'Grand Master Kwon'
+
+    content = _build_email(config.MAIL_SENDER, [target_email], subject, body)
+
+    _send_email(target_email, content)

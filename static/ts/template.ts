@@ -6,6 +6,7 @@ type Template =
     | 'handlebars-top-bar-signed-in'
     | 'handlebars-top-bar-signed-out'
     | 'handlebars-create-user'
+    | 'handlebars-restore-user'
     | 'handlebars-info'
     | 'handlebars-loading'
     | 'handlebars-quiz-category'
@@ -14,7 +15,8 @@ type Template =
     | 'handlebars-quiz-result'
     | 'handlebars-quiz-wrong-answer'
     | 'handlebars-curriculum'
-    | 'handlebars-current-user';
+    | 'handlebars-current-user'
+    | 'handlebars-change-password';
 
 
 type ContentTarget = 'header' | 'article' | 'footer';
@@ -73,6 +75,14 @@ function templateCreateUser(): void {
     setTemplate('handlebars-create-user', "article");
 }
 
+function templateRestoreUser(): void {
+    setTemplate('handlebars-restore-user', "article");
+}
+
+function templateChangePassword(): void {
+    setTemplate('handlebars-change-password', "article");
+}
+
 type ComponentInfo = {
     errorLevel: string;
     title: string;
@@ -96,5 +106,3 @@ function templateTopBarSignedOut(context: { title: string }): void {
 function templateLoading(): void {
     setTemplate('handlebars-loading', 'article')
 }
-
-

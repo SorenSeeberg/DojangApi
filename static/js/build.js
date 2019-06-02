@@ -134,6 +134,26 @@ function pageCreateUser() {
         pageIndex();
     }
 }
+function pageRestoreUser() {
+    if (!getAccessToken()) {
+        historyRouter({ data: null, path: routeNames.restoreUser });
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateRestoreUser();
+    }
+    else {
+        pageIndex();
+    }
+}
+function pageChangePassword() {
+    if (!getAccessToken()) {
+        historyRouter({ data: null, path: routeNames.changePassword });
+        templateTopBarSignedOut(TITLE_CONTEXT);
+        templateChangePassword();
+    }
+    else {
+        pageIndex();
+    }
+}
 var infoBoxErrorLevel = {
     info: 'info-box',
     error: 'info-box error',
@@ -556,6 +576,8 @@ var routeNames = {
     quiz: '/quiz',
     curriculum: '/pensum',
     result: '/resultat',
+    changePassword: '/skift-password',
+    restoreUser: '/glemt-password'
 };
 var routes = (_a = {},
     _a[routeNames.index] = pageIndex,
@@ -568,6 +590,8 @@ var routes = (_a = {},
     _a[routeNames.quiz] = pageQuiz,
     _a[routeNames.result] = pageQuizResult,
     _a[routeNames.currentUser] = handleGetCurrentUser,
+    _a[routeNames.restoreUser] = handleRestoreUser,
+    _a[routeNames.changePassword] = handleChangePassword,
     _a);
 function spaRouter() {
     if (DEV) {
@@ -627,6 +651,12 @@ function templateSignIn(context) {
 }
 function templateCreateUser() {
     setTemplate('handlebars-create-user', "article");
+}
+function templateRestoreUser() {
+    setTemplate('handlebars-restore-user', "article");
+}
+function templateChangePassword() {
+    setTemplate('handlebars-change-password', "article");
 }
 function templateInfo(context) {
     setTemplate('handlebars-info', "article", context);
@@ -693,7 +723,7 @@ function handleSignIn() {
                     }
                     templateSignIn({
                         message: '<p class="clr-error">Email og/eller password er ikke korrekt</p>',
-                        extra: '<button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>'
+                        extra: '<button class="btn btn-link" type="button" onclick="pageRestoreUser()">Glemt password?</button>'
                     });
                     return [2, false];
             }
@@ -733,11 +763,6 @@ function handleSignOut() {
         });
     });
 }
-var Handler = (function () {
-    function Handler() {
-    }
-    return Handler;
-}());
 function handleCreateUser() {
     return __awaiter(this, void 0, void 0, function () {
         var email, password, passwordRepeat, formData, response, responseObject, message;
@@ -810,6 +835,47 @@ function handleCreateUser() {
                         buttonAction: 'pageCreateUser()',
                         buttonText: 'Prøv igen'
                     });
+                    return [2, false];
+            }
+        });
+    });
+}
+function handleChangePassword() {
+}
+function handleRestoreUser() {
+    return __awaiter(this, void 0, void 0, function () {
+        var email, formData, response, responseObject, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    email = document.getElementById('input-field-email');
+                    pageLoading(false);
+                    if (!email) {
+                        pageInfo({
+                            errorLevel: infoBoxErrorLevel.success,
+                            title: "Nyt password",
+                            message: "Jeg her sendt et nyt password til dig p\u00E5 " + email,
+                            buttonAction: 'pageIndex()',
+                            buttonText: 'Ok'
+                        });
+                        return [2];
+                    }
+                    formData = new FormData();
+                    formData.append('email', email.value);
+                    return [4, fetch('/users/restore', {
+                            body: formData,
+                            method: "put"
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.json()];
+                case 2:
+                    responseObject = _a.sent();
+                    if (responseObject.status === 200) {
+                        user = responseObject.body;
+                        pageCurrentUser(user);
+                        return [2, true];
+                    }
                     return [2, false];
             }
         });

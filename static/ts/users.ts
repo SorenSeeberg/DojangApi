@@ -23,7 +23,7 @@ async function handleSignIn() {
     }
     templateSignIn({
         message: '<p class="clr-error">Email og/eller password er ikke korrekt</p>',
-        extra: '<button class="btn btn-link" type="button" onclick="pageCreateUser()">Glemt password?</button>'
+        extra: '<button class="btn btn-link" type="button" onclick="pageRestoreUser()">Glemt password?</button>'
     });
     return false;
 }
@@ -52,13 +52,6 @@ async function handleSignOut() {
     return false;
 }
 
-class Handler {
-
-    constructor() {
-
-    }
-
-}
 
 async function handleCreateUser() {
     const email = <HTMLInputElement>document.getElementById('input-field-email');
@@ -132,6 +125,45 @@ async function handleCreateUser() {
         buttonAction: 'pageCreateUser()',
         buttonText: 'Prøv igen'
     });
+    return false;
+}
+
+function handleChangePassword() {
+
+}
+
+async function handleRestoreUser() {
+    const email = <HTMLInputElement>document.getElementById('input-field-email');
+
+        pageLoading(false);
+
+    if (!email) {
+        pageInfo({
+            errorLevel: infoBoxErrorLevel.success,
+            title: "Nyt password",
+            message: `Jeg her sendt et nyt password til dig på ${email}`,
+            buttonAction: 'pageIndex()',
+            buttonText: 'Ok'
+        });
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('email', email.value);
+
+    let response = await fetch('/users/restore', {
+        body: formData,
+        method: "put"
+    });
+
+    let responseObject = await response.json();
+
+    if (responseObject.status === 200) {
+        const user: CurrentUser = responseObject.body;
+        pageCurrentUser(user);
+        return true;
+    }
+
     return false;
 }
 
