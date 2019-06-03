@@ -33,7 +33,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var DEV = true;
+var DEV = false;
 var ORIGIN = DEV ? 'http://127.0.0.1:5000' : 'http://sorenseeberg.pythonanywhere.com';
 function handleUpdateCurriculumFromForm() {
     return __awaiter(this, void 0, void 0, function () {
@@ -159,9 +159,12 @@ var infoBoxErrorLevel = {
     error: 'info-box error',
     success: 'info-box success'
 };
-function pageInfo(context) {
+function pageInfo(context, signedIn) {
+    if (signedIn === void 0) { signedIn = false; }
     historyRouter({ data: null, path: '' });
-    templateTopBarSignedOut(TITLE_CONTEXT);
+    signedIn
+        ? templateTopBarSignedIn(TITLE_CONTEXT)
+        : templateTopBarSignedOut(TITLE_CONTEXT);
     templateInfo(context);
 }
 function pageInfo401() {
@@ -844,21 +847,14 @@ function handleChangePassword() {
 }
 function handleRestoreUser() {
     return __awaiter(this, void 0, void 0, function () {
-        var email, formData, response, responseObject, user;
+        var email, formData, response, responseObject;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     email = document.getElementById('input-field-email');
                     pageLoading(false);
                     if (!email) {
-                        pageInfo({
-                            errorLevel: infoBoxErrorLevel.success,
-                            title: "Nyt password",
-                            message: "Jeg her sendt et nyt password til dig p\u00E5 " + email,
-                            buttonAction: 'pageIndex()',
-                            buttonText: 'Ok'
-                        });
-                        return [2];
+                        pageRestoreUser();
                     }
                     formData = new FormData();
                     formData.append('email', email.value);
@@ -872,8 +868,14 @@ function handleRestoreUser() {
                 case 2:
                     responseObject = _a.sent();
                     if (responseObject.status === 200) {
-                        user = responseObject.body;
-                        pageCurrentUser(user);
+                        console.log('BOOOM');
+                        pageInfo({
+                            errorLevel: infoBoxErrorLevel.success,
+                            title: "Nyt password",
+                            message: "Jeg her sendt et nyt password til dig p\u00E5 " + email.value,
+                            buttonAction: 'pageIndex()',
+                            buttonText: 'Log ind'
+                        });
                         return [2, true];
                     }
                     return [2, false];

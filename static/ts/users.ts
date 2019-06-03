@@ -138,14 +138,7 @@ async function handleRestoreUser() {
         pageLoading(false);
 
     if (!email) {
-        pageInfo({
-            errorLevel: infoBoxErrorLevel.success,
-            title: "Nyt password",
-            message: `Jeg her sendt et nyt password til dig på ${email}`,
-            buttonAction: 'pageIndex()',
-            buttonText: 'Ok'
-        });
-        return;
+        pageRestoreUser();
     }
 
     let formData = new FormData();
@@ -159,8 +152,14 @@ async function handleRestoreUser() {
     let responseObject = await response.json();
 
     if (responseObject.status === 200) {
-        const user: CurrentUser = responseObject.body;
-        pageCurrentUser(user);
+        console.log('BOOOM');
+        pageInfo({
+            errorLevel: infoBoxErrorLevel.success,
+            title: "Nyt password",
+            message: `Jeg her sendt et nyt password til dig på ${email.value}`,
+            buttonAction: 'pageIndex()',
+            buttonText: 'Log ind'
+        });
         return true;
     }
 

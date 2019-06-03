@@ -54,7 +54,6 @@ function pageRestoreUser(): void {
     } else {
         pageIndex();
     }
-
 }
 
 function pageChangePassword(): void {
@@ -73,9 +72,13 @@ const infoBoxErrorLevel = {
     success: 'info-box success'
 };
 
-function pageInfo(context: ComponentInfo): void {
+function pageInfo(context: ComponentInfo, signedIn=false): void {
     historyRouter({data: null, path: ''});
-    templateTopBarSignedOut(TITLE_CONTEXT);
+
+    signedIn
+        ? templateTopBarSignedIn(TITLE_CONTEXT)
+        : templateTopBarSignedOut(TITLE_CONTEXT);
+
     templateInfo(context);
 }
 

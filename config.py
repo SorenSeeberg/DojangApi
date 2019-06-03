@@ -3,7 +3,7 @@
 
 import os
 
-DEV = True
+DEV = False
 
 
 def db_connection_string(db_name: str):

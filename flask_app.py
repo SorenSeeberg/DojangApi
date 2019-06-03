@@ -88,7 +88,7 @@ def index():
 def create_user():
     session = get_session()
     form = dict(request.form)
-    data = {"email": form.get("email")[0], "password": form.get("password")[0]}
+    data = {'email': form.get('email')[0], 'password': form.get('password')[0]}
     return_data: Dict = users.create(session, data)
     return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
@@ -107,13 +107,9 @@ def activate_user(activation_token):
 def restore_user():
     session = get_session()
     form = dict(request.form)
-    print('restore_user')
-    print(form.get("email")[0])
-    return_data: Dict = users.restore(session, form.get("email")[0])
-    if return_data.get('status', 500) == 204:
-        return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
-    else:
-        return _unauthorized_response()
+    data = {'email': form.get('email')[0]}
+    return_data: Dict = users.restore(session, data)
+    return make_response(_to_json(return_data), return_data.get(ResponseKeys.status, 500))
 
 
 @app.route('/users', methods=['GET'])

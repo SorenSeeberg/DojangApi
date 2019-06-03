@@ -46,11 +46,13 @@ def send_restoration_mail(target_email: str, password: str):
     body = f'' \
         f'Hej,\n\n' \
         f'Du kan nu logge ind med dette password\n\n' \
-        f'<b>{password}</b>\n\n' \
-        f'Husk at ændre det, når du er logget ind\n\n' \
+        f'{password}\n\n' \
+        f'Skift password, efter du er logget ind.\n\n' \
         f'Med venlig hilsen,\n' \
         f'Grand Master Kwon'
 
     content = _build_email(config.MAIL_SENDER, [target_email], subject, body)
+
+    print(content)
 
     _send_email(target_email, content)
