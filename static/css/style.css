@@ -162,12 +162,16 @@ input {
 .header-profile {
     cursor: pointer;
     background-color: transparent;
-    background-image: url("/static/favicon.png");
+    /*background-image: url("/static/favicon.png");*/
     background-size:cover;
     border-radius: 50%;
     width: 60px;
     height: 60px;
     margin: 6px 6px;
+}
+
+.header-profile img {
+    border-radius: 50%;
 }
 
 .align-content-center-center {
